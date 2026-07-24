@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
     try{
-        const {name, email, password} = req.body;
+        const {name, email, password, role} = req.body;
 
         const existingUser = await User.findOne({ email });
 
@@ -18,7 +19,8 @@ const registerUser = async (req, res) => {
         const user = await User.create({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role
         });
 
         res.status(201).json({
@@ -59,8 +61,20 @@ const loginUser = async (req, res) => {
             })
         }
 
+        const accessToken = jwt.sign(
+            {
+                userId: user.id,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "15m"
+            }
+        );
+
         res.status(200).json({
             message: "Login Successful",
+            accessToken,
             user : {
                 _id: user._id,
                 name: user.name,
@@ -68,7 +82,7 @@ const loginUser = async (req, res) => {
                 role: user.role
             }
         })
-
+ 
     }catch(error){
         res.status(500).json({
             message: error.message
@@ -76,5 +90,18 @@ const loginUser = async (req, res) => {
     }
 };
 
+const getProfile = (req,res) => {
+    res.status(200).json({
+        message: "Profile fetched successfully",
+        user: req.user
+    })
+};
 
-module.exports = { registerUser, loginUser };
+const adminDashboard = (req,res) => {
+    res.status(200).json({
+        message: "Welcome Admin",
+        user: req.user
+    });
+};
+
+module.exports = { registerUser, loginUser, getProfile, adminDashboard };
