@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
 
         if(!isPasswordMatched){
             return res.status(401).json({
-                message: "Invalid email or password dhiraj "
+                message: "Invalid email or password"
             })
         }
 

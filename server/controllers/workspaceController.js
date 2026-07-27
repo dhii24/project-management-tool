@@ -89,5 +89,75 @@ const addMember = async (req, res) => {
 
 };
 
+const getMyWorkspaces = async (req, res) => {
+    try {
+        const workspaces = await Workspace.find({
+            members: req.user.userId
+        })
+        .select("name description owner members createdAt updatedAt")
+        .populate("owner", "name email role")
+        .populate("members", "name email role");
 
-module.exports = { createWorkspace, getAllWorkspaces, addMember };
+        res.status(200).json({
+            workspaces
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+};
+
+const updateWorkspace = async (req, res) => {
+    try {
+        const workspace = req.workspace;
+
+        const { name, description } = req.body;
+
+        if(name === undefined && description === undefined){
+            return res.status(400).json({
+                message: "Please provide at least one field to update."
+            });
+        }
+
+        if(name !== undefined){
+            workspace.name = name;
+        }
+
+        if(description !== undefined){
+            workspace.description = description;
+        }
+
+        await workspace.save();
+
+        res.status(200).json({
+            message: "Workspace updated successfully",
+            workspace
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+const deleteWorkspace = async (req, res) => {
+    try {
+        await req.workspace.deleteOne();
+
+        res.status(200).json({
+            message: "Workspace deleted successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+
+module.exports = { createWorkspace, getAllWorkspaces, addMember, getMyWorkspaces, updateWorkspace, deleteWorkspace };
