@@ -243,22 +243,108 @@ Lists can be reordered while maintaining their position.
 
 ---
 
-# 7. Middleware Architecture
+# 7. Card Module
+
+## Card Features
+
+Completed:
+
+* Create Card
+* Get Cards
+* Update Card
+* Delete Card
+* Move Cards Between Lists
+* Card Reordering
+* Due Dates
+* Card Descriptions
+
+---
+
+## Card Relationship
+
+Implemented:
+
+```
+Workspace
+
+    │
+
+    ▼
+
+Board
+
+    │
+
+    ▼
+
+List
+
+    │
+
+    ▼
+
+Card
+```
+
+Each List can contain multiple Cards.
+
+Example:
+
+```
+Todo
+
+├── Fix Login API
+├── Create JWT Middleware
+└── Add Email Verification
+```
+
+---
+
+## Card Ordering
+
+Implemented position-based ordering.
+
+Example:
+
+```
+Todo
+
+Fix Login API
+position: 0
+
+JWT Middleware
+position: 1
+
+Email Verification
+position: 2
+```
+
+Cards can be reordered within a list and moved between lists while preserving order.
+
+---
+
+## Card Authorization
+
+Implemented:
+
+* List membership validation
+* Nested resource authorization
+* Secure card queries
+* Workspace → Board → List → Card access validation
+
+# 8. Middleware Architecture
 
 Implemented reusable middleware:
 
-```
+```text
 middleware/
 
 ├── authMiddleware.js
-
 ├── authorizeRoles.js
-
 ├── workspaceOwnerMiddleware.js
-
 ├── workspaceMemberMiddleware.js
-
-└── boardMemberMiddleware.js
+├── boardMemberMiddleware.js
+└── listMemberMiddleware.js
 ```
 
 ---
@@ -271,7 +357,7 @@ Responsible for:
 
 * JWT verification
 * Identifying logged-in users
-* Attaching user data to request
+* Attaching authenticated user to `req.user`
 
 ---
 
@@ -289,7 +375,7 @@ Responsible for:
 Responsible for:
 
 * Checking workspace membership
-* Allowing workspace collaboration
+* Protecting workspace resources
 
 ---
 
@@ -297,10 +383,21 @@ Responsible for:
 
 Responsible for:
 
-* Checking board access
-* Validating board belongs to accessible workspace
+* Validating board existence
+* Ensuring board belongs to an accessible workspace
+* Attaching board to `req.board`
 
 ---
+
+### List Member Middleware
+
+Responsible for:
+
+* Validating list existence
+* Finding parent board
+* Finding parent workspace
+* Checking workspace membership
+* Attaching list, board, and workspace to the request
 
 # API Endpoints
 
@@ -350,6 +447,18 @@ Responsible for:
 
 ---
 
+# Card
+
+| Method | Endpoint                          | Description               |
+| ------- | --------------------------------- | ------------------------- |
+| POST    | /api/cards/:listId                | Create Card               |
+| GET     | /api/cards/:listId                | Get List Cards            |
+| PUT     | /api/cards/:listId/:cardId        | Update Card               |
+| DELETE  | /api/cards/:listId/:cardId        | Delete Card               |
+| PATCH   | /api/cards/:listId/:cardId/move   | Move Card Between Lists   |
+
+---
+
 # Database Relationships
 
 Current architecture:
@@ -357,30 +466,40 @@ Current architecture:
 ```
 User
 
- |
+ │
 
- |
+ ▼
 
 Workspace
 
- |
+ │
 
- |
+ ▼
 
 Board
 
- |
+ │
 
- |
+ ▼
 
 List
 
- |
+ │
 
- |
+ ▼
 
-Card (Upcoming)
+Card
 ```
+
+Relationship Summary
+
+* One User can belong to multiple Workspaces.
+* One Workspace can contain multiple Boards.
+* One Board can contain multiple Lists.
+* One List can contain multiple Cards.
+* Cards store references to Lists.
+* Lists store references to Boards.
+* Boards store references to Workspaces.
 
 ---
 
@@ -416,14 +535,17 @@ server/
 Implemented:
 
 * Password hashing using bcrypt
-* JWT authentication
-* Protected routes
-* RBAC authorization
+* JWT Authentication
+* Protected Routes
+* Role-Based Access Control (RBAC)
 * Workspace ownership validation
 * Workspace membership validation
 * Board membership validation
+* List membership validation
+* Nested resource authorization
+* Secure MongoDB queries using `findOne()`
 * Duplicate member prevention
-* Secure resource queries
+* Resource-level access validation
 
 ---
 
@@ -434,52 +556,52 @@ Implemented:
 * Express Routing
 * Middleware
 * JWT Authentication
-* Authorization
-* RBAC
+* Authentication Middleware
+* Role-Based Authorization (RBAC)
 * Resource-Level Authorization
+* Nested Authorization
 * MongoDB Relationships
 * Mongoose ODM
-* populate()
 * ObjectId References
-* MongoDB Query Operators
+* populate()
 * CRUD Operations
-* Array Queries
+* Query Operators
+* Array Operations
 * Position-Based Ordering
+* Drag-and-Drop Backend Logic
 * Reusable Middleware Design
 
 ---
 
 # Upcoming Features
 
-## Card Module
+## Collaboration
 
-* Create Cards
-* Update Cards
-* Delete Cards
+* Card Labels
 * Card Assignment
-* Due Dates
-* Labels
-* Descriptions
-* Attachments
-
-## Collaboration Features
-
 * Comments
-* Activity Logs
-* Notifications
+* Activity Timeline
 * File Uploads
 
-## Advanced Backend Features
+---
+
+## Authentication
 
 * Email Verification
 * Forgot Password
 * Refresh Tokens
+
+---
+
+## Advanced Backend
+
 * Search
 * Pagination
 * Aggregation Pipelines
-* Transactions
+* MongoDB Transactions
 * Dashboard Analytics
 * Audit Logs
+* Notifications
 
 ---
 
