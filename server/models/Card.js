@@ -28,7 +28,26 @@ const cardSchema = new mongoose.Schema(
 
         dueDate:{
             type:Date
-        }
+        },
+
+        labels:{
+            type: [String],
+            default: []
+        },
+
+        assignedMembers:[
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ],
+
+        attachments:[
+            {
+                fileName: String,
+                path: String
+            }
+        ]
     },
     {
         timestamps:true
@@ -37,11 +56,6 @@ const cardSchema = new mongoose.Schema(
 
 
 
-const Card = mongoose.model(
-    "Card",
-    cardSchema
-);
-
-
+const Card =  mongoose.model("Card", cardSchema);
 
 module.exports = Card;

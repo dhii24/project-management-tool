@@ -7,7 +7,7 @@ const createCard = async (req, res) => {
 
         const { listId } = req.params;
 
-        const { title, description, dueDate } = req.body;
+        const { title, description, dueDate, labels, assignedMembers } = req.body;
 
         const totalCards = await Card.countDocuments({
             list: listId
@@ -17,6 +17,8 @@ const createCard = async (req, res) => {
             title,
             description,
             dueDate,
+            labels,
+            assignedMembers,
             list: listId,
             position: totalCards
         });
@@ -79,7 +81,7 @@ const updateCard = async (req,res) => {
             });
         }
 
-        const { title, description, dueDate } = req.body;
+        const { title, description, dueDate, labels, assignedMembers } = req.body;
 
         if(title !== undefined){
             card.title = title;
@@ -91,6 +93,14 @@ const updateCard = async (req,res) => {
 
         if(dueDate !== undefined){
             card.dueDate = dueDate;
+        }
+
+        if(labels != undefined){
+            card.labels = labels;
+        }
+
+        if(assignedMembers != undefined){
+            card.assignedMembers = assignedMembers;
         }
 
         await card.save();
@@ -194,4 +204,48 @@ const moveCard = async (req, res) => {
 
 };
 
-module.exports = { createCard, getCards, updateCard, deleteCard, moveCard };
+
+const uploadAttachment = async (req, res) => {
+
+    try {
+        console.log("Inside controller");
+        console.log(req.file);
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No file uploaded"
+            });
+        }
+
+        const { cardId } = req.params;
+
+        const card = await Card.findById(cardId);
+
+        if(!card){
+            return res.status(404).json({
+                message: "Card not found"
+            });
+        }
+
+        card.attachments.push({
+            fileName: req.file.filename,
+            filePath: req.file.path
+        });
+
+        await card.save();
+
+        res.status(200).json({
+            message: "File uploaded.",
+            attachment: req.file.filename
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+
+};
+
+
+module.exports = { createCard, getCards, updateCard, deleteCard, moveCard, uploadAttachment };

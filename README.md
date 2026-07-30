@@ -332,9 +332,88 @@ Implemented:
 * Secure card queries
 * Workspace → Board → List → Card access validation
 
-# 8. Middleware Architecture
+---
 
-Implemented reusable middleware:
+# 8. Card Collaboration Module
+
+## Collaboration Features
+
+Completed:
+
+* Card Labels
+* Card Assignment
+* Comments
+* Comment History
+* Populate User Details in Comments
+
+---
+
+## Labels
+
+Cards can now contain multiple labels.
+
+Example:
+
+```
+Fix Login Bug
+
+Labels
+
+• Bug
+• Backend
+• High Priority
+```
+
+---
+
+## Card Assignment
+
+Implemented:
+
+* Assign one or multiple users to a card
+* User references stored using ObjectId
+* Mongoose populate() for assigned members
+
+Example:
+
+```
+Fix Authentication
+
+Assigned Members
+
+• Dhiraj
+• Rahul
+```
+
+---
+
+## Comments
+
+Implemented:
+
+* Add Comments
+* Retrieve Comments
+* User Association
+* Automatic Timestamping
+* Populate Comment Author
+
+Example:
+
+```
+Fix Login API
+
+Dhiraj:
+JWT expires after 15 minutes.
+
+Rahul:
+Working on the fix.
+```
+
+---
+
+# 9. Middleware Architecture
+
+## Implemented reusable middleware:
 
 ```text
 middleware/
@@ -399,6 +478,73 @@ Responsible for:
 * Checking workspace membership
 * Attaching list, board, and workspace to the request
 
+---
+
+# 10. File Upload Module
+
+## Attachment Features
+
+Completed:
+
+* Multer Configuration
+* Disk Storage Engine
+* File Upload Middleware
+* File Type Validation
+* File Size Validation
+* Attachment Metadata Storage
+
+---
+
+## Supported File Types
+
+Implemented support for:
+
+* PNG Images
+* JPEG Images
+* PDF Documents
+
+Maximum upload size:
+
+```
+5 MB
+```
+
+---
+
+## Upload Architecture
+
+```
+Client
+
+↓
+
+multipart/form-data
+
+↓
+
+Authentication Middleware
+
+↓
+
+Multer Middleware
+
+↓
+
+Attachment Controller
+
+↓
+
+MongoDB (Metadata)
+
+↓
+
+uploads/cards/
+```
+
+Files are stored on disk while MongoDB stores attachment metadata.
+
+---
+
 # API Endpoints
 
 # Authentication
@@ -449,13 +595,30 @@ Responsible for:
 
 # Card
 
-| Method | Endpoint                          | Description               |
+| Method  | Endpoint                          | Description               |
 | ------- | --------------------------------- | ------------------------- |
 | POST    | /api/cards/:listId                | Create Card               |
 | GET     | /api/cards/:listId                | Get List Cards            |
 | PUT     | /api/cards/:listId/:cardId        | Update Card               |
 | DELETE  | /api/cards/:listId/:cardId        | Delete Card               |
 | PATCH   | /api/cards/:listId/:cardId/move   | Move Card Between Lists   |
+
+---
+
+# Comment
+
+| Method  | Endpoint              | Description       |
+|---------|-----------------------|-------------------|
+| POST    | /api/comments/:cardId | Add Comment       |
+| GET     | /api/comments/:cardId | Get Card Comments |
+
+---
+
+# Attachment
+
+| Method  | Endpoint                        | Description       |
+|---------|---------------------------------|-------------------|
+| POST    | /api/attachments/:cardId/upload | Upload Attachment |
 
 ---
 
@@ -489,6 +652,14 @@ List
  ▼
 
 Card
+
+ ├── Labels
+
+ ├── Assigned Members
+
+ ├── Comments
+
+ └── Attachments
 ```
 
 Relationship Summary
@@ -500,6 +671,10 @@ Relationship Summary
 * Cards store references to Lists.
 * Lists store references to Boards.
 * Boards store references to Workspaces.
+* One Card can have multiple Labels.
+* One Card can be assigned to multiple Users.
+* One Card can contain multiple Comments.
+* One Card can contain multiple Attachments.
 
 ---
 
@@ -518,6 +693,8 @@ server/
 ├── models/
 │
 ├── routes/
+│
+├── uploads/
 │
 ├── app.js
 │
@@ -546,6 +723,10 @@ Implemented:
 * Secure MongoDB queries using `findOne()`
 * Duplicate member prevention
 * Resource-level access validation
+* File type validation using Multer
+* File size restrictions
+* Authenticated file uploads
+* Secure comment ownership through JWT
 
 ---
 
@@ -570,6 +751,15 @@ Implemented:
 * Position-Based Ordering
 * Drag-and-Drop Backend Logic
 * Reusable Middleware Design
+* Multer
+* multipart/form-data
+* File Upload Middleware
+* Disk Storage Engine
+* MIME Type Validation
+* File Metadata Storage
+* Comment System Design
+* One-to-Many Relationships
+* Many-to-Many Relationships
 
 ---
 
@@ -577,11 +767,8 @@ Implemented:
 
 ## Collaboration
 
-* Card Labels
-* Card Assignment
-* Comments
 * Activity Timeline
-* File Uploads
+* Notifications
 
 ---
 
