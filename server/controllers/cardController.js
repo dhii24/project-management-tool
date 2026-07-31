@@ -101,6 +101,12 @@ const updateCard = async (req,res) => {
 
         if(assignedMembers != undefined){
             card.assignedMembers = assignedMembers;
+
+            if(assignedMembers){
+                for(const memberId of assignedMembers){
+                    
+                }
+            }
         }
 
         await card.save();

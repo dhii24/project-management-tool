@@ -10,6 +10,7 @@ const listRoutes = require("./routes/listRoutes");
 const cardRoutes = require("./routes/cardRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const attachmentRoutes = require("./routes/attachmentRoutes");
+const activityRoutes = require("./routes/activityRoutes");
 
 app.use(express.json());
 
@@ -21,5 +22,6 @@ app.use("/api/lists", listRoutes);
 app.use("/api/cards", cardRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/attachments", attachmentRoutes);
+app.use("/api/activities", activityRoutes);
 
 module.exports = app;
