@@ -1,5 +1,7 @@
 const Card = require("../models/Card");
 const List = require("../models/List");
+const User = require("../models/User");
+const createNotification = require("../utils/createNotification");
 
 const createCard = async (req, res) => {
 
@@ -42,17 +44,37 @@ const getCards = async(req,res)=>{
 
     try{
 
-        const {listId}=req.params;
+        const {listId} = req.params;
+
+        const page = parseInt(req.query.page) || 1;
+
+        const limit = parseInt(req.query.limit) || 1;
+
+        const skip = (page - 1) * limit;
 
         const cards = await Card.find({
             list:listId
         })
         .sort({
             position:1
+        })
+        .skip(skip)
+        .limit(limit);
+
+        const totalCards = await Card.countDocuments({
+            list: listId
         });
 
+        const totalPages = Math.ceil(totalCards / limit);
+
         res.status(200).json({
-            cards
+            cards,
+            pagination:{
+                currentPage: page,
+                totalPages,
+                totalCards,
+                limit
+            }
         });
 
     } catch (error) {
@@ -103,8 +125,18 @@ const updateCard = async (req,res) => {
             card.assignedMembers = assignedMembers;
 
             if(assignedMembers){
+                const sender = await User.findById(req.user.userId);
+                
                 for(const memberId of assignedMembers){
-                    
+                    if(memberId.toString() !== req.user.userId){
+                        await createNotification({
+                            recipient: memberId,
+                            sender: sender._id,
+                            card: card._id,
+                            type: "CARD_ASSIGNED",
+                            message: `${sender.name} assigned you to ${card.title}`
+                        });
+                    }
                 }
             }
         }

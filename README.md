@@ -495,6 +495,146 @@ Completed:
 
 ---
 
+# 11. Activity History (Audit Log)
+
+## Activity Features
+
+Completed:
+
+* Activity Logging
+* Audit Trail
+* Automatic Activity Recording
+* Card Activity Timeline
+* User Activity Tracking
+* Activity Retrieval API
+* Activity Sorting
+* Reusable Activity Utility
+
+---
+
+## Activity Architecture
+
+Every important action performed on a card is recorded as an activity.
+
+Examples:
+
+```
+Dhiraj created a card
+
+Rahul uploaded login.png
+
+Akash commented on Payment API
+
+Riya moved card to Done
+```
+
+Each activity stores:
+
+* User
+* Card
+* Action
+* Description
+* Timestamp
+
+Activities are stored in a separate collection to keep Card documents lightweight and scalable.
+
+---
+
+# 12. Notification System
+
+## Notification Features
+
+Completed:
+
+* User Notifications
+* Notification Utility
+* Assignment Notifications
+* Fetch Notifications
+* Mark Notification as Read
+* Unread Notification Count
+
+---
+
+## Notification Architecture
+
+Notifications are user-specific and generated whenever important actions occur.
+
+Example:
+
+```
+Dhiraj assigned you to "Fix Login Bug"
+
+Rahul commented on "JWT Authentication"
+```
+
+Each notification stores:
+
+* Sender
+* Recipient
+* Related Card
+* Notification Type
+* Message
+* Read Status
+
+Notifications are designed independently from activities.
+
+Activities answer:
+
+"What happened?"
+
+Notifications answer:
+
+"What do I need to know?"
+
+---
+
+# 13. Pagination
+
+## Pagination Features
+
+Completed:
+
+* Pagination Utility
+* Page-based Pagination
+* Limit & Skip Queries
+* Total Document Count
+* Total Pages Calculation
+* Pagination Metadata
+
+---
+
+## Pagination Architecture
+
+Implemented reusable pagination across multiple resources.
+
+Supported modules:
+
+* Cards
+* Activities
+* Notifications
+
+Example Request
+
+```
+GET /api/cards/:listId?page=2&limit=10
+```
+
+Example Response
+
+```
+currentPage
+
+totalPages
+
+totalCards
+
+limit
+```
+
+Pagination improves API performance and prepares the application for large datasets.
+
+---
+
 ## Supported File Types
 
 Implemented support for:
@@ -622,6 +762,24 @@ Files are stored on disk while MongoDB stores attachment metadata.
 
 ---
 
+# Activity
+
+| Method | Endpoint                 |Description           |
+| -------|--------------------------|----------------------|
+| GET    | /api/activities/:cardId  | Get Card Activities  |
+
+---
+
+# Notification
+
+| Method  | Endpoint                                | Description                   |
+|---------|-----------------------------------------|-------------------------------|
+| GET     | /api/notifications                      | Get User Notifications        |
+| GET     | /api/notifications/unread-count         | Get Unread Notification Count |
+| PATCH   | /api/notifications/:notificationId/read | Mark Notification as Read     |
+
+---
+
 # Database Relationships
 
 Current architecture:
@@ -659,7 +817,13 @@ Card
 
  ├── Comments
 
- └── Attachments
+ ├── Attachments
+
+ └── Activities
+
+User
+
+ └── Notifications
 ```
 
 Relationship Summary
@@ -675,6 +839,8 @@ Relationship Summary
 * One Card can be assigned to multiple Users.
 * One Card can contain multiple Comments.
 * One Card can contain multiple Attachments.
+* One Card can contain multiple Activities.
+* One User can receive multiple Notifications.
 
 ---
 
@@ -727,6 +893,10 @@ Implemented:
 * File size restrictions
 * Authenticated file uploads
 * Secure comment ownership through JWT
+* Secure Activity History
+* Authenticated Notification Retrieval
+* Notification Ownership Validation
+* Pagination Limits
 
 ---
 
@@ -760,6 +930,16 @@ Implemented:
 * Comment System Design
 * One-to-Many Relationships
 * Many-to-Many Relationships
+* Audit Log Design
+* Activity Timeline
+* Notification System
+* Event-Driven Backend Design
+* Pagination
+* skip()
+* limit()
+* countDocuments()
+* Query Parameters
+* Reusable Utility Functions
 
 ---
 
@@ -767,8 +947,7 @@ Implemented:
 
 ## Collaboration
 
-* Activity Timeline
-* Notifications
+* Real-time Notifications (Socket.IO)
 
 ---
 
@@ -783,12 +962,10 @@ Implemented:
 ## Advanced Backend
 
 * Search
-* Pagination
 * Aggregation Pipelines
 * MongoDB Transactions
 * Dashboard Analytics
-* Audit Logs
-* Notifications
+* Redis Caching
 
 ---
 
