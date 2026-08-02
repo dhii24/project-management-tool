@@ -635,6 +635,109 @@ Pagination improves API performance and prepares the application for large datas
 
 ---
 
+# 14. Search System
+
+## Search Features
+
+Completed:
+
+* Search Cards by Title
+* Search Cards by Label
+* Case-Insensitive Search
+* Combined Title & Label Search
+* Pagination Support for Search
+* MongoDB Text Indexes
+* Regex-Based Search
+
+---
+
+## Search Architecture
+
+Implemented efficient card searching using MongoDB query operators.
+
+Supported searches:
+
+* Card Title
+* Card Labels
+
+Example Request
+
+```http
+GET /api/cards/search?query=jwt&page=1&limit=10
+```
+
+Example
+
+Search:
+
+```
+jwt
+```
+
+Returns:
+
+```
+JWT Authentication
+
+JWT Refresh Token
+```
+
+Implemented MongoDB concepts:
+
+* `$regex`
+* `$options: "i"`
+* `$or`
+* Text Indexes
+* Pagination with Search
+
+---
+
+# 15. Aggregation Analytics
+
+## Analytics Features
+
+Completed:
+
+* Cards by Status
+* Cards by Label
+* Member Workload
+* Due This Week
+* Workspace Statistics
+
+---
+
+## Aggregation Pipeline Concepts
+
+Implemented:
+
+* `$group`
+* `$sum`
+* `$sort`
+* `$unwind`
+* Aggregation Pipelines
+
+Example Analytics
+
+```
+Todo          15
+
+Done          34
+
+In Progress    7
+```
+
+Member Workload
+
+```
+Dhiraj    18 Cards
+
+Rahul     11 Cards
+
+Akash      8 Cards
+```
+
+Aggregation APIs prepare the backend for dashboard analytics similar to Jira and Trello.
+
 ## Supported File Types
 
 Implemented support for:
@@ -780,6 +883,26 @@ Files are stored on disk while MongoDB stores attachment metadata.
 
 ---
 
+# Search
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | /api/cards/search | Search Cards by Title or Label |
+
+---
+
+# Analytics
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | /api/analytics/status | Cards by Status |
+| GET | /api/analytics/labels | Cards by Label |
+| GET | /api/analytics/workload | Member Workload |
+| GET | /api/analytics/due-this-week | Cards Due This Week |
+| GET | /api/analytics/workspace | Workspace Statistics |
+
+---
+
 # Database Relationships
 
 Current architecture:
@@ -897,6 +1020,26 @@ Implemented:
 * Authenticated Notification Retrieval
 * Notification Ownership Validation
 * Pagination Limits
+* Workspace-aware Search
+* Indexed MongoDB Queries
+* Efficient Aggregation Pipelines
+
+---
+
+# Performance Optimizations
+
+Implemented:
+
+* MongoDB Text Indexes
+* Index on `dueDate`
+* Index on `list`
+* Index on `assignedMembers`
+* Pagination using `skip()` and `limit()`
+* Aggregation Pipelines
+* Efficient `$lookup` for Member Workload
+* Reusable Pagination Utility
+
+These optimizations improve query performance and prepare the backend for handling larger datasets.
 
 ---
 
@@ -940,6 +1083,19 @@ Implemented:
 * countDocuments()
 * Query Parameters
 * Reusable Utility Functions
+* MongoDB Indexes
+* Text Indexes
+* Regular Expressions (`$regex`)
+* `$or`
+* Aggregation Framework
+* Aggregation Pipelines
+* `$group`
+* `$sum`
+* `$lookup`
+* `$project`
+* `$unwind`
+* Dashboard Analytics
+* Search Optimization
 
 ---
 
@@ -961,11 +1117,9 @@ Implemented:
 
 ## Advanced Backend
 
-* Search
-* Aggregation Pipelines
 * MongoDB Transactions
-* Dashboard Analytics
 * Redis Caching
+* Dashboard Charts
 
 ---
 

@@ -285,5 +285,62 @@ const uploadAttachment = async (req, res) => {
 
 };
 
+const searchCards = async (req, res) => {
 
-module.exports = { createCard, getCards, updateCard, deleteCard, moveCard, uploadAttachment };
+    try{
+        const { query, page = 1, limit = 10} = req.query;
+
+        const currentPage = parseInt(page);
+        const pageLimit =  parseInt(limit);
+
+        const skip = (currentPage -1) * pageLimit;
+
+        const searchFilter = {};
+
+        if(query){
+            searchFilter.$or =[
+
+                {
+                    title:{
+                        $regex: query,
+                        $options: "i"
+                    },
+                },
+
+                {
+                    labels:{
+                        $regex: query,
+                        $options: "i"
+                    }
+                }
+                
+            ]
+        }
+
+        const cards = await Card.find(searchFilter).sort({ createdAt: -1}).skip(skip).limit(limit);
+
+        const totalCards = await Card.countDocuments(
+            searchFilter
+        );
+
+        res.status(200).json({
+            cards,
+            pagination:{
+                currentPage,
+                totalPages: Math.max(1, Math.ceil(totalCards / pageLimit)),
+                totalCards,
+                limit: pageLimit
+            }
+        });
+        
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        })
+
+    }
+};
+
+
+module.exports = { createCard, getCards, updateCard, deleteCard, moveCard, uploadAttachment, searchCards };     

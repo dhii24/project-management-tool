@@ -54,8 +54,21 @@ const cardSchema = new mongoose.Schema(
     }
 );
 
+cardSchema.index({
+    title: "text",
+    labels: "text"
+});
 
+cardSchema.index({
+    dueDate:1
+});
 
-const Card =  mongoose.model("Card", cardSchema);
+cardSchema.index({
+    list:1
+});
 
-module.exports = Card;
+cardSchema.index({
+    assignedMembers:1
+});
+
+module.exports =  mongoose.model("Card", cardSchema);

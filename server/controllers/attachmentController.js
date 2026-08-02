@@ -54,6 +54,4 @@ const uploadAttachment = async (req, res) => {
     }
 };
 
-module.exports = {
-    uploadAttachment
-};
+module.exports = { uploadAttachment };
