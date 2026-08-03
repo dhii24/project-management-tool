@@ -168,18 +168,20 @@ const deleteCard = async (req, res) => {
         });
 
         if(!card){
+
             return res.status(404).json({
                 message: "Card not found"
             });
-        } 
-
-        await card.deleteOne();
+        }
 
         res.status(200).json({
             message: "Card deleted successfully"
         });
 
+        await Card.deleteOne();
+
     } catch (error) {
+
         res.status(500).json({
             message: error.message
         });
