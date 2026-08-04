@@ -1,13 +1,6 @@
-import Navbar from "./components/Navbar"
+function App() {
 
-function App({children}) {
-
-    return (
-        <>
-            <Navbar />
-            <main> {children} </main>
-        </>
-    );
+    return null;
 
 }
 
