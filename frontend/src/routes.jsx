@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
+import AuthLayout from "./layouts/AuthLayout";
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register"
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -11,12 +13,20 @@ function AppRoutes(){
     return(
         <BrowserRouter>
             <Routes>
-                <Route element={<MainLayout />}>
+                
+                {/* Authentication Routes */}
+                <Route element={<AuthLayout />}>
                     <Route path="/" element={<Login/>} />
                     <Route path="/register" element={<Register/>} />
-                    <Route path="/dashboard" element={<Dashboard/>} />
-                    <Route path="*" element={<NotFound/>} />
                 </Route>
+
+                {/* Application Routes */}
+                <Route element={<MainLayout />}>
+                    <Route path="/dashboard" element={<Dashboard/>} />
+                </Route>
+
+                <Route path="*" element={<NotFound/>} />
+
             </Routes>
         </BrowserRouter>
     );

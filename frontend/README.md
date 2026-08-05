@@ -1,28 +1,35 @@
 # Module 1 — React Project Setup & Architecture
 
-## 📚 Topics Covered
+### ✅ Highlights
 
-- Initialized React project using Vite
-- Cleaned the default Vite template
-- Created a scalable folder structure
-- Installed project dependencies
-  - React Router DOM
-  - Axios
-  - React Icons
-- Configured client-side routing
-- Implemented reusable layouts using Nested Routes & Outlet
-- Built reusable UI components (Navbar & Button)
-- Configured Axios instance with request interceptor
-- Added Authentication service layer
-- Configured environment variables using `.env`
+- Vite + React project setup
+- Scalable folder structure
+- React Router with Nested Routes & Layouts
+- Reusable UI components
+- Axios instance with JWT interceptor
+- Service layer architecture
+- Environment variables (`.env`)
 
-## 🛠️ Tech Used
+**Tech:** React • Vite • React Router DOM • Axios
 
-- React
-- Vite
-- React Router DOM
-- Axios
-- React Icons
+---
+
+# Module 2 — Authentication (Frontend)
+
+### ✅ Completed
+
+- Authentication Layout (Separate from Main Layout)
+- Reusable Input Component
+- Controlled Login Form
+- Controlled Register Form
+- Client-side Form Validation
+- Password Confirmation Validation
+- React State Management (`useState`)
+- SPA Navigation using React Router
+
+**Concepts:** Controlled Components • Reusable Components • Form Validation • React Hooks • Authentication UI
+
+---
 
 ## 📂 Folder Structure
 
@@ -42,6 +49,6 @@ src/
 └── routes.jsx
 ```
 
-## ✅ Outcome
+## 🚀 Outcome
 
-A production-ready React foundation with routing, layouts, API architecture, reusable components, and environment configuration, ready for implementing authentication.
+Production-ready React frontend with scalable architecture, reusable components, authentication UI, routing, API service layer, and form validation, ready for backend integration.
