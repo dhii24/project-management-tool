@@ -3,7 +3,7 @@ import api from "./api";
 const login = async (userData) => {
 
     const response = await api.post(
-        "/auth/login",
+        "/users/login",
         userData
     );
 
@@ -14,7 +14,7 @@ const login = async (userData) => {
 const register = async (userData) => {
 
     const response = await api.post(
-        "/auth/register",
+        "/users/register",
         userData
     );
 

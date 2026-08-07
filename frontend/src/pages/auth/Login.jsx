@@ -1,7 +1,11 @@
 import { useState } from "react";
 
+import { Link, useNavigate } from "react-router-dom";
+
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+
+import authService from "../../services/authService";
 
 function Login(){
 
@@ -9,6 +13,12 @@ function Login(){
         email: "",
         password: ""
     });
+
+    const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(false);
+
+    const [serverError, setServerError] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -23,7 +33,7 @@ function Login(){
 
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const validationErrors = {};
@@ -43,8 +53,35 @@ function Login(){
 
         setErrors({});
 
-        console.log("Validation passed");
-        console.log(formData);
+        try{
+
+            setLoading(true);
+
+            setServerError("");
+
+            const response = await authService.login(formData);
+
+            console.log("Reached here");
+            console.log(response);
+
+            localStorage.setItem("accessToken", response.accessToken);
+
+            localStorage.setItem("user", JSON.stringify(response.user));
+
+            alert(response.message);
+
+            navigate("/dashboard");
+
+        } catch (error) {
+
+            setServerError(
+                error.response?.data?.message ||
+                "Login failed"
+            );
+
+        } finally {
+            setLoading(false);
+        }
     };
     
     return (
@@ -56,7 +93,18 @@ function Login(){
             <Input label="Email" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" error={errors.email} />
             <Input label="Password" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Enter your password" error={errors.password} />
 
-            <Button type="submit">Login</Button>
+            {serverError && (
+                <p className="input-error">
+                    {serverError}
+                </p>
+            )}
+
+            <Button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</Button>
+
+            <p style={{ marginTop: "16px"}}>
+                Don't have an account?{" "}
+                <Link to="/register">Register</Link>
+            </p>
 
         </form>
 

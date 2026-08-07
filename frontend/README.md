@@ -26,8 +26,15 @@
 - Password Confirmation Validation
 - React State Management (`useState`)
 - SPA Navigation using React Router
+- Register API Integration
+- Login API Integration
+- JWT Authentication
+- Token & User Storage using `localStorage`
+- Loading States
+- Backend Error Handling
+- Automatic Redirect after Login/Register
 
-**Concepts:** Controlled Components • Reusable Components • Form Validation • React Hooks • Authentication UI
+**Concepts:** Controlled Components • React Hooks • Form Validation • Axios • Authentication Flow • JWT • Async/Await • API Integration • Local Storage
 
 ---
 
@@ -37,11 +44,24 @@
 src/
 ├── assets/
 ├── components/
+│   └── common/
 ├── context/
 ├── hooks/
 ├── layouts/
 ├── pages/
+│   ├── auth/
+│   ├── dashboard/
+│   └── common/
 ├── services/
+│   ├── api.js
+│   ├── authService.js
+│   ├── workspaceService.js
+│   ├── boardService.js
+│   ├── listService.js
+│   ├── cardService.js
+│   ├── commentService.js
+│   ├── notificationService.js
+│   └── analyticsService.js
 ├── styles/
 ├── utils/
 ├── App.jsx
@@ -49,6 +69,23 @@ src/
 └── routes.jsx
 ```
 
+---
+
+## 🚀 Features Implemented
+
+- User Registration
+- User Login
+- JWT-based Authentication
+- Automatic Authorization Header using Axios Interceptors
+- Client-side Form Validation
+- Server-side Error Handling
+- Loading States During API Calls
+- Authentication Route Separation
+- Dynamic API Configuration using Environment Variables
+- Protected Project Architecture (Preparation for Auth Context)
+
+---
+
 ## 🚀 Outcome
 
-Production-ready React frontend with scalable architecture, reusable components, authentication UI, routing, API service layer, and form validation, ready for backend integration.
+A scalable React frontend with production-style architecture that communicates with the Express backend using Axios, supports complete authentication (registration & login), stores JWT securely in the browser, and is ready for protected routes, global authentication context, dashboard modules, and the remaining SaaS features.

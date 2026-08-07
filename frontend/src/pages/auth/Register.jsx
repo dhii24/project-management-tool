@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+
+import authService from "../../services/authService";
 
 function Register(){
 
@@ -12,6 +15,12 @@ function Register(){
         password: "",
         confirmPassword: ""
     });
+
+    const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(false);
+
+    const [serverError, setServerError] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -25,7 +34,7 @@ function Register(){
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const validationErrors = {};
@@ -57,8 +66,33 @@ function Register(){
 
         setErrors({});
 
-        console.log("Validation password");
-        console.log(formData);
+        try{
+            setLoading(true);
+
+            setServerError("");
+
+            const userData = {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            };
+
+            const response = await authService.register(userData);
+
+            alert(response.message);
+
+            navigate("/");
+
+        } catch (error) {
+
+            setServerError(
+                error.response?.data?.message ||
+                "Registration failed"
+            );
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -72,12 +106,17 @@ function Register(){
             <Input label="Password" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Enter your password" error={errors.password} />
             <Input label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm your password" error={errors.confirmPassword} />
 
-            <Button type="submit">Register</Button>
+            {serverError && (
+                <p className="input-error"> {serverError} </p>
+            )}
 
             <p style={{ marginTop: "16px" }}>
                 Already have an account?{" "}
                 <Link to="/">Login</Link>
             </p>
+
+            <Button type="submit" disabled={loading}> {loading ? "Registering..." : "Register"} </Button>
+            
         </form>
     );
 }
