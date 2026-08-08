@@ -18,23 +18,26 @@
 
 ### ✅ Completed
 
-- Authentication Layout (Separate from Main Layout)
-- Reusable Input Component
-- Controlled Login Form
-- Controlled Register Form
+- Authentication Layout
+- Reusable Input & Button Components
+- Controlled Login & Register Forms
 - Client-side Form Validation
 - Password Confirmation Validation
 - React State Management (`useState`)
 - SPA Navigation using React Router
-- Register API Integration
-- Login API Integration
+- Register & Login API Integration
 - JWT Authentication
 - Token & User Storage using `localStorage`
-- Loading States
-- Backend Error Handling
+- Loading States & Backend Error Handling
 - Automatic Redirect after Login/Register
+- Global Authentication using React Context
+- Custom `useAuth` Hook
+- Protected Routes
+- Authentication-based Route Guards
+- Navbar with Logged-in User Information
+- Logout Functionality
 
-**Concepts:** Controlled Components • React Hooks • Form Validation • Axios • Authentication Flow • JWT • Async/Await • API Integration • Local Storage
+**Concepts:** Controlled Components • React Hooks • Context API • Custom Hooks • Form Validation • Axios • JWT • Protected Routes • Authentication Flow • Async/Await • Local Storage
 
 ---
 
@@ -44,8 +47,11 @@
 src/
 ├── assets/
 ├── components/
+│   ├── auth/
+│   │   └── ProtectedRoute.jsx
 │   └── common/
 ├── context/
+│   └── AuthContext.jsx
 ├── hooks/
 ├── layouts/
 ├── pages/
@@ -67,7 +73,6 @@ src/
 ├── App.jsx
 ├── main.jsx
 └── routes.jsx
-```
 
 ---
 

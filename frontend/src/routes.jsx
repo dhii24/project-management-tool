@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import AuthLayout from "./layouts/AuthLayout";
 
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register"
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -20,11 +22,14 @@ function AppRoutes(){
                     <Route path="/register" element={<Register/>} />
                 </Route>
 
-                {/* Application Routes */}
-                <Route element={<MainLayout />}>
-                    <Route path="/dashboard" element={<Dashboard/>} />
+                {/* Protected Application Routes */}
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<MainLayout />}>
+                        <Route path="/dashboard" element={<Dashboard/>} />
+                    </Route>
                 </Route>
 
+                 {/* 404 */}
                 <Route path="*" element={<NotFound/>} />
 
             </Routes>

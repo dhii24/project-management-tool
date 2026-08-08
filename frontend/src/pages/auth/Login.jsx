@@ -7,12 +7,16 @@ import Button from "../../components/common/Button";
 
 import authService from "../../services/authService";
 
+import { useAuth } from "../../context/AuthContext";
+
 function Login(){
 
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     });
+
+    const { login } = useAuth();
 
     const navigate = useNavigate();
 
@@ -64,9 +68,7 @@ function Login(){
             console.log("Reached here");
             console.log(response);
 
-            localStorage.setItem("accessToken", response.accessToken);
-
-            localStorage.setItem("user", JSON.stringify(response.user));
+            login(response.user, response.accessToken);
 
             alert(response.message);
 
