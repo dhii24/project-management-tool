@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
 
+import { useNavigate } from "react-router-dom";
+
 import workspaceService from "../../services/workspaceService";
 
 import { useAuth } from "../../context/AuthContext";
 
 function Dashboard(){
+
+    const navigate = useNavigate();
 
     const { user } = useAuth();
 
@@ -55,6 +59,7 @@ function Dashboard(){
             <section className="workspace-section">
                 <div className="section-header">
                     <h2>Your Workspaces</h2>
+                    <button type="button" onClick={() => navigate("/workspaces/create")}>+ Create Workspace</button>
                 </div>
 
                 {loading && (

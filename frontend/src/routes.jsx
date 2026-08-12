@@ -9,6 +9,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register"
 import Dashboard from "./pages/dashboard/Dashboard";
 import NotFound from "./pages/common/NotFound";
+import CreateWorkspace from "./pages/workspaces/CreateWorkspace";
 
 function AppRoutes(){
 
@@ -25,7 +26,8 @@ function AppRoutes(){
                 {/* Protected Application Routes */}
                 <Route element={<ProtectedRoute />}>
                     <Route element={<MainLayout />}>
-                        <Route path="/dashboard" element={<Dashboard/>} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/workspaces/create" element={<CreateWorkspace />} />
                     </Route>
                 </Route>
 

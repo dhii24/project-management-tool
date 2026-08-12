@@ -5,4 +5,9 @@ const getMyWorkspaces = async () => {
     return response.data.workspaces;
 };
 
-export default { getMyWorkspaces };
+const createWorkspace = async (workspaceData) => {
+    const response = await api.post("/workspaces", workspaceData);
+    return response.data.workspaces;
+};
+
+export default { getMyWorkspaces, createWorkspace };
