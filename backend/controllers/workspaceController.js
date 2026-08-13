@@ -112,6 +112,42 @@ const getMyWorkspaces = async (req, res) => {
     }
 };
 
+const getWorkspaceById = async (req, res) => {
+    try{
+        const { workspaceId } = req.params;
+
+        const workspace = await Workspace
+        .findById(workspaceId)
+        .select("name description owner members createdAt updatedAt")
+        .populate("owner", "name email role")
+        .populate("members", "name email role");
+
+        if(!workspace){
+            return res.status(404).json({
+                message: "Workspace not found"
+            });
+        }
+
+        const isMember = workspace.members.some(
+            member => member._id.toString() === req.user.userId
+        );
+
+        if(!isMember){
+            return res.status(403).json({
+                message: "You are not a member of this workspace"
+            });
+        }
+
+        res.status(200).json(workspace);
+    }
+
+    catch(error){
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
 const updateWorkspace = async (req, res) => {
     try {
         const workspace = req.workspace;
@@ -162,4 +198,4 @@ const deleteWorkspace = async (req, res) => {
 };
 
 
-module.exports = { createWorkspace, getAllWorkspaces, addMember, getMyWorkspaces, updateWorkspace, deleteWorkspace };
+module.exports = { createWorkspace, getAllWorkspaces, addMember, getMyWorkspaces, updateWorkspace, deleteWorkspace, getWorkspaceById };

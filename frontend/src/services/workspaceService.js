@@ -10,4 +10,9 @@ const createWorkspace = async (workspaceData) => {
     return response.data.workspaces;
 };
 
-export default { getMyWorkspaces, createWorkspace };
+const getWorkspaceById = async (workspaceId) => {
+    const response = await api.get(`/workspaces/${workspaceId}`);
+    return response.data;
+};
+
+export default { getMyWorkspaces, createWorkspace, getWorkspaceById };

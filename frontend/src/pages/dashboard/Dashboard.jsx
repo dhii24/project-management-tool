@@ -77,7 +77,7 @@ function Dashboard(){
                 {!loading && !error && workspaces.length > 0 && (
                     <div className="workspace-grid">
                         {workspaces.map((workspace) => (
-                            <div className="workspace-card" key={workspace._id}>
+                            <div className="workspace-card" key={workspace._id} onClick={() => navigate(`/workspaces/${workspace._id}`)}>
                                 <h3>{workspace.name}</h3>
                                 <p>Owner:{" "} {workspace.owner?.name}</p>
                                 <p>Members:{" "} {workspace.members?.length || 0}</p>

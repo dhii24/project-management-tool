@@ -34,8 +34,8 @@ function CreateWorkspace(){
             setError("");
 
             const workspace = await workspaceService.createWorkspace(formData);
-            // navigate(`/workspaces/${workspace._id}`);
-            navigate("/dashboard");
+            navigate(`/workspaces/${workspace._id}`);
+            // navigate("/dashboard");
         }
 
         catch (error) {

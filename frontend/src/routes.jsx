@@ -10,6 +10,7 @@ import Register from "./pages/auth/Register"
 import Dashboard from "./pages/dashboard/Dashboard";
 import NotFound from "./pages/common/NotFound";
 import CreateWorkspace from "./pages/workspaces/CreateWorkspace";
+import WorkspaceDetails from "./pages/workspaces/WorkspaceDetails";
 
 function AppRoutes(){
 
@@ -28,6 +29,7 @@ function AppRoutes(){
                     <Route element={<MainLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/workspaces/create" element={<CreateWorkspace />} />
+                        <Route path="/workspaces/:workspaceId" element={<WorkspaceDetails />} />
                     </Route>
                 </Route>
 
