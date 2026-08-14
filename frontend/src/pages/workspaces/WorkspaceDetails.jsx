@@ -16,6 +16,14 @@ function WorkspaceDetails(){
 
     const [error, setError] = useState("");
 
+    const [memberId, setMemberId] = useState("");
+
+    const [addingMember, setAddingMember] = useState(false);
+
+    const [memberError, setMemberError] = useState("");
+
+    const [memberSuccess, setMemberSuccess] = useState("");
+
     useEffect(() => {
         const fetchWorkspace = async () => {
             try{
@@ -72,6 +80,38 @@ function WorkspaceDetails(){
     }
 
 
+    const handleAddMember = async (event) => {
+        event.preventDefault();
+
+        try {
+            setAddingMember(true);
+            setMemberError("");
+            setMemberSuccess("");
+
+            const updatedWorkspace = await workspaceService.addMember(workspaceId, {userId: memberId});
+
+            setWorkspace(updatedWorkspace);
+
+            setMemberId("");
+
+            setMemberSuccess("Member added successfully");
+        }
+
+        catch(error) {
+            console.error(error);
+
+            setMemberError(
+                error.response?.data?.message || "Failed to add member"
+            );
+        }
+
+        finally {
+            setAddingMember(false);
+        }
+
+    };
+
+
     return (
 
         <div className="workspace-details">
@@ -116,6 +156,53 @@ function WorkspaceDetails(){
             <div className="workspace-content">
                 <h2>Workspace</h2>
                 <p>Your boards and project activity will appear here.</p>
+            </div>
+
+
+            <div className="members-section">
+                <div className="members-header">
+                    <div>
+                        <h2>Members</h2>
+                        <p>Manage members of this workspace.</p>
+                    </div>
+                </div>
+
+                {memberError && (
+                    <div className="error-message">{memberError}</div>
+                )}
+
+                {memberSuccess && (
+                    <div className="success-message">{memberSuccess}</div>
+                )}
+
+                <form className="add-member-form" onSubmit={handleAddMember}>
+                    <input type="text" value={memberId} onChange={(event) => setMemberId(event.target.value)} placeholder="Enter user ID" required />
+                    <button type="submit" disabled={addingMember}>
+                        {addingMember ? "Adding..." : "Add Member"}
+                    </button>
+                </form>
+
+                <div className="members-list">
+                    {workspace.members?.length === 0 ? (
+                        <p className="empty-message">
+                            No members found.
+                        </p>
+                    ) : (
+                        workspace.members?.map((member) => (
+                            <div className="member-card" key={member._id}>
+                                <div className="member-info">
+                                    <h3>{member.name}</h3>
+                                    <p>{member.email}</p>
+                                </div>
+
+                                <span className="member-role">
+                                    {member.role}
+                                </span>
+                            </div>
+                        ))
+                    )
+                    }
+                </div>
             </div>
 
         </div>
