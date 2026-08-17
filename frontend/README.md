@@ -1,60 +1,41 @@
 # Project Management Tool — Frontend
 
-A Trello/Jira-inspired SaaS project management application built with React, designed for workspace-based team collaboration and project management.
+A Trello/Jira-inspired SaaS project management application built with React for workspace-based team collaboration.
 
 ## 🚀 Tech Stack
 
-- React
-- Vite
-- JavaScript
-- React Router DOM
-- Axios
-- CSS
+* React
+* JavaScript
+* Vite
+* React Router
+* Axios
+* CSS
 
 ## ✨ Key Features
 
-### Authentication
+* JWT authentication with protected routes
+* Global authentication state using Context API
+* Axios interceptor for automatic JWT authorization
+* Workspace creation and management
+* Workspace members with role-based access
+* Nested workspace navigation
+* Client-side validation
+* API loading and error handling
+* Responsive UI
 
-- User Registration & Login
-- JWT-based authentication
-- Global authentication state using Context API
-- Protected routes
-- Automatic JWT authorization using Axios interceptors
-- Logout and session management
-- Client-side validation
-- API error and loading state handling
-
-### Workspace Management
-
-- View authenticated user's workspaces
-- Create workspaces
-- Workspace details
-- Workspace members
-- Add members to workspaces
-- Dynamic workspace routes
-- Workspace-level authorization
-- Responsive workspace UI
-
-## 🏗️ Frontend Architecture
+## 🏗️ Architecture
 
 ```text
 React Pages / Components
-          │
-          ▼
-   Context / State
-          │
-          ▼
+          ↓
+    Context / Hooks
+          ↓
      Service Layer
-          │
-          ▼
-    Axios Instance
-          │
-          ▼
+          ↓
+     Axios Instance
+          ↓
     Express REST API
 ```
-
-----
-
 
 ## 📂 Project Structure
 
@@ -76,17 +57,17 @@ src/
 └── routes.jsx
 ```
 
----
-
 ## 🔌 API Integration
 
 ### Authentication
+
 ```text
 POST /api/auth/register
 POST /api/auth/login
 ```
 
 ### Workspaces
+
 ```text
 GET    /api/workspaces/my
 POST   /api/workspaces
@@ -94,56 +75,57 @@ GET    /api/workspaces/:workspaceId
 ```
 
 ### Members
+
 ```text
 POST   /api/workspaces/:workspaceId/members
 ```
 
----
+## 🔐 Authentication
 
-# 🔄 Current Application Flow
+* User registration and login
+* JWT-based authentication
+* Protected routes
+* Automatic token attachment through Axios interceptors
+* Logout and session management
+
+## 🏢 Workspace Management
+
+* Create and view workspaces
+* Workspace overview
+* Workspace members
+* Add members
+* Workspace-level authorization
+* Nested workspace routes
+
+## 🔗 Backend Integration
 
 ```text
-                         React Frontend
-                              │
-                              ▼
-                         Login/Register
-                              │
-                              ▼
-                       Authentication
-                              │
-                              ▼
-                        JWT + User
-                              │
-                              ▼
-                         Dashboard
-                              │
-                 ┌────────────┴────────────┐
-                 │                         │
-                 ▼                         ▼
-        Fetch Workspaces            Create Workspace
-                 │                         │
-                 │                    POST /workspaces
-                 │                         │
-                 └────────────┬────────────┘
-                              ▼
-                       Workspace List
-                              │
-                              ▼
-                    Click Workspace Card
-                              │
-                              ▼
-                    /workspaces/:id
-                              │
-                              ▼
-                  GET /workspaces/:id
-                              │
-                              ▼
-                    Workspace Details
-                              │
-                 ┌────────────┼────────────┐
-                 │            │            │
-                 ▼            ▼            ▼
-               Owner       Members       Boards
-                                           │
-                                           ▼
-                                      Coming Soon
+React
+  ↓
+Axios
+  ↓
+Express REST API
+  ↓
+MongoDB
+```
+
+The frontend communicates with a Node.js + Express REST API using Axios.
+
+Backend implementation and API documentation are maintained separately in the backend repository.
+---
+
+## 📌 Project Status
+
+🚧 Actively under development.
+
+### Upcoming
+
+* Boards
+* Lists
+* Cards
+* Labels
+* Comments
+* File attachments
+* Notifications
+* Search
+* Analytics

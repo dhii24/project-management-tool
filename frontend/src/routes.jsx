@@ -10,7 +10,9 @@ import Register from "./pages/auth/Register"
 import Dashboard from "./pages/dashboard/Dashboard";
 import NotFound from "./pages/common/NotFound";
 import CreateWorkspace from "./pages/workspaces/CreateWorkspace";
-import WorkspaceDetails from "./pages/workspaces/WorkspaceDetails";
+import WorkspaceLayout from "./layouts/WrokspaceLayout";
+import WorkspaceOverview from "./pages/workspaces/WorkspaceOverview";
+import WorkspaceMembers from "./pages/workspaces/WorkspaceMembers";
 
 function AppRoutes(){
 
@@ -29,7 +31,18 @@ function AppRoutes(){
                     <Route element={<MainLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/workspaces/create" element={<CreateWorkspace />} />
-                        <Route path="/workspaces/:workspaceId" element={<WorkspaceDetails />} />
+                        <Route path="/workspaces/:workspaceId" element={<WorkspaceLayout />}>
+                            <Route index element={<WorkspaceOverview />} />
+                            <Route path="members" element={<WorkspaceMembers />} />
+                            <Route path="boards" element={
+                                <div>Boards coming soon...</div>
+                            } />
+                            <Route path="settings" element={
+                                <div>
+                                    Settings coming soon...
+                                </div>
+                            } />
+                        </Route>
                     </Route>
                 </Route>
 
