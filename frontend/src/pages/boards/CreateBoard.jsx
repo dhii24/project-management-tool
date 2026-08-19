@@ -23,7 +23,7 @@ function CreateBoard(){
             setLoading(true);
             setError("");
   
-            const board =  await boardService.createBoard(workspaceId, {name, description});
+            const board = await boardService.createBoard(workspaceId, {name, description});
 
             navigate(`/workspaces/${workspaceId}/boards/${board._id}`);
         }

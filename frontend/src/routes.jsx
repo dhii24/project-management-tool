@@ -37,7 +37,7 @@ function AppRoutes(){
                         <Route path="/workspaces/:workspaceId" element={<WorkspaceLayout />}>
                             <Route index element={<WorkspaceOverview />} />
                             <Route path="boards" element={<Boards />} />
-                            <Route path="boards/" element={<CreateBoard />} />
+                            <Route path="boards/create" element={<CreateBoard />} />
                             <Route path="boards/:boardId" element={<BoardDetails />} />
                             <Route path="members" element={<WorkspaceMembers />} />
                             <Route path="settings" element={

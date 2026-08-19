@@ -4,12 +4,7 @@ A Trello/Jira-inspired SaaS project management application built with React for 
 
 ## 🚀 Tech Stack
 
-* React
-* JavaScript
-* Vite
-* React Router
-* Axios
-* CSS
+React • JavaScript • Vite • React Router • Axios • CSS
 
 ## ✨ Key Features
 
@@ -25,8 +20,8 @@ A Trello/Jira-inspired SaaS project management application built with React for 
 
 ## 🏗️ Architecture
 
-```text
-React Pages / Components
+```text 
+        React 
           ↓
     Context / Hooks
           ↓
@@ -35,6 +30,8 @@ React Pages / Components
      Axios Instance
           ↓
     Express REST API
+          ↓
+      MongoDB
 ```
 
 ## 📂 Project Structure
@@ -48,6 +45,7 @@ src/
 ├── pages/
 │   ├── auth/
 │   ├── dashboard/
+|   |── boards/
 │   └── workspaces/
 ├── services/
 ├── styles/
@@ -80,6 +78,13 @@ GET    /api/workspaces/:workspaceId
 POST   /api/workspaces/:workspaceId/members
 ```
 
+### Boards
+
+```text
+GET    /api/boards/:workspaceId
+POST   /api/boards/:workspaceId
+```
+
 ## 🔐 Authentication
 
 * User registration and login
@@ -96,6 +101,12 @@ POST   /api/workspaces/:workspaceId/members
 * Add members
 * Workspace-level authorization
 * Nested workspace routes
+
+## 🏢 Board Management
+
+* Create boards
+* View board
+* Board Details
 
 ## 🔗 Backend Integration
 
@@ -120,7 +131,6 @@ Backend implementation and API documentation are maintained separately in the ba
 
 ### Upcoming
 
-* Boards
 * Lists
 * Cards
 * Labels
@@ -129,5 +139,3 @@ Backend implementation and API documentation are maintained separately in the ba
 * Notifications
 * Search
 * Analytics
-
-Hii
