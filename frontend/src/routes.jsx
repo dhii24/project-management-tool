@@ -13,6 +13,9 @@ import CreateWorkspace from "./pages/workspaces/CreateWorkspace";
 import WorkspaceLayout from "./layouts/WrokspaceLayout";
 import WorkspaceOverview from "./pages/workspaces/WorkspaceOverview";
 import WorkspaceMembers from "./pages/workspaces/WorkspaceMembers";
+import Boards from "./pages/boards/Boards";
+import CreateBoard from "./pages/boards/CreateBoard";
+import BoardDetails from "./pages/boards/BoardDetails";
 
 function AppRoutes(){
 
@@ -33,10 +36,10 @@ function AppRoutes(){
                         <Route path="/workspaces/create" element={<CreateWorkspace />} />
                         <Route path="/workspaces/:workspaceId" element={<WorkspaceLayout />}>
                             <Route index element={<WorkspaceOverview />} />
+                            <Route path="boards" element={<Boards />} />
+                            <Route path="boards/" element={<CreateBoard />} />
+                            <Route path="boards/:boardId" element={<BoardDetails />} />
                             <Route path="members" element={<WorkspaceMembers />} />
-                            <Route path="boards" element={
-                                <div>Boards coming soon...</div>
-                            } />
                             <Route path="settings" element={
                                 <div>
                                     Settings coming soon...

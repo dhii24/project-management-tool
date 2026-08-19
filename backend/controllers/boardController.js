@@ -30,6 +30,8 @@ const createBoard = async (req, res, next) => {
 const getBoards = async (req, res) => {
 
     try{
+        const { workspaceId } = req.params;
+        
         const boards = await Board.find({
             workspace: workspaceId
         }).populate("workspace", "name description");
