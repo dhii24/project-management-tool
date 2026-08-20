@@ -10,4 +10,9 @@ const createBoard = async (workspaceId, boardData) => {
     return response.data.board;
 };
 
-export default { getBoardsByWorkspace, createBoard };
+const boardById = async (workspaceId, boardId) => {
+    const response = await api.get(`/boards/${workspaceId}/${boardId}`);
+    return response.data.board;
+};
+
+export default { getBoardsByWorkspace, createBoard, boardById };

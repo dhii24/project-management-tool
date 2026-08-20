@@ -49,6 +49,34 @@ const getBoards = async (req, res) => {
     }
 };
 
+const getBoardByID = async (req, res) => {
+
+    try{
+        const { workspaceId, boardId } = req.params;
+
+        const board = await Board.findOne({
+            _id: boardId,
+            workspace: workspaceId
+        }).populate("workspace", "name description");
+
+        if(!board){
+            return res.status(404).json({
+                message: "Board not found"
+            });
+        }
+
+        res.status(200).json({
+            board
+        });
+    }
+    
+    catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
 
 const updateBoard = async (req, res, next) => {
 
@@ -120,4 +148,4 @@ const deleteBoard = async (req, res) => {
 
 };
 
-module.exports = { createBoard, getBoards, updateBoard, deleteBoard };
+module.exports = { createBoard, getBoards, getBoardByID, updateBoard, deleteBoard };
