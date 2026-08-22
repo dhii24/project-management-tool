@@ -717,6 +717,40 @@ add-card-button {
     background-color: #f3f4f6;
 }
 
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.45
+    );
+    z-index: 1000;
+}
+
+.modal {
+    width: 420px;
+    max-width: calc(100vw - 40px);
+    padding: 24px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+
 .success-message {
     margin-bottom: 16px;
     padding: 10px 12px;

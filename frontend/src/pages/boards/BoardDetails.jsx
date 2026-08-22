@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import boardService from "../../services/boardService";
+import listService from "../../services/listService";
+import CreateList from "../../components/boards/CreateList";
 import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
@@ -13,9 +15,12 @@ function BoardDetails(){
 
     const [lists, setLists] = useState([]);
 
+    const [showCreateList, setShowCreateList] = useState(false);
+
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+
 
     useEffect(() => {
         const fetchBoard = async () => {
@@ -25,24 +30,6 @@ function BoardDetails(){
 
                 const data = await boardService.boardById(workspaceId, boardId);
                 setBoard(data);
-
-                setLists([
-                    {
-                        _id: "list-1",
-                        name: "To Do",
-                        cards: []
-                    },
-                    {
-                        _id: "list-2",
-                        name: "In Progress",
-                        cards: []
-                    },
-                    {
-                        _id: "list-3",
-                        name: "Done",
-                        cards: []
-                    }
-                ]);
             }
 
             catch(error){
@@ -61,13 +48,56 @@ function BoardDetails(){
         fetchBoard();
     }, [workspaceId, boardId]);
 
+
+    useEffect(() => {
+        const fetchLists = async () => {
+            try{
+                const data = await listService.getListsByBoard(boardId);
+                setLists(data);
+            }
+            catch(error){
+                console.error("Failed to fetch lists:", error);
+                setError(
+                    error.response?.data?.message || "Failed to load lists."
+                );
+            }
+        };
+
+        fetchLists();
+    }, [boardId]);
+
+
     const handleAddList = () => {
-        console.log("Add List");
+        setShowCreateList(true);
     };
+
+    const handleCreateList = async (listData) => {
+        try{
+            const newList = await listService.createList(boardId, listData);
+
+            setLists((previousLists) => [
+                ...previousLists,
+                newList
+            ]);
+
+            setShowCreateList(false);
+        } 
+        
+        catch(error){
+            console.error("Failed to create list:", error);
+
+            setError(
+                error.response?.data?.message ||
+                "Failed to create list."
+            );
+        }
+    };
+
 
     const handleAddCard = (listId) => {
         console.log("Add card to list:", listId);
     };
+
 
     if(loading){
         return (
@@ -76,6 +106,7 @@ function BoardDetails(){
             </div>
         );
     }
+
 
     if(error){
         return (
@@ -87,6 +118,7 @@ function BoardDetails(){
         );
     }
 
+
     if(!board){
         return (
             <div className="page-message">
@@ -94,6 +126,7 @@ function BoardDetails(){
             </div>
         );
     }
+
 
     return (
         <div className="workspace-page">
@@ -133,6 +166,11 @@ function BoardDetails(){
                     <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
                 </div>
             </div>
+
+
+            {showCreateList && (
+                <CreateList onClose={() => setShowCreateList(false) } onCreate={handleCreateList}/>
+            )}
 
         </div>
     );
