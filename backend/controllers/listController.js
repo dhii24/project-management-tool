@@ -4,18 +4,18 @@ const List = require("../models/List");
 const createList = async (req, res) => {
 
     try{
-        const { boardId } = req.params;
+        // const { boardId } = req.params;
 
-        const { title } = req.body;
+        const { name } = req.body;
 
-        const board = req.board;
+        // const board = req.board;
 
         const totalLists = await List.countDocuments({
             board: req.board._id
         });
 
         const list = await List.create({
-            title,
+            name,
             board: req.board._id,
             position: totalLists
         });
@@ -74,10 +74,10 @@ const updateList = async (req, res) => {
             });
         }
 
-        const { title } = req.body;
+        const { name } = req.body;
 
-        if(title !== undefined){
-            list.title = title;
+        if(name !== undefined){
+            list.name = name;
         }
 
         await list.save();

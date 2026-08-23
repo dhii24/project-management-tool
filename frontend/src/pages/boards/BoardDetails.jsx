@@ -3,7 +3,9 @@ import { useParams } from "react-router-dom";
 
 import boardService from "../../services/boardService";
 import listService from "../../services/listService";
+import cardService from "../../services/cardService";
 import CreateList from "../../components/boards/CreateList";
+import CreateCard from "../../components/boards/CreateCard";
 import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
@@ -16,6 +18,10 @@ function BoardDetails(){
     const [lists, setLists] = useState([]);
 
     const [showCreateList, setShowCreateList] = useState(false);
+
+    const [showCreateCard, setShowCreateCard] = useState(false);
+
+    const [selectedListId, setSelectedListId] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -52,8 +58,20 @@ function BoardDetails(){
     useEffect(() => {
         const fetchLists = async () => {
             try{
-                const data = await listService.getListsByBoard(boardId);
-                setLists(data);
+                const lists = await listService.getListsByBoard(boardId);
+
+                const listWithCards = await Promise.all(
+                    lists.map(async (list) => {
+                        const cards = await cardService.getCardsByList(list._id);
+
+                        return {
+                            ...list,
+                            cards
+                        };
+                    })
+                );
+
+                setLists(listWithCards);
             }
             catch(error){
                 console.error("Failed to fetch lists:", error);
@@ -95,7 +113,40 @@ function BoardDetails(){
 
 
     const handleAddCard = (listId) => {
-        console.log("Add card to list:", listId);
+        setSelectedListId(listId);
+        setShowCreateCard(true);
+    };
+
+    const handleCreateCard = async (cardData) => {
+        try{
+            const newCard = await cardService.createCard(selectedListId, cardData);
+
+            setLists((previousLists) => {
+                return previousLists.map((list) => {
+                    if(list._id !== selectedListId){
+                        return list;
+                    }
+
+                    return {
+                        ...list,
+                        cards: [
+                            ...(list.cards || []), newCard
+                        ]
+                    };
+                });
+            });
+
+            setShowCreateCard(false);
+            setSelectedListId(null);
+        }
+        
+        catch(error){
+            console.error("Failed to create card:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to create card."
+            );
+        }
     };
 
 
@@ -170,6 +221,14 @@ function BoardDetails(){
 
             {showCreateList && (
                 <CreateList onClose={() => setShowCreateList(false) } onCreate={handleCreateList}/>
+            )}
+
+            {showCreateCard && (
+                <CreateCard onClose={() => {
+                    setShowCreateCard(false);
+                    setSelectedListId(null);
+                }}
+                onCreate={handleCreateCard}/>
             )}
 
         </div>

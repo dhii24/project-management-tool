@@ -47,7 +47,13 @@ const cardSchema = new mongoose.Schema(
                 fileName: String,
                 path: String
             }
-        ]
+        ],
+
+        priority:{
+            type: String,
+            enum: ["low", "medium", "high"],
+            default: "medium"
+        }
     },
     {
         timestamps:true

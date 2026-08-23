@@ -555,9 +555,21 @@ button:disabled{
 }
 
 .form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
     resize: vertical;
 }
-
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #ffffff;
+    outline: none;
+    font-size: 14px;
+}
 
 .form-group input:focus,
 .form-group textarea:focus {
@@ -750,6 +762,66 @@ add-card-button {
     margin-bottom: 20px;
 }
 
+.modal-header h2 {
+    margin: 0;
+}
+
+.modal-close {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 20px;
+}
+
+
+.form-group label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-group input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    border-color: #6b7280;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.secondary-button {
+    padding: 9px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #111827;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.primary-button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #111827;
+    color: #ffffff;
+    cursor: pointer;
+}
 
 .success-message {
     margin-bottom: 16px;

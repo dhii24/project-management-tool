@@ -9,7 +9,7 @@ const createCard = async (req, res) => {
 
         const { listId } = req.params;
 
-        const { title, description, dueDate, labels, assignedMembers } = req.body;
+        const { title, description, priority, dueDate, labels, assignedMembers } = req.body;
 
         const totalCards = await Card.countDocuments({
             list: listId
@@ -18,6 +18,7 @@ const createCard = async (req, res) => {
         const card = await Card.create({
             title,
             description,
+            priority,
             dueDate,
             labels,
             assignedMembers,
@@ -48,7 +49,7 @@ const getCards = async(req,res)=>{
 
         const page = parseInt(req.query.page) || 1;
 
-        const limit = parseInt(req.query.limit) || 1;
+        const limit = parseInt(req.query.limit) || 50;
 
         const skip = (page - 1) * limit;
 
@@ -269,7 +270,7 @@ const uploadAttachment = async (req, res) => {
 
         card.attachments.push({
             fileName: req.file.filename,
-            filePath: req.file.path
+            path: req.file.path
         });
 
         await card.save();

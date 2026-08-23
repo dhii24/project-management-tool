@@ -6,7 +6,7 @@ const getListsByBoard = async (boardId) => {
 };
 
 const createList = async (boardId, listData) => {
-    const response = await api.post(`/lists/${boardId}`);
+    const response = await api.post(`/lists/${boardId}`, listData);
     return response.data.list;
 };
 
