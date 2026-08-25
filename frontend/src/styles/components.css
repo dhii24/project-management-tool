@@ -675,6 +675,21 @@ button:disabled{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+.board-card {
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.board-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.12);
+}
+
 .board-card-content h4 {
     margin: 0 0 8px;
     color: #111827;
@@ -830,6 +845,57 @@ add-card-button {
     border: 1px solid #a7f3d0;
     border-radius: 6px;
     color: #047857;
+}
+
+.card-details-modal {
+    width: 600px;
+    max-width: calc(100vw - 40px);
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.2);
+}
+
+.card-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.card-detail-section h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #374151;
+}
+
+.card-detail-section p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.card-detail-row {
+    display: flex;
+    align-items: center;
+}
+
+.detail-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
 }
 
 .empty-message {

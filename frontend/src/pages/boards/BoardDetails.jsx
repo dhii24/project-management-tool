@@ -6,6 +6,7 @@ import listService from "../../services/listService";
 import cardService from "../../services/cardService";
 import CreateList from "../../components/boards/CreateList";
 import CreateCard from "../../components/boards/CreateCard";
+import CardDetails from "../../components/boards/CardDetails";
 import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
@@ -22,6 +23,8 @@ function BoardDetails(){
     const [showCreateCard, setShowCreateCard] = useState(false);
 
     const [selectedListId, setSelectedListId] = useState(null);
+
+    const [selectedCard, setSelectedCard] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -149,6 +152,10 @@ function BoardDetails(){
         }
     };
 
+    const handleCardClick = (card) => {
+        setSelectedCard(card);
+    };
+
 
     if(loading){
         return (
@@ -211,7 +218,7 @@ function BoardDetails(){
 
                 <div className="board-lists">
                     {lists.map((list) => (
-                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} />
+                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick}/>
                     ))}
 
                     <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
@@ -231,6 +238,9 @@ function BoardDetails(){
                 onCreate={handleCreateCard}/>
             )}
 
+            {selectedCard && (
+                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)}/>
+            )}
         </div>
     );
 }

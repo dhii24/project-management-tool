@@ -1,9 +1,9 @@
-function BoardCard({ card }) {
+function BoardCard({ card, onClick }) {
 
     return (
         <div className="board-card-item">
 
-            <div className="board-card-content">
+            <div className="board-card-content" onClick={() => onClick(card)}>
                 <h4>{card.title}</h4>
 
                 {card.description && (
@@ -13,7 +13,7 @@ function BoardCard({ card }) {
 
 
             {card.priority && (
-                <span className="card-priority">{card.priority}</span>
+                <span className={`priority priority-${card.priority}`}>{card.priority}</span>
             )}
 
         </div>

@@ -23,13 +23,13 @@ function CreateCard({onClose, onCreate}){
 
     return (
 
-        <div className="model-overlay">
+        <div className="modal-overlay">
 
-            <div className="model">
+            <div className="modal">
 
-                <div className="model-header">
+                <div className="modal-header">
                     <h2>Create Card</h2>
-                    <button type="button" className="model-close" onClick={onClose}>×</button>
+                    <button type="button" className="modal-close" onClick={onClose}>×</button>
                 </div>
 
                 <form onSubmit = {handleSubmit}>

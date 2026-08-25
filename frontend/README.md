@@ -13,7 +13,11 @@ React • JavaScript • Vite • React Router • Axios • CSS
 * Axios interceptor for automatic JWT authorization
 * Workspace creation and management
 * Workspace members with role-based access
-* Nested workspace navigation
+* Board creation and management
+* Kanban-style boards with lists and cards
+* Create and view lists
+* Create and view cards
+* Interactive card details modal
 * Client-side validation
 * API loading and error handling
 * Responsive UI
@@ -39,6 +43,8 @@ React • JavaScript • Vite • React Router • Axios • CSS
 ```text
 src/
 ├── components/
+│   ├── auth/
+│   ├── dashboard/
 ├── context/
 ├── hooks/
 ├── layouts/
@@ -54,6 +60,33 @@ src/
 ├── main.jsx
 └── routes.jsx
 ```
+
+## Core Modules
+
+### Authentication
+* User registration and login
+* JWT authentication
+* Protected routes
+* Automatic JWT attachment using Axios interceptors
+* Logout and session management
+
+### Workspaces
+* Create and view workspaces
+* Workspace members
+* Add members
+* Role-based access
+* Nested workspace navigation
+
+### Boards
+* Create boards
+* View boards
+* Board details
+* Lists within boards
+* Cards within lists
+* Create lists and cards
+* Card details modal
+
+---
 
 ## 🔌 API Integration
 
@@ -85,29 +118,6 @@ GET    /api/boards/:workspaceId
 POST   /api/boards/:workspaceId
 ```
 
-## 🔐 Authentication
-
-* User registration and login
-* JWT-based authentication
-* Protected routes
-* Automatic token attachment through Axios interceptors
-* Logout and session management
-
-## 🏢 Workspace Management
-
-* Create and view workspaces
-* Workspace overview
-* Workspace members
-* Add members
-* Workspace-level authorization
-* Nested workspace routes
-
-## 🏢 Board Management
-
-* Create boards
-* View board
-* Board Details
-
 ## 🔗 Backend Integration
 
 ```text
@@ -122,12 +132,17 @@ MongoDB
 
 The frontend communicates with a Node.js + Express REST API using Axios.
 
-Backend implementation and API documentation are maintained separately in the backend repository.
 ---
 
 ## 📌 Project Status
 
-🚧 Actively under development.
+* Authentication        ✅
+* Workspaces            ✅
+* Members               ✅
+* Boards                ✅
+* Lists                 ✅
+* Cards                 ✅
+* Card Details          ✅
 
 ### Upcoming
 
@@ -139,3 +154,15 @@ Backend implementation and API documentation are maintained separately in the ba
 * Notifications
 * Search
 * Analytics
+* Edit and delete cards
+* Edit and delete lists
+* Member assignment
+* Labels and tags
+* Due dates
+* Comments
+* Drag & drop Kanban
+* Notifications
+* Search
+* Analytics
+* Responsive UI improvements
+* Production deployment

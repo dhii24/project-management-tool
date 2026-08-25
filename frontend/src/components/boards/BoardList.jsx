@@ -1,7 +1,7 @@
 import BoardCard from "./BoardCard";
 
 
-function BoardList({ list, onAddCard }) {
+function BoardList({ list, onAddCard, onCardClick }) {
 
     return (
         <div className="board-list">
@@ -18,7 +18,7 @@ function BoardList({ list, onAddCard }) {
                     <p className="empty-list-message">No cards yet.</p>
                 ) : (
                     list.cards?.map((card) => (
-                        <BoardCard key={card._id} card={card}/>
+                        <BoardCard key={card._id} card={card} onClick={onCardClick}/>
                     ))
                 )}
             </div>
