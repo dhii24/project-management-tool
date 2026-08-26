@@ -884,6 +884,28 @@ add-card-button {
     line-height: 1.5;
 }
 
+.card-details-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.danger-button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #dc2626;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.danger-button:hover {
+    background-color: #b91c1c;
+}
+
 .card-detail-row {
     display: flex;
     align-items: center;

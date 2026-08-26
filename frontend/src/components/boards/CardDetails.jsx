@@ -1,4 +1,4 @@
-function CardDetails({card, onClose}){
+function CardDetails({card, onClose, onEdit, onDelete}){
     if(!card)
         return null;
 
@@ -46,6 +46,12 @@ function CardDetails({card, onClose}){
                         </div>
                     )}
                 </div>
+
+                <div className="card-details-actions">
+                    <button type="button" className="secondary-button" onClick={() => onEdit(card)}>Edit</button>
+                    <button type="button" className="danger-button" onClick={() => onDelete(card)}>Delete</button>
+                </div>
+                
             </div>
         </div>
     );

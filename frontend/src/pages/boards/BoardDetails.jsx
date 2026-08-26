@@ -7,6 +7,7 @@ import cardService from "../../services/cardService";
 import CreateList from "../../components/boards/CreateList";
 import CreateCard from "../../components/boards/CreateCard";
 import CardDetails from "../../components/boards/CardDetails";
+import EditCard from "../../components/boards/EditCard";
 import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
@@ -15,21 +16,22 @@ function BoardDetails(){
     const { workspaceId, boardId } = useParams();
     
     const [board, setBoard] = useState(null);
-
+    
     const [lists, setLists] = useState([]);
+
+    const [loading, setLoading] = useState(true);
+    
+    const [error, setError] = useState("");
 
     const [showCreateList, setShowCreateList] = useState(false);
 
     const [showCreateCard, setShowCreateCard] = useState(false);
-
+    
     const [selectedListId, setSelectedListId] = useState(null);
 
     const [selectedCard, setSelectedCard] = useState(null);
 
-    const [loading, setLoading] = useState(true);
-
-    const [error, setError] = useState("");
-
+    const [showEditCard, setShowEditCard] = useState(false);
 
     useEffect(() => {
         const fetchBoard = async () => {
@@ -156,6 +158,71 @@ function BoardDetails(){
         setSelectedCard(card);
     };
 
+    const handleEditCard = () => {
+        setShowEditCard(true);
+    };
+
+    const handleUpateCard = async (cardData) => {
+        try{
+            const updatedCard = await cardService.updateCard(selectedCard.list, selectedCard._id, cardData);
+
+            setLists((previousLists) => {
+                return previousLists.map((list) => {
+                    return{
+                        ...list,
+                        cards: (list.cards || []).map((card) => {
+                            if(card._id === updatedCard._id){
+                                return updatedCard;
+                            }
+                            return card;
+                        })
+                    };
+                });
+            });
+
+            setSelectedCard(updatedCard);
+            setShowEditCard(false);
+        }
+
+        catch(error){
+            console.error("Failed to update card:", error);
+
+            setError(
+                error.response.data.message || "Failed to update card"
+            );
+        }
+    };
+
+    const handleDeleteCard = async (card) => {
+        const confirmed = window.confirm(`Are you sure you want to delete "${card.title}"?`);
+
+        if(!confirmed)
+            return;
+
+        try{
+            await cardService.deleteCard(card.list, card._id);
+
+            setLists((previousLists) => {
+                return previousLists.map((list) => {
+                    return {
+                        ...list,
+                        cards: (list.cards || []).filter((existingCard) => existingCard._id !== card._id) 
+                    };
+                });
+            });
+
+            setSelectedCard(null);
+        }
+
+        catch(error){
+            console.error("Failed to delete card:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to delete card."
+            );
+        }
+    }
+
 
     if(loading){
         return (
@@ -239,7 +306,11 @@ function BoardDetails(){
             )}
 
             {selectedCard && (
-                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)}/>
+                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)} onEdit={handleEditCard} onDelete={handleDeleteCard}/>
+            )}
+
+            {showEditCard && selectedCard && (
+                <EditCard card={selectedCard} onClose={() => setShowEditCard(false)} onUpdate={handleUpateCard}/>
             )}
         </div>
     );

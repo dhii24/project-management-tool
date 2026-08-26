@@ -104,7 +104,7 @@ const updateCard = async (req,res) => {
             });
         }
 
-        const { title, description, dueDate, labels, assignedMembers } = req.body;
+        const { title, description, dueDate, labels, assignedMembers, priority } = req.body;
 
         if(title !== undefined){
             card.title = title;
@@ -142,6 +142,10 @@ const updateCard = async (req,res) => {
             }
         }
 
+        if(priority !== undefined){
+            card.priority = priority;
+        }
+
         await card.save();
 
         res.status(200).json({
@@ -169,17 +173,20 @@ const deleteCard = async (req, res) => {
         });
 
         if(!card){
-
             return res.status(404).json({
                 message: "Card not found"
             });
         }
 
+        await Card.deleteOne({
+            _id: cardId,
+            list: req.list._id
+        });
+
         res.status(200).json({
             message: "Card deleted successfully"
         });
 
-        await Card.deleteOne();
 
     } catch (error) {
 

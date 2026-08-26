@@ -10,4 +10,14 @@ const createCard = async (listId, cardData) => {
     return response.data.card;
 };
 
-export default { getCardsByList, createCard };
+const updateCard = async (listId, cardId, cardData) => {
+    const response = await api.put(`/cards/${listId}/${cardId}`, cardData);
+    return response.data.card;
+};
+
+const deleteCard = async (listId, cardId) => {
+    const response = await api.delete(`/cards/${listId}/${cardId}`);
+    return response.data;
+};
+
+export default { getCardsByList, createCard, updateCard, deleteCard };
