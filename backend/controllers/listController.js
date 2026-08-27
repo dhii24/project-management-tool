@@ -1,4 +1,3 @@
-const Board = require("../models/Board");
 const List = require("../models/List");
 
 const createList = async (req, res) => {

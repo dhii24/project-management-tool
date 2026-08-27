@@ -8,6 +8,7 @@ import CreateList from "../../components/boards/CreateList";
 import CreateCard from "../../components/boards/CreateCard";
 import CardDetails from "../../components/boards/CardDetails";
 import EditCard from "../../components/boards/EditCard";
+import EditList from "../../components/boards/EditList";
 import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
@@ -32,6 +33,10 @@ function BoardDetails(){
     const [selectedCard, setSelectedCard] = useState(null);
 
     const [showEditCard, setShowEditCard] = useState(false);
+
+    const [selectedList, setSelectedList] = useState(null);
+
+    const [showEditList, setShowEditList] = useState(false);
 
     useEffect(() => {
         const fetchBoard = async () => {
@@ -221,8 +226,66 @@ function BoardDetails(){
                 error.response?.data?.message || "Failed to delete card."
             );
         }
-    }
+    };
 
+    const handleEditList = (list) => {
+        setSelectedList(list);
+        setShowEditList(true);
+    };
+
+    const handleUpdateList = async (listData) => {
+        try{
+            const updatedList = await listService.updateList(boardId, selectedList._id, listData);
+
+            setLists((previousLists) => {
+                return previousLists.map((list) => {
+                    if(list._id === updatedList._id){
+                        return{
+                            ...list,
+                            ...updatedList
+                        };
+                    }
+                    return list;
+                });
+            });
+
+            setSelectedList(null);
+            setShowEditList(false);
+        }
+
+        catch(error){
+            console.error("Failed to update List:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to update list."
+            );
+        }
+    };
+
+    const handleDeleteList = async (list) => {
+        const confirmed = window.confirm(`Are you sure you want to delete "${list.name}"?`);
+
+        if(!confirmed)
+            return;
+
+        try{
+            await listService.deleteList(boardId, list._id);
+
+            setLists((previousLists) => {
+                return previousLists.filter((existingList) => 
+                        existingList._id !== list._id) ;
+            });
+            setSelectedList(null);
+        }
+
+        catch(error){
+            console.error("Failed to delete list:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to delete list."
+            );
+        }
+    };
 
     if(loading){
         return (
@@ -285,7 +348,7 @@ function BoardDetails(){
 
                 <div className="board-lists">
                     {lists.map((list) => (
-                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick}/>
+                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList}/>
                     ))}
 
                     <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
@@ -312,6 +375,16 @@ function BoardDetails(){
             {showEditCard && selectedCard && (
                 <EditCard card={selectedCard} onClose={() => setShowEditCard(false)} onUpdate={handleUpateCard}/>
             )}
+
+            {showEditList && selectedList && (
+                <EditList list={selectedList} onClose={() => {
+                    setShowEditList(false);
+                    setSelectedList(null);
+                }}
+                onUpdate={handleUpdateList}
+                />
+            )}
+
         </div>
     );
 }

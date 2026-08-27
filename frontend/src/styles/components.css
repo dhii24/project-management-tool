@@ -632,10 +632,10 @@ button:disabled{
 
 
 .board-list-header {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 14px;
 }
 
 .board-list-header h3 {
@@ -644,12 +644,77 @@ button:disabled{
     color: #111827;
 }
 
+.list-actions {
+    position: relative;
+}
+
 .list-menu-button {
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+
+    background-color: #2563eb;
+    color: white;
+
     border: none;
-    background: transparent;
-    cursor: pointer;
+    border-radius: 6px;
+
     font-size: 20px;
-    color: #6b7280;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.list-menu-button:hover {
+    background-color: #1d4ed8;
+}
+
+.list-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 140px;
+    padding: 5px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+
+.list-menu button {
+    display: block;
+
+    width: 100%;
+    padding: 9px 10px;
+
+    border: none;
+    border-radius: 5px;
+
+    background-color: transparent;
+    color: #374151;
+
+    text-align: left;
+
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.list-menu button:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+.list-menu .delete-menu-item {
+    color: #dc2626;
+}
+
+.list-menu .delete-menu-item:hover {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
 .board-list-cards {

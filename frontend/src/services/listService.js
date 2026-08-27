@@ -10,4 +10,16 @@ const createList = async (boardId, listData) => {
     return response.data.list;
 };
 
-export default { getListsByBoard, createList };
+const updateList = async (boardId, listId, listData) => {
+    const response = await api.put(`/lists/${boardId}/${listId}`, listData);
+    return response.data.list;
+};
+
+const deleteList = async (boardId, listId) => {
+    const response = await api.delete(`/lists/${boardId}/${listId}`);
+    return response.data;
+};
+
+
+
+export default { getListsByBoard, createList, updateList, deleteList };
