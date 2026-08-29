@@ -1,4 +1,4 @@
-function CardDetails({card, onClose, onEdit, onDelete}){
+function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers}){
     if(!card)
         return null;
 
@@ -33,21 +33,40 @@ function CardDetails({card, onClose, onEdit, onDelete}){
                     )}
 
                     {card.createdAt && (
-                        <div className="card-details-section">
+                        <div className="card-detail-section">
                             <span className="detail-label">Created</span>
                             <p>{new Date(card.createdAt).toLocaleTimeString()}</p>
                         </div>
                     )}
 
                     {card.updatedAt && (
-                        <div className="card-details-section">
+                        <div className="card-detail-section">
                             <span className="detail-label">Last updated</span>
                             <p>{new Date(card.updatedAt).toLocaleTimeString()}</p>
                         </div>
                     )}
+
+                    <div className="card-detail-section">
+                        <h4>Assigned Members</h4>
+
+                        {card.assignedMembers?.length > 0 ? (
+
+                            <div className="assigned-members">
+                                {card.assignedMembers.map((member) => (
+                                        <span key={typeof member === "string" ? member : member._id} className="member-badge">
+                                            {typeof member === "string" ? member : member.name}
+                                        </span>
+                                    )
+                                )}
+                            </div>
+                        ) : (
+                            <p>No members assigned.</p>
+                        )}
+                    </div>
                 </div>
 
                 <div className="card-details-actions">
+                    <button type="button" className="secondary-button" onClick={() => onAssignMembers(card)}>Assign Members</button>
                     <button type="button" className="secondary-button" onClick={() => onEdit(card)}>Edit</button>
                     <button type="button" className="danger-button" onClick={() => onDelete(card)}>Delete</button>
                 </div>

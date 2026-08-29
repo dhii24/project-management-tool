@@ -1,19 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
+import workspaceService from "../../services/workspaceService";
 import boardService from "../../services/boardService";
 import listService from "../../services/listService";
 import cardService from "../../services/cardService";
+
 import CreateList from "../../components/boards/CreateList";
 import CreateCard from "../../components/boards/CreateCard";
+
 import CardDetails from "../../components/boards/CardDetails";
+
 import EditCard from "../../components/boards/EditCard";
 import EditList from "../../components/boards/EditList";
+
 import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
-function BoardDetails(){
+import AssignMembers from "../../components/boards/AssignMembers";
 
+function BoardDetails(){
+    
     const { workspaceId, boardId } = useParams();
     
     const [board, setBoard] = useState(null);
@@ -23,27 +30,51 @@ function BoardDetails(){
     const [loading, setLoading] = useState(true);
     
     const [error, setError] = useState("");
-
+    
     const [showCreateList, setShowCreateList] = useState(false);
-
+    
     const [showCreateCard, setShowCreateCard] = useState(false);
     
     const [selectedListId, setSelectedListId] = useState(null);
-
+    
     const [selectedCard, setSelectedCard] = useState(null);
-
+    
     const [showEditCard, setShowEditCard] = useState(false);
 
     const [selectedList, setSelectedList] = useState(null);
-
+    
     const [showEditList, setShowEditList] = useState(false);
+    
+    const [showAssignMembers, setShowAssignMembers] = useState(false);
 
+    const [workspace, setWorkspace] = useState(null);
+
+    useEffect(() => {
+        const fetchWorkspace = async () => {
+            try {
+                const data = await workspaceService.getWorkspaceById(workspaceId);
+                setWorkspace(data);
+            } 
+            
+            catch (error) {
+                console.error("Failed to fetch workspace:",error);
+
+                setError(
+                    error.response?.data?.message ||
+                    "Failed to load workspace."
+                );
+            }
+        };
+
+        fetchWorkspace();
+    }, [workspaceId]);
+    
     useEffect(() => {
         const fetchBoard = async () => {
             try{
                 setLoading(true);
                 setError("");
-
+                
                 const data = await boardService.boardById(workspaceId, boardId);
                 setBoard(data);
             }
@@ -60,7 +91,7 @@ function BoardDetails(){
                 setLoading(false);
             }
         }
-
+        
         fetchBoard();
     }, [workspaceId, boardId]);
 
@@ -69,11 +100,11 @@ function BoardDetails(){
         const fetchLists = async () => {
             try{
                 const lists = await listService.getListsByBoard(boardId);
-
+                
                 const listWithCards = await Promise.all(
                     lists.map(async (list) => {
                         const cards = await cardService.getCardsByList(list._id);
-
+                        
                         return {
                             ...list,
                             cards
@@ -93,40 +124,98 @@ function BoardDetails(){
 
         fetchLists();
     }, [boardId]);
-
-
+    
+    
     const handleAddList = () => {
         setShowCreateList(true);
     };
-
+    
     const handleCreateList = async (listData) => {
         try{
             const newList = await listService.createList(boardId, listData);
-
+            
             setLists((previousLists) => [
                 ...previousLists,
                 newList
             ]);
-
+            
             setShowCreateList(false);
         } 
         
         catch(error){
             console.error("Failed to create list:", error);
-
+            
             setError(
                 error.response?.data?.message ||
                 "Failed to create list."
             );
         }
     };
-
-
+    
+    const handleEditList = (list) => {
+        setSelectedList(list);
+        setShowEditList(true);
+    };
+    
+    const handleUpdateList = async (listData) => {
+        try{
+            const updatedList = await listService.updateList(boardId, selectedList._id, listData);
+    
+            setLists((previousLists) => {
+                return previousLists.map((list) => {
+                    if(list._id === updatedList._id){
+                        return{
+                            ...list,
+                            ...updatedList
+                        };
+                    }
+                    return list;
+                });
+            });
+    
+            setSelectedList(null);
+            setShowEditList(false);
+        }
+    
+        catch(error){
+            console.error("Failed to update List:", error);
+    
+            setError(
+                error.response?.data?.message || "Failed to update list."
+            );
+        }
+    };
+    
+    const handleDeleteList = async (list) => {
+        const confirmed = window.confirm(`Are you sure you want to delete "${list.name}"?`);
+    
+        if(!confirmed)
+            return;
+    
+        try{
+            await listService.deleteList(boardId, list._id);
+    
+            setLists((previousLists) => {
+                return previousLists.filter((existingList) => 
+                        existingList._id !== list._id) ;
+            });
+            setSelectedList(null);
+        }
+    
+        catch(error){
+            console.error("Failed to delete list:", error);
+    
+            setError(
+                error.response?.data?.message || "Failed to delete list."
+            );
+        }
+    };
+    
     const handleAddCard = (listId) => {
         setSelectedListId(listId);
         setShowCreateCard(true);
     };
-
+    
     const handleCreateCard = async (cardData) => {
         try{
             const newCard = await cardService.createCard(selectedListId, cardData);
@@ -184,23 +273,23 @@ function BoardDetails(){
                     };
                 });
             });
-
+            
             setSelectedCard(updatedCard);
             setShowEditCard(false);
         }
-
+        
         catch(error){
             console.error("Failed to update card:", error);
-
+            
             setError(
                 error.response.data.message || "Failed to update card"
             );
         }
     };
-
+    
     const handleDeleteCard = async (card) => {
         const confirmed = window.confirm(`Are you sure you want to delete "${card.title}"?`);
-
+        
         if(!confirmed)
             return;
 
@@ -228,61 +317,39 @@ function BoardDetails(){
         }
     };
 
-    const handleEditList = (list) => {
-        setSelectedList(list);
-        setShowEditList(true);
+    const handleAssignMembers = () => {
+        setShowAssignMembers(true);
     };
 
-    const handleUpdateList = async (listData) => {
+    const handleSaveAssignedMembers = async (memberIds) => {
         try{
-            const updatedList = await listService.updateList(boardId, selectedList._id, listData);
+            const updatedCard = await cardService.updateCard(selectedCard.list, selectedCard._id, {
+                assignedMembers: memberIds
+            });
 
             setLists((previousLists) => {
                 return previousLists.map((list) => {
-                    if(list._id === updatedList._id){
-                        return{
-                            ...list,
-                            ...updatedList
-                        };
-                    }
-                    return list;
+                    return {
+                        ...list,
+                        cards: (list.cards || []).map((card) => {
+                            if(card._id === updatedCard._id){
+                                return updatedCard;
+                            }
+                            return card;
+                        })
+                    };
                 });
             });
 
-            setSelectedList(null);
-            setShowEditList(false);
+            setSelectedCard(updatedCard);
+            setShowAssignMembers(false);
         }
 
         catch(error){
-            console.error("Failed to update List:", error);
+            console.error("Failed to assign members:", error);
 
             setError(
-                error.response?.data?.message || "Failed to update list."
-            );
-        }
-    };
-
-    const handleDeleteList = async (list) => {
-        const confirmed = window.confirm(`Are you sure you want to delete "${list.name}"?`);
-
-        if(!confirmed)
-            return;
-
-        try{
-            await listService.deleteList(boardId, list._id);
-
-            setLists((previousLists) => {
-                return previousLists.filter((existingList) => 
-                        existingList._id !== list._id) ;
-            });
-            setSelectedList(null);
-        }
-
-        catch(error){
-            console.error("Failed to delete list:", error);
-
-            setError(
-                error.response?.data?.message || "Failed to delete list."
+                error.response?.data?.message || "Failed to assign members"
             );
         }
     };
@@ -369,7 +436,7 @@ function BoardDetails(){
             )}
 
             {selectedCard && (
-                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)} onEdit={handleEditCard} onDelete={handleDeleteCard}/>
+                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)} onEdit={handleEditCard} onDelete={handleDeleteCard} onAssignMembers={handleAssignMembers}/>
             )}
 
             {showEditCard && selectedCard && (
@@ -383,6 +450,10 @@ function BoardDetails(){
                 }}
                 onUpdate={handleUpdateList}
                 />
+            )}
+
+            {showAssignMembers && selectedCard && (
+                <AssignMembers card={selectedCard} members={workspace?.members || []} onClose={() => setShowAssignMembers(false)} onSave={handleSaveAssignedMembers}/>
             )}
 
         </div>

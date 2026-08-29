@@ -26,6 +26,7 @@ const createCard = async (req, res) => {
             position: totalCards
         });
 
+        await card.populate("assignedMembers", "name email role");
 
         res.status(201).json({
             message:"Card created successfully",
@@ -56,6 +57,10 @@ const getCards = async(req,res)=>{
         const cards = await Card.find({
             list:listId
         })
+        .populate(
+            "assignedMembers",
+            "name email role"
+        )
         .sort({
             position:1
         })
@@ -147,6 +152,8 @@ const updateCard = async (req,res) => {
         }
 
         await card.save();
+
+        await card.populate("assignedMembers", "name email role");
 
         res.status(200).json({
             message: "Card updated successfully",
