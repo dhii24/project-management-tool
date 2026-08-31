@@ -1,4 +1,4 @@
-function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers}){
+function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManageLabels}){
     if(!card)
         return null;
 
@@ -63,10 +63,28 @@ function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers}){
                             <p>No members assigned.</p>
                         )}
                     </div>
+
+                    <div className="card-detail-section">
+                        <div className="card-detail-section-header">
+                            <h4>Labels</h4>
+                            <button type="button" className="small-action-button" onClick={() => onManageLabels(card)}>Manage</button>
+                        </div>
+
+                        {card.labels?.length > 0 ? (
+                            <div className="card-labels">
+                                {card.labels.map((label) => (
+                                    <span key={label} className={`card-label label-${label.toLowerCase().replace(/\s+/g, "-")}`}>{label}</span>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>No labels assigned.</p>
+                        )}
+                    </div>
                 </div>
 
                 <div className="card-details-actions">
                     <button type="button" className="secondary-button" onClick={() => onAssignMembers(card)}>Assign Members</button>
+                    <button type="button" className="secondary-button" onClick={() => onManageLabels(card)}>Labels</button>
                     <button type="button" className="secondary-button" onClick={() => onEdit(card)}>Edit</button>
                     <button type="button" className="danger-button" onClick={() => onDelete(card)}>Delete</button>
                 </div>

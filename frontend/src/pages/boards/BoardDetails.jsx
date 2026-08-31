@@ -18,6 +18,7 @@ import BoardHeader from "../../components/boards/BoardHeader";
 import BoardList from "../../components/boards/BoardList";
 
 import AssignMembers from "../../components/boards/AssignMembers";
+import ManageLabels from "../../components/boards/ManageLabels";
 
 function BoardDetails(){
     
@@ -48,6 +49,8 @@ function BoardDetails(){
     const [showAssignMembers, setShowAssignMembers] = useState(false);
 
     const [workspace, setWorkspace] = useState(null);
+
+    const [showManageLabels, setShowManageLabels] = useState(false);
 
     useEffect(() => {
         const fetchWorkspace = async () => {
@@ -354,6 +357,40 @@ function BoardDetails(){
         }
     };
 
+    const handleManageLabels = () => {
+        setShowManageLabels(true);
+    };
+
+    const handleSaveLabels = async (labels) => {
+        try{
+            const updatedCard = await cardService.updateCard(selectedCard.list, selectedCard._id, {labels});
+            setLists((previousLists) => {
+                return previousLists.map((list) => {
+                    return {
+                        ...list,
+                        cards: (list.cards || []).map((card) => {
+                            if(card._id === updatedCard._id){
+                                return updatedCard;
+                            }
+                            return card;
+                        })
+                    };
+                });
+            });
+
+            setSelectedCard(updatedCard);
+            setShowManageLabels(false);
+        }
+
+        catch(error){
+            console.error("Failed to update labels:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to update labels."
+            );
+        }
+    };  
+
     if(loading){
         return (
             <div className="page-message">
@@ -436,7 +473,7 @@ function BoardDetails(){
             )}
 
             {selectedCard && (
-                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)} onEdit={handleEditCard} onDelete={handleDeleteCard} onAssignMembers={handleAssignMembers}/>
+                <CardDetails card={selectedCard} onClose={() => setSelectedCard(null)} onEdit={handleEditCard} onDelete={handleDeleteCard} onAssignMembers={handleAssignMembers} onManageLabels={handleManageLabels}/>
             )}
 
             {showEditCard && selectedCard && (
@@ -454,6 +491,10 @@ function BoardDetails(){
 
             {showAssignMembers && selectedCard && (
                 <AssignMembers card={selectedCard} members={workspace?.members || []} onClose={() => setShowAssignMembers(false)} onSave={handleSaveAssignedMembers}/>
+            )}
+
+            {showManageLabels && selectedCard && (
+                <ManageLabels card={selectedCard} onClose={() => setShowManageLabels(false)} onSave={handleSaveLabels}/>
             )}
 
         </div>
