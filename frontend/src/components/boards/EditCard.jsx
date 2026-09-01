@@ -7,6 +7,8 @@ function EditCard({card, onClose, onUpdate}){
 
     const [priority, setPriority] = useState(card.priority || "medium");
 
+    const [dueDate, setDueDate] = useState(card.dueDate ? card.dueDate.split("T")[0] : "");
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -17,7 +19,8 @@ function EditCard({card, onClose, onUpdate}){
         await onUpdate({
             title: title.trim(),
             description: description.trim(),
-            priority
+            priority,
+            dueDate: dueDate || null
         });
     };
 
@@ -26,13 +29,13 @@ function EditCard({card, onClose, onUpdate}){
             <div className="modal" onClick={(event) => event.stopPropagation()}>
                 <div className="modal-header">
                     <h2>Edit Card</h2>
-                    <button type="button" className="modal-class" onClick={onClose}>×</button>
+                    <button type="button" className="modal-close" onClick={onClose}>×</button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="edit-card-title">Title</label>
-                        <input id="edit-card-title" type="text" value={title} onChange={(event) => setTitle(event.target.value)} />
+                        <input id="edit-card-title" type="text" value={title} onChange={(event) => setTitle(event.target.value)} required />
                     </div>
 
                     <div className="form-group">
@@ -47,6 +50,11 @@ function EditCard({card, onClose, onUpdate}){
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
                         </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="edit-card-due-date">Due Date</label>
+                        <input id="edit-card-due-date" type="date" value={dueDate} onChange={(event) =>setDueDate(event.target.value)}/>
                     </div>
 
                     <div className="modal-actions">

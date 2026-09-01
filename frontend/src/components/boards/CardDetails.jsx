@@ -2,6 +2,12 @@ function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManage
     if(!card)
         return null;
 
+    const today = new Date().toISOString().split("T")[0];
+
+    const dueDate = card.dueDate? new Date(card.dueDate).toISOString().split("T")[0] : null;
+
+    const isOverdue = dueDate && dueDate < today;
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="card-details-modal" onClick={(event) =>event.stopPropagation()}>
@@ -25,12 +31,22 @@ function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManage
                         </div>
                     </div>
 
-                    {card.dueDate && (
-                        <div className="card-detail-section">
-                            <span className="detail-label">Due Date</span>
-                            <p>{new Date(card.dueDate).toLocaleDateString()}</p>
-                        </div>
-                    )}
+                    <div className="card-detail-section">
+                        <span className="detail-label">Due Date</span>
+                        {card.dueDate ? (
+                            <div className={isOverdue ? "due-date overdue" : "due-date"}>
+                                {new Date(card.dueDate).toLocaleDateString()}
+                                
+                                {isOverdue && (
+                                    <span className="overdue-text">
+                                        Overdue
+                                    </span>
+                                )}
+                            </div>
+                        ) : (
+                            <p>No due date.</p>
+                        )}
+                    </div>
 
                     {card.createdAt && (
                         <div className="card-detail-section">

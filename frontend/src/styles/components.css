@@ -847,11 +847,26 @@ add-card-button {
 }
 
 .modal-close {
-    border: none;
-    background: transparent;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+
+    padding: 0 !important;
+    margin: 0;
+
+    border: none !important;
+    background: transparent !important;
+
     font-size: 24px;
+    line-height: 1;
+
     cursor: pointer;
     color: #6b7280;
+}
+
+.modal-close:hover {
+    background: transparent !important;
+    color: #111827;
 }
 
 .form-group {
@@ -961,16 +976,27 @@ add-card-button {
 }
 
 .small-action-button {
-    border: none;
-    background: none;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+
+    padding: 4px 8px !important;
+    margin: 0;
+
+    border: none !important;
+    background: transparent !important;
+
     color: #2563eb;
+
     font-size: 14px;
     font-weight: 600;
+
     cursor: pointer;
-    padding: 4px 8px;
 }
 
 .small-action-button:hover {
+    background: transparent !important;
+    color: #1d4ed8;
     text-decoration: underline;
 }
 
@@ -1022,6 +1048,51 @@ add-card-button {
     font-weight: 600;
     color: #6b7280;
     text-transform: uppercase;
+}
+
+.priority {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.priority-low {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.priority-medium {
+    background-color: #fef3c7;
+    color: #a16207;
+}
+
+.priority-high {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.due-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+
+.overdue {
+    font-weight: 600;
+}
+
+
+.overdue-text {
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
 .assign-members-modal {

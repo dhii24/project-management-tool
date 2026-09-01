@@ -285,7 +285,7 @@ function BoardDetails(){
             console.error("Failed to update card:", error);
             
             setError(
-                error.response.data.message || "Failed to update card"
+                error.response?.data?.message || "Failed to update card"
             );
         }
     };
