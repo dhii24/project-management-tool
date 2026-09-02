@@ -5,7 +5,7 @@ const User = require("../models/User");
 const uploadAttachment = async (req, res) => {
     try {
 
-        console.log(req.file);
+        // console.log(req.file);
 
         if (!req.file) {
             return res.status(400).json({
@@ -24,13 +24,13 @@ const uploadAttachment = async (req, res) => {
             mimeType: req.file.mimetype,
             size: req.file.size
         });
-
+        
         const user = await User.findById(
             req.user.userId
         );
 
-        console.log("Decoded JWT:", req.user);
-        console.log("Fetched User:", user);
+        // console.log("Decoded JWT:", req.user);
+        // console.log("Fetched User:", user);
 
         await createActivity({
             card: cardId,

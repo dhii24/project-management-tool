@@ -1,3 +1,6 @@
+import Comments from "./Comments";
+import Attachments from "./Attachments";
+
 function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManageLabels}){
     if(!card)
         return null;
@@ -96,6 +99,9 @@ function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManage
                             <p>No labels assigned.</p>
                         )}
                     </div>
+
+                    <Comments cardId={card._id} />
+                    <Attachments cardId={card._id} />
                 </div>
 
                 <div className="card-details-actions">

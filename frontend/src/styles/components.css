@@ -930,7 +930,7 @@ add-card-button {
 .card-details-modal {
     width: 600px;
     max-width: calc(100vw - 40px);
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
     background-color: #ffffff;
     border-radius: 10px;
@@ -1227,6 +1227,205 @@ label-option:hover {
     color: #0369a1;
 }
 
+.comments-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.comments-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.comments-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.comments-header span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: #e5e7eb;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.comment {
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f8fafc;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.comment-header strong {
+    font-size: 14px;
+}
+
+.comment-header span {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.comment-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.comment-form button {
+    align-self: flex-end;
+}
+
+.comments-status {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.attachments-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.attachments-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.attachments-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.attachments-header span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: #e5e7eb;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.attachment-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attachment-upload input[type="file"] {
+    width: 100%;
+}
+
+.selected-file {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    font-size: 13px;
+}
+
+.attachment-upload button {
+    align-self: flex-end;
+}
+
+.attachments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.attachment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.attachment-info strong {
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachment-info span {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.attachment-type {
+    flex-shrink: 0;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background-color: #e5e7eb;
+    font-size: 11px;
+    font-weight: 600;
+}
+
 .empty-message {
     padding: 24px;
     text-align: center;
@@ -1234,9 +1433,11 @@ label-option:hover {
 }
 
 .error-message {
+    margin: 8px 0;
     color: #dc2626;
     background-color: #fee2e2;
     padding: 12px 16px;
     border-radius: 6px;
+    font-size: 13px;
 }
 
