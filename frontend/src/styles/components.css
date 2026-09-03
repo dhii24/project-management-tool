@@ -1426,6 +1426,18 @@ label-option:hover {
     font-weight: 600;
 }
 
+.attachment-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.attachment-actions button {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
 .empty-message {
     padding: 24px;
     text-align: center;

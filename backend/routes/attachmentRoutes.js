@@ -5,8 +5,10 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware");
 
-const { uploadAttachment } = require("../controllers/attachmentController");
+const { uploadAttachment, getAttachments } = require("../controllers/attachmentController");
 
-router.post("/:cardId/upload",authMiddleware,upload.single("attachment"),uploadAttachment);
+router.post("/:cardId/upload", authMiddleware, upload.single("attachment"), uploadAttachment);
+
+router.get("/:cardId", authMiddleware, getAttachments);
 
 module.exports = router;

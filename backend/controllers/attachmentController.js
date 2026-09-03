@@ -20,10 +20,12 @@ const uploadAttachment = async (req, res) => {
             uploadedBy: req.user.userId,
             originalName: req.file.originalname,
             fileName: req.file.filename,
-            filePath: req.file.path,
+            filePath: req.file.path.replace(/\\/g, "/"),
             mimeType: req.file.mimetype,
             size: req.file.size
         });
+
+        await attachment.populate("uploadedBy", "name email");
         
         const user = await User.findById(
             req.user.userId
@@ -54,4 +56,27 @@ const uploadAttachment = async (req, res) => {
     }
 };
 
-module.exports = { uploadAttachment };
+const getAttachments = async (req, res) => {
+    try{
+        const { cardId } = req.params;
+
+        const attachments = await Attachment.find({
+            card: cardId
+        })
+        .populate("uploadedBy", "name email")
+        .sort({
+            createdAt: 1
+        });
+
+        res.status(200).json({
+            attachments
+        });
+    }
+    catch(error){
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+module.exports = { uploadAttachment, getAttachments };

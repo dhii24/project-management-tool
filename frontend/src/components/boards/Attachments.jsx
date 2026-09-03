@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import attachmentService from "../../services/attachmentService";
 
 function Attachments({ cardId }){
@@ -9,6 +9,38 @@ function Attachments({ cardId }){
     const [uploading, setUploading] = useState(false);
 
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchAttachments = async () => {
+            try{
+                setError("");
+                const data = await attachmentService.getAttachments(cardId);
+                setAttachments(data);
+            }
+
+            catch(error){
+                console.error("Failed to fetch attachments:", error);
+
+                setError(
+                    error.response?.data?.message || "Failed to load attachments."
+                )
+            }
+        };
+
+        if(cardId){
+            fetchAttachments();
+        }
+    }, [cardId]);
+
+    const openAttachment = (attachment) => {
+        console.log("Attachment:", attachment);
+        console.log("File path:", attachment.filePath);
+
+        const fileUrl = `http://localhost:5000/uploads/cards/${encodeURIComponent(attachment.fileName)}`;
+        console.log("File URL:", fileUrl);
+
+        window.open(fileUrl, "_blank");
+    };
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -106,11 +138,30 @@ function Attachments({ cardId }){
                                 <span>
                                     { (attachment.size /(1024 * 1024)).toFixed(2) } MB
                                 </span>
+
+                                {attachment.uploadedBy && (
+                                    <span>
+                                        Uploaded by{" "} {attachment.uploadedBy.name} 
+                                    </span>
+                                )}
                             </div>
 
-                            <span className="attachment-type">
-                                {attachment.mimeType === "application/pdf" ? "PDF": "Image"}
-                            </span>
+                            <div className="attachment-actions">
+                                <span className="attachment-type">
+                                    {attachment.mimeType === "application/pdf" ? "PDF": "Image"}
+                                </span>
+
+                                <button 
+                                    type="button" 
+                                    className="secondary-button" 
+                                    onClick={(event) => {
+                                        event.stopPropagation(); 
+                                        openAttachment(attachment)
+                                    }}>
+                                    Open
+                                </button>
+                            </div>
+
                         </div>
                     ))}
                 </div>

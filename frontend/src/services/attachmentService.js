@@ -7,6 +7,11 @@ const attachmentService = {
 
         const response = await api.post(`/attachments/${cardId}/upload`, formData);
         return response.data.attachment;
+    },
+
+    getAttachments: async (cardId) => {
+        const response = await api.get(`/attachments/${cardId}`);
+        return response.data.attachments;
     }
 };
 
