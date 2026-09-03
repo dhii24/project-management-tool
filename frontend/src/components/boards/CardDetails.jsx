@@ -1,5 +1,6 @@
 import Comments from "./Comments";
 import Attachments from "./Attachments";
+import ActivityHistory from "./ActivityHistory";
 
 function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManageLabels}){
     if(!card)
@@ -102,6 +103,7 @@ function CardDetails({card, onClose, onEdit, onDelete, onAssignMembers, onManage
 
                     <Comments cardId={card._id} />
                     <Attachments cardId={card._id} />
+                    <ActivityHistory cardId={card._id} />
                 </div>
 
                 <div className="card-details-actions">
