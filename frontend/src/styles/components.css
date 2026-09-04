@@ -1534,6 +1534,150 @@ label-option:hover {
     color: #6b7280;
 }
 
+.notification-panel {
+    width: 400px;
+    max-height: 600px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.notification-header h3 {
+    margin: 0;
+}
+
+.notification-count {
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dc3545;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+.notification-item.unread {
+    background: #f5f8ff;
+}
+
+.notification-item.read {
+    background: white;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.notification-message {
+    margin: 0;
+    font-size: 14px;
+}
+
+.notification-sender {
+    font-size: 12px;
+    color: #666;
+}
+
+.notification-date {
+    font-size: 11px;
+    color: #888;
+}
+
+.notification-read-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.notification-read-button:hover {
+    text-decoration: underline;
+}
+
+.notification-empty {
+    text-align: center;
+    color: #777;
+}
+
+.notification-error {
+    color: #dc3545;
+    font-size: 14px;
+}
+
+.notification-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-bell {
+    position: relative;
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    min-width: 18px;
+    height: 18px;
+
+    padding: 0 4px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #dc3545;
+    color: white;
+
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.notification-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+
+    z-index: 1000;
+}
+
 .empty-message {
     padding: 24px;
     text-align: center;

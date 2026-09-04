@@ -19,6 +19,7 @@ import BoardList from "../../components/boards/BoardList";
 
 import AssignMembers from "../../components/boards/AssignMembers";
 import ManageLabels from "../../components/boards/ManageLabels";
+import NotificationPanel from "../../components/notifications/NotificationPanel";
 
 function BoardDetails(){
     
@@ -496,6 +497,8 @@ function BoardDetails(){
             {showManageLabels && selectedCard && (
                 <ManageLabels card={selectedCard} onClose={() => setShowManageLabels(false)} onSave={handleSaveLabels}/>
             )}
+
+            <NotificationPanel />
 
         </div>
     );

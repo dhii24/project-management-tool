@@ -8,24 +8,30 @@ React • JavaScript • Vite • React Router • Axios • CSS
 
 ## ✨ Key Features
 
-* JWT authentication with protected routes
-* Global authentication state using Context API
-* Axios interceptor for automatic JWT authorization
-* Workspace creation and management
-* Workspace members with role-based access
-* Board creation and management
-* Kanban-style boards with lists and cards
-* Create and view lists
-* Create and view cards
-* Interactive card details modal
-* Client-side validation
-* API loading and error handling
-* Responsive UI
+- JWT authentication with protected routes
+- Global authentication state using Context API
+- Axios interceptors for automatic JWT authorization
+- Workspace and member management
+- Role-based access control
+- Board, list, and card management
+- Kanban-style project boards
+- Interactive card details modal
+- Member assignment to cards
+- Labels and priority management
+- Due dates
+- Comments
+- File attachments with upload and preview
+- Activity history
+- Notification system with unread count
+- Mark notifications as read
+- Client-side validation
+- API loading and error handling
+- Responsive UI
 
 ## 🏗️ Architecture
 
 ```text 
-        React 
+        React UI
           ↓
     Context / Hooks
           ↓
@@ -44,18 +50,21 @@ React • JavaScript • Vite • React Router • Axios • CSS
 src/
 ├── components/
 │   ├── auth/
-│   ├── dashboard/
+│   ├── boards/
+│   ├── common/
+│   ├── notifications/
+|
 ├── context/
 ├── hooks/
 ├── layouts/
 ├── pages/
 │   ├── auth/
-│   ├── dashboard/
 |   |── boards/
+│   ├── common/
+│   ├── dashboard/
 │   └── workspaces/
 ├── services/
 ├── styles/
-├── utils/
 ├── App.jsx
 ├── main.jsx
 └── routes.jsx
@@ -68,60 +77,69 @@ src/
 * JWT authentication
 * Protected routes
 * Automatic JWT attachment using Axios interceptors
+* Global authentication state
 * Logout and session management
 
-### Workspaces
+### Workspace & Team Management
 * Create and view workspaces
-* Workspace members
-* Add members
+* Workspace member management
+* Add members to workspaces
 * Role-based access
-* Nested workspace navigation
+* Workspace-based navigation
 
-### Boards
-* Create boards
-* View boards
-* Board details
-* Lists within boards
-* Cards within lists
-* Create lists and cards
-* Card details modal
+### Boards, Lists & Cards
+* Create and view boards
+* Kanban-style board interface
+* Create and view lists
+* Create and view cards
+* Edit and delete lists
+* Edit and delete cards
+* Interactive card details modal
+
+### 🏷️ Card Management
+
+## Cards support:
+ * Member assignment
+ * Labels
+ * Priority
+ * Due dates
+ * Comments
+ * File attachments
+ * Activity history
+
+## 📎 File Attachments
+ * Upload files to cards
+ * Client-side file validation
+ * Supported PNG, JPEG and PDF files
+ * 5 MB client-side upload limit
+ * View uploaded attachments
+ * Display file metadata
+ * Persist attachments across page refreshes
+
+## 🕒 Activity History
+Display card activity history
+Activity timestamps
+Activity descriptions
+User information for activities
+Automatically generated activity records from backend actions
+
+## 🔔 Notifications
+ * Notification bell in the application UI
+ * Real-time unread count retrieval from backend
+ * Notification dropdown
+ * Display notification sender and timestamp
+ * Mark notifications as read
+ * Unread badge synchronization
+ * Pagination-ready notification API integration
 
 ---
-
-## 🔌 API Integration
-
-### Authentication
-
-```text
-POST /api/auth/register
-POST /api/auth/login
-```
-
-### Workspaces
-
-```text
-GET    /api/workspaces/my
-POST   /api/workspaces
-GET    /api/workspaces/:workspaceId
-```
-
-### Members
-
-```text
-POST   /api/workspaces/:workspaceId/members
-```
-
-### Boards
-
-```text
-GET    /api/boards/:workspaceId
-POST   /api/boards/:workspaceId
-```
 
 ## 🔗 Backend Integration
 
 ```text
 React
+  ↓
+Service Layer  
   ↓
 Axios
   ↓
@@ -130,39 +148,45 @@ Express REST API
 MongoDB
 ```
 
-The frontend communicates with a Node.js + Express REST API using Axios.
+The frontend communicates with the backend through REST APIs using Axios.
 
 ---
 
 ## 📌 Project Status
 
-* Authentication        ✅
-* Workspaces            ✅
-* Members               ✅
-* Boards                ✅
-* Lists                 ✅
-* Cards                 ✅
-* Card Details          ✅
+ * Authentication	✅
+ * Protected Routes	✅
+ * Workspaces	✅
+ * Members & Roles	✅
+ * Boards	✅
+ * Lists	✅
+ * Cards	✅
+ * Card Details	✅
+ * Member Assignment	✅
+ * Labels	✅
+ * Priority & Due Dates	✅
+ * Comments	✅
+ * File Attachments	✅
+ * Activity History	✅
+ * Notifications	✅
 
-### Upcoming
+### 🎯 Engineering Highlights
 
-* Lists
-* Cards
-* Labels
-* Comments
-* File attachments
-* Notifications
-* Search
-* Analytics
-* Edit and delete cards
-* Edit and delete lists
-* Member assignment
-* Labels and tags
-* Due dates
-* Comments
-* Drag & drop Kanban
-* Notifications
-* Search
-* Analytics
-* Responsive UI improvements
-* Production deployment
+ * Component-based React architecture
+ * Reusable API service layer
+ * Centralized Axios configuration
+ * Context-based global state management
+ * Protected route handling
+ * REST API integration
+ * Asynchronous API handling with loading and error states
+ * Client-side validation
+ * Modular and scalable folder structure
+ * Responsive UI design
+
+🔮 Future Improvements
+ * Drag & drop Kanban functionality
+ * Advanced notification pagination
+ * Card and list search
+ * Analytics dashboard
+ * Improved responsive UI
+ * Production deployment

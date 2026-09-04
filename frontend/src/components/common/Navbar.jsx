@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
-
 import { useAuth } from "../../context/AuthContext";
+
+import NotificationBell from "../notifications/NotificationBell";
 
 function Navbar(){
 
@@ -20,6 +21,10 @@ function Navbar(){
             
             <div className="navbar-logo">
                 <Link to="/dashboard">Project Manager</Link>
+            </div>
+
+            <div className="navbar-actions">
+                <NotificationBell />
             </div>
 
             <div className="navbar-right">
