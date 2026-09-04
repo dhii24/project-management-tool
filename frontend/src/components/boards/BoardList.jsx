@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BoardCard from "./BoardCard";
 
-function BoardList({ list, onAddCard, onCardClick, onEditList, onDeleteList }) {
+function BoardList({ list, lists, onAddCard, onCardClick, onEditList, onDeleteList, onMoveCard }) {
 
     const [showMenu, setShowMenu] = useState(false);
 
@@ -39,7 +39,7 @@ function BoardList({ list, onAddCard, onCardClick, onEditList, onDeleteList }) {
                     <p className="empty-list-message">No cards yet.</p>
                 ) : (
                     list.cards?.map((card) => (
-                        <BoardCard key={card._id} card={card} onClick={onCardClick}/>
+                        <BoardCard key={card._id} card={card} lists={lists} onClick={onCardClick} onMove={onMoveCard}/>
                     ))
                 )}
             </div>

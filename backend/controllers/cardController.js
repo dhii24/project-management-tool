@@ -45,7 +45,6 @@ const createCard = async (req, res) => {
 const getCards = async(req,res)=>{
 
     try{
-
         const {listId} = req.params;
 
         const page = parseInt(req.query.page) || 1;
@@ -210,9 +209,9 @@ const moveCard = async (req, res) => {
     try {
 
         const { cardId } = req.params;
-
         const { targetListId, newPosition} = req.body;
 
+        // Find the card in the current list
         const card = await Card.findOne({
             _id: cardId,
             list: req.list._id
@@ -224,6 +223,7 @@ const moveCard = async (req, res) => {
             });
         }
 
+        // Find target list
         const targetList = await List.findById(targetListId);
 
         if(!targetList){
@@ -232,21 +232,103 @@ const moveCard = async (req, res) => {
             });
         }
 
-        const cards = await Card.find({
+        // Make sure target list belongs to the same board
+        if (targetList.board.toString() !== req.list.board.toString()){
+            return res.status(403).json({
+                message: "Target list does not belong to the same board"
+            });
+        }
+
+        const sourceListId = card.list;
+
+        // Get cards from source list
+        const sourceCards = await Card.find({
+            list: sourceListId
+        }).sort({
+            position: 1
+        });
+
+        // Get cards from target list
+        const targetCards = await Card.find({
             list: targetListId
         }).sort({
             position: 1
         });
 
-        cards.splice(newPosition, 0, card);
+        // CASE 1: Moving within the same list
+        if(sourceListId.toString() === targetListId.toString()){
 
-        for (let i = 0; i < cards.length; i++) {
-            cards[i].list = targetListId;
-            cards[i].position = i;
+            const currentIndex = sourceCards.findIndex(
+                currentCard => currentCard._id.toString() === cardId
+            );
 
-            await cards[i].save();
+            if(currentIndex === -1){
+                return res.status(404).json({
+                    message: "Card not found in source list"
+                });
+            }
+
+            // Remove card from current position
+            const [movedCard] = sourceCards.splice(currentIndex, 1);
+
+            // Keep position within valid range
+            const safePosition = Math.max(0, Math.min(newPosition, sourceCards.length));
+
+            // Insert card at new position
+            sourceCards.splice(safePosition, 0, movedCard);
+
+            // Recalculate positions
+            for(let i = 0; i < sourceCards.length; i++){
+                sourceCards[i].position = i;
+                await sourceCards[i].save();
+            }
+        }   
+        
+        // CASE 2: Moving to another list
+        else {
+            // Remove card from source list
+            const sourceIndex = sourceCards.findIndex(
+                currentCard => currentCard._id.toString() === cardId
+            );
+
+            if(sourceIndex === -1){
+                return res.status(404).json({
+                    message: "Card not found in source list"
+                });
+            }
+
+            sourceCards.splice(sourceIndex, 1);
+
+            // Recalculate source list positions
+            for(let i = 0; i < sourceCards.length; i++){
+                sourceCards[i].position = i;
+                await sourceCards[i].save();
+            }
+
+            // Remove the card from targetCards
+            // in case of any unexpected stale relationship
+            const existingTargetIndex = targetCards.findIndex(
+                currentCard => currentCard._id.toString() === cardId
+            );
+
+            if (existingTargetIndex !== -1) {
+                targetCards.splice(existingTargetIndex, 1);
+            }
+
+            // Keep target position within valid range
+            const safePosition = Math.max(0, Math.min(newPosition, targetCards.length));
+
+            // Insert moved card
+            targetCards.splice(safePosition, 0, card);
+
+            // Update target list + positions
+            for (let i = 0; i < targetCards.length; i++) {
+                targetCards[i].list = targetListId;
+                targetCards[i].position = i;
+                await targetCards[i].save();
+            }
         }
-
+        
         res.status(200).json({
             message: "Card moved successfully"
         });

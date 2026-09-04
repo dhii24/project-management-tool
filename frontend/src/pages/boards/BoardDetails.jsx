@@ -390,7 +390,85 @@ function BoardDetails(){
                 error.response?.data?.message || "Failed to update labels."
             );
         }
-    };  
+    };
+    
+    const handleMoveCard = async (card, targetListId) => {
+        try {
+            const sourceListId = card.list;
+
+            // Find target list
+            const targetList = lists.find(list => list._id === targetListId);
+
+            if(!targetList){
+                return;
+            }
+
+            // For Step 29, move to the end of target list
+            const newPosition = targetList.cards?.length || 0;
+
+            await cardService.moveCard(
+                sourceListId,
+                card._id,
+                targetListId,
+                newPosition
+            );
+
+            // Update frontend state
+            setLists(previousLists => {
+                const movedCard = {
+                    ...card,
+                    list: targetListId,
+                    position: newPosition
+                };
+
+                return previousLists.map(list => {
+                    // Remove card from source list
+                    if(list._id === sourceListId){
+                        return {
+                            ...list,
+                            cards: (list.cards || []).filter(existingCard => existingCard._id !== card._id)
+                        };
+                    }
+
+                    // Add card to target list
+                    if(list._id === targetListId){
+                        return {
+                            ...list,
+                            cards: [
+                                ...(list.cards || []),
+                                movedCard
+                            ]
+                        };
+                    }
+                    return list;
+                });
+            });
+
+            setSelectedCard(previousCard => {
+                if(!previousCard){
+                    return previousCard;
+                }
+
+                if(previousCard._id !== card._id){
+                    return previousCard;
+                }
+
+                return{
+                    ...previousCard,
+                    list: targetListId,
+                    position: newPosition
+                };
+            });
+        } 
+        
+        catch(error){
+            console.error("Failed to move card:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to move card."
+            );
+        }
+    };
 
     if(loading){
         return (
@@ -453,7 +531,7 @@ function BoardDetails(){
 
                 <div className="board-lists">
                     {lists.map((list) => (
-                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList}/>
+                        <BoardList key={list._id} list={list} lists={lists} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onMoveCard={handleMoveCard}/>
                     ))}
 
                     <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>

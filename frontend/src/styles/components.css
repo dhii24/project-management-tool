@@ -1678,6 +1678,20 @@ label-option:hover {
     z-index: 1000;
 }
 
+.card-move-section {
+    margin-top: 8px;
+}
+
+.card-move-section select {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+}
+
 .empty-message {
     padding: 24px;
     text-align: center;

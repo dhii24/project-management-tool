@@ -1,4 +1,4 @@
-function BoardCard({ card, onClick }) {
+function BoardCard({ card, lists, onClick, onMove }) {
 
     return (
         <div className="board-card-item">
@@ -15,6 +15,22 @@ function BoardCard({ card, onClick }) {
             {card.priority && (
                 <span className={`priority priority-${card.priority}`}>{card.priority}</span>
             )}
+
+            <div className="card-move-section">
+                <select value="" onChange={(event) => {
+                    const targetListId = event.target.value;
+                    if(!targetListId){
+                        return;
+                    }
+                    onMove(card,targetListId);
+                }}>
+                    <option value="">Move to...</option>
+                    {lists.filter(list => list._id !== card.list).map(list => (
+                        <option key={list._id} value={list._id}>{list.name}</option>
+                        ))
+                    }
+                </select>
+            </div>
 
         </div>
 

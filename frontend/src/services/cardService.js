@@ -20,4 +20,14 @@ const deleteCard = async (listId, cardId) => {
     return response.data;
 };
 
-export default { getCardsByList, createCard, updateCard, deleteCard };
+const moveCard = async (listId, cardId, targetListId, newPosition) => {
+    const response = await api.patch(`/cards/${listId}/${cardId}/move`,
+        {
+            targetListId,
+            newPosition
+        }
+    );
+    return response.data;
+};
+
+export default { getCardsByList, createCard, updateCard, deleteCard, moveCard };
