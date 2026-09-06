@@ -1,7 +1,7 @@
-function BoardCard({ card, lists, onClick, onMove }) {
+function BoardCard({ card, onClick, onDragStart,  onDragOver }) {
 
     return (
-        <div className="board-card-item">
+        <div className="board-card-item" draggable onDragStart={(event) => onDragStart(event, card)} onDragOver={(event) => onDragOver(event, card._id)}>
 
             <div className="board-card-content" onClick={() => onClick(card)}>
                 <h4>{card.title}</h4>
@@ -11,32 +11,14 @@ function BoardCard({ card, lists, onClick, onMove }) {
                 )}
             </div>
 
-
             {card.priority && (
-                <span className={`priority priority-${card.priority}`}>{card.priority}</span>
+                <span className={`priority priority-${card.priority}`}>
+                    {card.priority}
+                </span>
             )}
 
-            <div className="card-move-section">
-                <select value="" onChange={(event) => {
-                    const targetListId = event.target.value;
-                    if(!targetListId){
-                        return;
-                    }
-                    onMove(card,targetListId);
-                }}>
-                    <option value="">Move to...</option>
-                    {lists.filter(list => list._id !== card.list).map(list => (
-                        <option key={list._id} value={list._id}>{list.name}</option>
-                        ))
-                    }
-                </select>
-            </div>
-
         </div>
-
     );
-
 }
-
 
 export default BoardCard;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BoardCard from "./BoardCard";
 
-function BoardList({ list, lists, onAddCard, onCardClick, onEditList, onDeleteList, onMoveCard }) {
+function BoardList({ list, onAddCard, onCardClick, onEditList, onDeleteList, onDragStart, onDragOver, onDrop, onCardDragOver }) {
 
     const [showMenu, setShowMenu] = useState(false);
 
@@ -34,12 +34,12 @@ function BoardList({ list, lists, onAddCard, onCardClick, onEditList, onDeleteLi
             </div>
 
 
-            <div className="board-list-cards">
+            <div className="board-list-cards" onDragOver={(event) => onDragOver(event)} onDrop={(event) => onDrop(event, list._id)}>
                 {list.cards?.length === 0 ? (
                     <p className="empty-list-message">No cards yet.</p>
                 ) : (
                     list.cards?.map((card) => (
-                        <BoardCard key={card._id} card={card} lists={lists} onClick={onCardClick} onMove={onMoveCard}/>
+                        <BoardCard key={card._id} card={card} onClick={onCardClick} onDragStart={onDragStart} onDragOver={onCardDragOver}/>
                     ))
                 )}
             </div>

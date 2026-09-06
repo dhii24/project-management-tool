@@ -1692,6 +1692,18 @@ label-option:hover {
     font-size: 12px;
 }
 
+.board-card-item {
+    cursor: grab;
+}
+
+.board-card-item:active {
+    cursor: grabbing;
+}
+
+.board-list-cards {
+    min-height: 60px;
+}
+
 .empty-message {
     padding: 24px;
     text-align: center;

@@ -389,44 +389,49 @@ const searchCards = async (req, res) => {
     try{
         const { query, page = 1, limit = 10} = req.query;
 
-        const currentPage = parseInt(page);
-        const pageLimit =  parseInt(limit);
+        const currentPage = Math.max(1, parseInt(page) || 1);
+        const pageLimit =  Math.min(50, Math.max(1, parseInt(limit) || 10));
+
+        if (!query || !query.trim()) {
+            return res.status(400).json({
+                message: "Search query is required."
+            });
+        }
+
+        const searchQuery = query.trim();
 
         const skip = (currentPage -1) * pageLimit;
 
-        const searchFilter = {};
-
-        if(query){
-            searchFilter.$or =[
-
+        const searchFilter = {
+            $or: [
                 {
                     title:{
-                        $regex: query,
+                        $regex: searchQuery,
                         $options: "i"
                     },
                 },
-
                 {
                     labels:{
-                        $regex: query,
+                        $regex: searchQuery,
                         $options: "i"
                     }
                 }
-                
             ]
-        }
+        };
 
-        const cards = await Card.find(searchFilter).sort({ createdAt: -1}).skip(skip).limit(limit);
+        const cards = await Card.find(searchFilter).populate("assignedMembers", "name email role").sort({ createdAt: -1}).skip(skip).limit(pageLimit);
 
         const totalCards = await Card.countDocuments(
             searchFilter
         );
 
+        const totalPages = Math.max(1, Math.ceil(totalCards / pageLimit));
+
         res.status(200).json({
             cards,
             pagination:{
                 currentPage,
-                totalPages: Math.max(1, Math.ceil(totalCards / pageLimit)),
+                totalPages,
                 totalCards,
                 limit: pageLimit
             }

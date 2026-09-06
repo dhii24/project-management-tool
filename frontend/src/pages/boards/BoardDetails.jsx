@@ -21,6 +21,8 @@ import AssignMembers from "../../components/boards/AssignMembers";
 import ManageLabels from "../../components/boards/ManageLabels";
 import NotificationPanel from "../../components/notifications/NotificationPanel";
 
+import CardSearch from "../../components/boards/CardSearch";
+
 function BoardDetails(){
     
     const { workspaceId, boardId } = useParams();
@@ -52,6 +54,12 @@ function BoardDetails(){
     const [workspace, setWorkspace] = useState(null);
 
     const [showManageLabels, setShowManageLabels] = useState(false);
+
+    const [draggedCard, setDraggedCard] = useState(null);
+
+    const [dragOverCardId, setDragOverCardId] = useState(null);
+
+    const [searchResults, setSearchResults] = useState(null);
 
     useEffect(() => {
         const fetchWorkspace = async () => {
@@ -470,6 +478,185 @@ function BoardDetails(){
         }
     };
 
+    const handleDragStart = (event, card) => {
+        setDraggedCard(card);
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", card._id);
+    };
+
+    const handleDragOver = (event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+    };
+
+    const handleCardDragOver = (event, cardId) => {
+        event.preventDefault();
+        setDragOverCardId(cardId);
+        event.dataTransfer.dropEffect = "move";
+    };
+
+    const handleDrop = async (event, targetListId) => {
+        event.preventDefault();
+
+        if (!draggedCard) {
+            return;
+        }
+
+        const sourceList = lists.find(
+            list => list.cards?.some(
+                card => card._id === draggedCard._id
+            )
+        );
+
+        if (!sourceList) {
+            setDraggedCard(null);
+            setDragOverCardId(null);
+            return;
+        }
+
+        const targetList = lists.find(
+            list => list._id === targetListId
+        );
+
+        if (!targetList) {
+            setDraggedCard(null);
+            setDragOverCardId(null);
+            return;
+        }
+
+        const sourceListId = sourceList._id;
+
+        let newPosition;
+
+        if (dragOverCardId) {
+            const targetIndex = targetList.cards.findIndex(
+                card => card._id === dragOverCardId
+            );
+
+            newPosition = targetIndex === -1
+                ? targetList.cards.length
+                : targetIndex;
+        } else {
+            newPosition = targetList.cards.length;
+        }
+
+        /*
+        * If moving within the same list and the dragged card
+        * appears before the target card, removing it first
+        * shifts the target position by one.
+        */
+        if (sourceListId === targetListId) {
+            const draggedIndex = targetList.cards.findIndex(
+                card => card._id === draggedCard._id
+            );
+
+            if (draggedIndex !== -1 && draggedIndex < newPosition) {
+                newPosition--;
+            } 
+        }
+
+
+        try{
+            await cardService.moveCard(
+                sourceListId,
+                draggedCard._id,
+                targetListId,
+                newPosition
+            );
+
+            setLists(previousLists => {
+                const updatedLists = previousLists.map(list => ({
+                    ...list,
+                    cards: [...(list.cards || [])]
+                }));
+
+                const source = updatedLists.find(
+                    list => list._id === sourceListId
+                );
+
+                const target = updatedLists.find(
+                    list => list._id === targetListId
+                );
+
+                if (!source || !target) {
+                    return previousLists;
+                }
+
+                // Remove card from source list.
+                source.cards = source.cards.filter(
+                    card => card._id !== draggedCard._id
+                );
+
+                // If moving within the same list, source and target are the same array.
+                if (sourceListId === targetListId) {
+
+                    const updatedCard = {
+                        ...draggedCard,
+                        list: targetListId
+                    };
+
+                    target.cards.splice(
+                        newPosition,
+                        0,
+                        updatedCard
+                    );
+
+                } else {
+                    // Moving to another list.
+                    target.cards.splice(
+                        newPosition,
+                        0,
+                        {
+                            ...draggedCard,
+                            list: targetListId
+                        }
+                    );
+                }
+
+                // Recalculate positions.
+                source.cards = source.cards.map(
+                    (card, index) => ({
+                        ...card,
+                        position: index
+                    })
+                );
+
+                if (sourceListId !== targetListId) {
+                    target.cards = target.cards.map(
+                        (card, index) => ({
+                            ...card,
+                            position: index
+                        })
+                    );
+                }
+
+                return updatedLists;
+            });
+        } 
+        
+        catch (error) {
+            console.error("Failed to move card:", error);
+
+            setError(
+                error.response?.data?.message ||
+                "Failed to move card."
+            );
+        } 
+        
+        finally {
+            setDraggedCard(null);
+            setDragOverCardId(null);
+        }
+    };
+
+    const handleSearchResults = (data) => {
+        setSearchResults(data);
+    };
+
+    const handleClearSearch = () => {
+        setSearchResults(null);
+    };
+
     if(loading){
         return (
             <div className="page-message">
@@ -529,9 +716,11 @@ function BoardDetails(){
             <div className="board-page">
                 <BoardHeader board={board} onAddList={handleAddList} />
 
+                <CardSearch onResults={handleSearchResults} onClear={handleClearSearch}/>
+
                 <div className="board-lists">
                     {lists.map((list) => (
-                        <BoardList key={list._id} list={list} lists={lists} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onMoveCard={handleMoveCard}/>
+                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onCardDragOver={handleCardDragOver}/>
                     ))}
 
                     <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
