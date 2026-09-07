@@ -32,7 +32,7 @@ const moveCard = async (listId, cardId, targetListId, newPosition) => {
 
 const searchCards = async (query, page = 1, limit = 10) => {
     const response = await api.get(`/cards/search?query=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
-    return response.data.cards;
+    return response.data;
 };
 
-export default { getCardsByList, createCard, updateCard, deleteCard, moveCard };
+export default { getCardsByList, createCard, updateCard, deleteCard, moveCard, searchCards };

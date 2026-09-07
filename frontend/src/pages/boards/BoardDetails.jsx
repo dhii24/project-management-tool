@@ -22,6 +22,7 @@ import ManageLabels from "../../components/boards/ManageLabels";
 import NotificationPanel from "../../components/notifications/NotificationPanel";
 
 import CardSearch from "../../components/boards/CardSearch";
+import SearchResults from "../../components/boards/SearchResults";
 
 function BoardDetails(){
     
@@ -718,13 +719,19 @@ function BoardDetails(){
 
                 <CardSearch onResults={handleSearchResults} onClear={handleClearSearch}/>
 
-                <div className="board-lists">
-                    {lists.map((list) => (
-                        <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onCardDragOver={handleCardDragOver}/>
-                    ))}
+                {/* If searchResults === null -- you see your normal Kanban board.*/}
+                {/* But If search results are true you see corresponding cards.  */}
+                {searchResults ? (
+                    <SearchResults results={searchResults} onCardClick={handleCardClick}/>
+                ) : (
+                    <div className="board-lists">
+                        {lists.map((list) => (
+                            <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onCardDragOver={handleCardDragOver}/>
+                        ))}
 
-                    <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
-                </div>
+                        <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
+                    </div>
+                )}
             </div>
 
 
