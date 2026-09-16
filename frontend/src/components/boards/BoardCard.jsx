@@ -1,9 +1,9 @@
 function BoardCard({ card, onClick, onDragStart,  onDragOver }) {
 
     return (
-        <div className="board-card-item" draggable onDragStart={(event) => onDragStart(event, card)} onDragOver={(event) => onDragOver(event, card._id)}>
+        <div className="board-card-item" draggable onDragStart={(event) => onDragStart(event, card)} onDragOver={(event) => onDragOver(event, card._id)} onClick={() => onClick(card)}>
 
-            <div className="board-card-content" onClick={() => onClick(card)}>
+            <div className="board-card-content">
                 <h4>{card.title}</h4>
 
                 {card.description && (

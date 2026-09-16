@@ -1,4 +1,4 @@
-function SearchResults({ results, onCardClick }) {
+function SearchResults({ results, onCardClick, onPageChange }) {
     if (!results) {
         return null;
     }
@@ -53,6 +53,23 @@ function SearchResults({ results, onCardClick }) {
                     </div>
                 ))}
             </div>
+
+            {results.pagination.totalPages > 1 && (
+                <div className="pagination-controls">
+                    <button type="button" disabled={results.pagination.currentPage === 1} onClick={() =>onPageChange(results.pagination.currentPage - 1)}>
+                        Previous
+                    </button>
+
+                    <span>
+                        Page {results.pagination.currentPage} of{" "}
+                        {results.pagination.totalPages}
+                    </span>
+
+                    <button type="button" disabled={results.pagination.currentPage === results.pagination.totalPages} onClick={() =>onPageChange(results.pagination.currentPage + 1)}>
+                        Next
+                    </button>
+                </div>
+            )}
 
         </div>
     );

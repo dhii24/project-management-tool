@@ -1,11 +1,34 @@
 const Card = require("../models/Card");
 const Workspace = require("../models/Workspace");
+const Board = require("../models/Board");
+const List = require("../models/List");
+
+const getWorkspaceListIds = async (workspaceId) => {
+    const boards = await Board.find({workspace: workspaceId}).select("_id").lean();
+
+    const boardIds = boards.map((board) => board._id);
+
+    const lists = await List.find({
+        board: { $in: boardIds }
+    })
+    .select("_id")
+    .lean();
+
+    return lists.map((list) => list._id);
+};
 
 const getCardsByStatus = async (req, res) => {
 
     try {
+        const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const result = await Card.aggregate([
+            {
+                $match: {
+                    list: { $in: listIds }
+                }
+            },
+            
             {
                 $lookup: {
                     from: "lists",
@@ -21,7 +44,7 @@ const getCardsByStatus = async (req, res) => {
 
             {
                 $group: {
-                    _id: "$list.title",
+                    _id: "$list.name",
                     totalCards: {
                         $sum: 1
                     }
@@ -60,9 +83,14 @@ const getCardsByStatus = async (req, res) => {
 const getCardsByLabel = async (req, res) => {
 
     try {
+        const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const result = await Card.aggregate([
-
+            {
+                $match: {
+                    list: { $in: listIds }
+                }
+            },
             {
                 $unwind: "$labels"
             },
@@ -97,8 +125,14 @@ const getCardsByLabel = async (req, res) => {
 const getMemberWorkload = async (req,res) => {
 
     try{
+        const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const result= await Card.aggregate([
+            {
+                $match: {
+                    list: { $in: listIds }
+                }
+            },
             {
                 $unwind: "$assignedMembers"
             },
@@ -157,19 +191,19 @@ const getMemberWorkload = async (req,res) => {
 const getUpcomingDueCards = async( req,res) => {
 
     try{
+        const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const today = new Date();
 
         const nextWeek = new Date();
-
         nextWeek.setDate(today.getDate()+7);
 
         const result = await Card.find({
+            list: { $in: listIds },
             dueDate:{
                 $gte: today,
                 $lte: nextWeek
             }
-        
         })
         .sort({
             dueDate: 1
@@ -190,14 +224,34 @@ const getUpcomingDueCards = async( req,res) => {
 const getWorkspaceStats = async (req,res) => {
 
     try{
+        const workspaceId = req.workspace._id;
+        
+        const totalBoards = await Board.countDocuments({
+            workspace: workspaceId
+        });
 
-        const totalWorkspaces = await Workspace.countDocuments();
+        const listIds = await getWorkspaceListIds(workspaceId);
 
-        const totalCards = await Card.countDocuments();
+        const totalCards = await Card.countDocuments({
+            list: { $in: listIds }
+        });
+
+        const totalMembers = req.workspace.members.length;
+
+        const now = new Date();
+        const overdueCards = await Card.countDocuments({
+            list: { $in: listIds },
+            dueDate: {
+                $lt: now
+            }
+        });
 
         res.status(200).json({
-            totalWorkspaces,
-            totalCards
+            workspaceName: req.workspace.name,
+            totalBoards,
+            totalCards,
+            totalMembers,
+            overdueCards
         });
 
     } catch (error) {

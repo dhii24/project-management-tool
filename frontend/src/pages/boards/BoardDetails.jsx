@@ -23,6 +23,7 @@ import NotificationPanel from "../../components/notifications/NotificationPanel"
 
 import CardSearch from "../../components/boards/CardSearch";
 import SearchResults from "../../components/boards/SearchResults";
+import AnalyticsDashboard from "../AnalyticsDashboard";
 
 function BoardDetails(){
     
@@ -61,6 +62,8 @@ function BoardDetails(){
     const [dragOverCardId, setDragOverCardId] = useState(null);
 
     const [searchResults, setSearchResults] = useState(null);
+
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchWorkspace = async () => {
@@ -658,6 +661,21 @@ function BoardDetails(){
         setSearchResults(null);
     };
 
+    const handleSearchPageChange = async (page) => {
+        try{
+            const data = await cardService.searchCards(searchQuery, page);
+            setSearchResults(data);
+        }
+
+        catch(error){
+            console.error("Failed to load search page:", error);
+
+            setError(
+                error.response?.data?.message || "Failed to load search results."
+            );
+        }
+    }
+
     if(loading){
         return (
             <div className="page-message">
@@ -717,12 +735,12 @@ function BoardDetails(){
             <div className="board-page">
                 <BoardHeader board={board} onAddList={handleAddList} />
 
-                <CardSearch onResults={handleSearchResults} onClear={handleClearSearch}/>
+                <CardSearch onResults={handleSearchResults} onClear={handleClearSearch} onQueryChange={setSearchQuery}/>
 
                 {/* If searchResults === null -- you see your normal Kanban board.*/}
                 {/* But If search results are true you see corresponding cards.  */}
                 {searchResults ? (
-                    <SearchResults results={searchResults} onCardClick={handleCardClick}/>
+                    <SearchResults results={searchResults} onCardClick={handleCardClick} onPageChange={handleSearchPageChange}/>
                 ) : (
                     <div className="board-lists">
                         {lists.map((list) => (

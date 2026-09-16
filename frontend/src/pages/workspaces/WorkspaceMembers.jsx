@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import workspaceService from "../../services/workspaceService";
+
+import LoadingState from "../../components/common/LoadingState";
+import ErrorState from "../../components/common/ErrorState";
+import EmptyState from "../../components/common/EmptyState";
 
 function WorkspaceMembers(){
 
     const { workspaceId } = useParams();
-
-    const navigate = useNavigate();
 
     const [workspace, setWorkspace] = useState(null);
 
@@ -24,32 +25,34 @@ function WorkspaceMembers(){
 
     const [memberSuccess, setMemberSuccess] = useState("");
 
+    const fetchWorkspace = async () => {
+        try{
+            setLoading(true);
+            setError("");
+
+            const data = await workspaceService.getWorkspaceById(workspaceId);
+            setWorkspace(data);
+        }
+
+        catch(error){
+            console.error(error);
+
+            setError(
+                error.response?.data?.message || 'Failed to load workspace'
+            );
+        }
+
+        finally{
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        const fetchWorkspace = async () => {
-            try{
-                setLoading(true);
-                setError("");
-
-                const data = await workspaceService.getWorkspaceById(workspaceId);
-
-                setWorkspace(data);
-            }
-
-            catch(error){
-                console.error(error);
-
-                setError(
-                    error.response?.data?.message || 'Failed to load workspace'
-                );
-            }
-
-            finally{
-                setLoading(false);
-            }
+        if (!workspaceId) {
+            return;
         }
 
         fetchWorkspace();
-
     }, [workspaceId]);
 
 
@@ -84,29 +87,29 @@ function WorkspaceMembers(){
 
     };
 
-    if(loading){
+    if (loading) {
         return (
-            <div className="page-message">
-                Loading workspace...
-            </div>
+            <LoadingState message="Loading workspace members..." />
         );
     }
 
 
-    if(error){
+    if (error) {
         return (
-            <div className="page-message">
-                <p className="error-message">{error}</p>
-                <button type="button" onClick={() => navigate("/dashboard")}>Back to dashboard</button>
-            </div>
+            <ErrorState
+                title="Unable to load workspace"
+                message={error}
+                onRetry={fetchWorkspace}
+            />
         );
     }
 
-    if(!workspace){
-        return(
-            <div className="page-message">
-                Workspace not found.
-            </div>
+    if (!workspace) {
+        return (
+            <EmptyState
+                title="Workspace not found"
+                message="The requested workspace could not be found."
+            />
         );
     }
 
@@ -142,9 +145,10 @@ function WorkspaceMembers(){
 
             <div className="members-list">
                 {workspace.members?.length === 0 ? (
-                    <p className="empty-message">
-                        No members found.
-                    </p>
+                    <EmptyState
+                        title="No workspace members"
+                        message="There are currently no members in this workspace."
+                    />
                 ) : (
                         workspace.members?.map((member) => (
                             <div className="member-card" key={member._id}>

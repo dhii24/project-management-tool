@@ -5,15 +5,16 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 
 const { getCardsByStatus, getCardsByLabel, getMemberWorkload, getUpcomingDueCards, getWorkspaceStats } = require("../controllers/analyticsController");
+const workspaceMemberMiddleware = require("../middleware/workspaceMemberMiddleware");
 
-router.get("/status", authMiddleware, getCardsByStatus);
+router.get("/:workspaceId/status", authMiddleware, workspaceMemberMiddleware,getCardsByStatus);
 
-router.get("/labels", authMiddleware, getCardsByLabel);
+router.get("/:workspaceId/labels", authMiddleware, workspaceMemberMiddleware,getCardsByLabel);
 
-router.get("/workload", authMiddleware, getMemberWorkload);
+router.get("/:workspaceId/workload", authMiddleware, workspaceMemberMiddleware,getMemberWorkload);
 
-router.get("/due-this-week", authMiddleware, getUpcomingDueCards);
+router.get("/:workspaceId/due-this-week", authMiddleware, workspaceMemberMiddleware,getUpcomingDueCards);
 
-router.get("/workspace", authMiddleware, getWorkspaceStats);
+router.get("/:workspaceId/workspace", authMiddleware, workspaceMemberMiddleware,getWorkspaceStats);
 
 module.exports = router;

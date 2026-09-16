@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import boardService from "../../services/boardService";
 
+import LoadingState from "../../components/common/LoadingState";
+import ErrorState from "../../components/common/ErrorState";
+import EmptyState from "../../components/common/EmptyState";
+
 function Boards(){
 
     const { workspaceId } = useParams();
@@ -12,48 +16,49 @@ function Boards(){
 
     const [error, setError] = useState("");
 
+    const fetchBoards = async () => {
+        try{
+            setLoading(true);
+            setError("");
+
+            const data = await boardService.getBoardsByWorkspace(workspaceId);
+            setBoards(data);
+        }
+
+        catch(error){
+            console.error(error);
+            
+            setError(
+                error.response?.data?.message || "Failed to load boards."
+            );
+        }
+
+        finally{
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchBoards = async () => {
-            try{
+        if (!workspaceId) {
+            return;
+        }
 
-                setLoading(true);
-                setError("");
-
-                const data = await boardService.getBoardsByWorkspace(workspaceId);
-                setBoards(data);
-            }
-
-            catch(error){
-                console.error(error);
-                
-                setError(
-                    error.response?.data?.message || "Failed to load boards."
-                );
-            }
-
-            finally{
-                setLoading(false);
-            }
-        };
-        
         fetchBoards();
     }, [workspaceId]);
 
     if(loading){
         return (
-            <div className="page-message">
-                Loading boards...
-            </div>
+            <LoadingState message="Loading boards..." />
         );
     }
 
-    if(error){
+    if (error) {
         return (
-            <div className="page-message">
-                <p className="error-message">
-                    {error}
-                </p>
-            </div>
+            <ErrorState
+                title="Unable to load boards"
+                message={error}
+                onRetry={fetchBoards}
+            />
         );
     }
 
@@ -70,8 +75,10 @@ function Boards(){
 
             {boards.length === 0 ? (
                 <div className="empty-state">
-                    <h2>No boards yet</h2>
-                    <p>Create your first board to start managing your project.</p>
+                    <EmptyState
+                        title="No boards yet"
+                        message="Create your first board to start organizing your work."
+                    />
                     <Link to={`/workspaces/${workspaceId}/boards/create`} className="primary-button">Create Board</Link>
                 </div>
             ) : (

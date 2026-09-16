@@ -16,6 +16,7 @@ import WorkspaceMembers from "./pages/workspaces/WorkspaceMembers";
 import Boards from "./pages/boards/Boards";
 import CreateBoard from "./pages/boards/CreateBoard";
 import BoardDetails from "./pages/boards/BoardDetails";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 
 function AppRoutes(){
 
@@ -39,6 +40,7 @@ function AppRoutes(){
                             <Route path="boards" element={<Boards />} />
                             <Route path="boards/create" element={<CreateBoard />} />
                             <Route path="boards/:boardId" element={<BoardDetails />} />
+                            <Route path="analytics" element={<AnalyticsDashboard />} />
                             <Route path="members" element={<WorkspaceMembers />} />
                             <Route path="settings" element={
                                 <div>

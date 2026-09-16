@@ -16,7 +16,7 @@ const boardSchema = new mongoose.Schema(
 
         workspace:{
             type: mongoose.Schema.Types.ObjectId,
-            reference: "Workspace",
+            ref: "Workspace",
             required: true
         }
     },

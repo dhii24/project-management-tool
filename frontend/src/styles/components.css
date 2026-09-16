@@ -721,7 +721,7 @@ button:disabled{
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 30px;
+    min-height: 60px;
 }
 
 .board-card-item {
@@ -730,6 +730,8 @@ button:disabled{
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     cursor: pointer;
+    cursor: grab;
+
     transition:
         box-shadow 0.2s ease,
         transform 0.2s ease;
@@ -738,6 +740,10 @@ button:disabled{
 .board-card-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.board-card-item:active {
+    cursor: grabbing;
 }
 
 .board-card {
@@ -1692,18 +1698,6 @@ label-option:hover {
     font-size: 12px;
 }
 
-.board-card-item {
-    cursor: grab;
-}
-
-.board-card-item:active {
-    cursor: grabbing;
-}
-
-.board-list-cards {
-    min-height: 60px;
-}
-
 .card-search {
     margin-bottom: 20px;
 }
@@ -1780,6 +1774,109 @@ label-option:hover {
 
 .search-error {
     margin-top: 8px;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pagination-controls button {
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ============================= */
+/* UI STATES                     */
+/* ============================= */
+
+.ui-state {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+}
+
+.ui-state p {
+    margin: 8px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.ui-state h2 {
+    margin: 12px 0 0;
+    font-size: 20px;
+}
+
+
+/* Loading */
+
+.ui-loading-state {
+    gap: 12px;
+}
+
+.ui-loading-state p {
+    margin: 0;
+}
+
+.ui-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: ui-spin 0.8s linear infinite;
+}
+
+@keyframes ui-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Error / Empty icon */
+
+.ui-state-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f5f9;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* Retry button */
+
+.ui-retry-button {
+    margin-top: 18px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 7px;
+    background: #2563eb;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ui-retry-button:hover {
+    opacity: 0.9;
 }
 
 .empty-message {

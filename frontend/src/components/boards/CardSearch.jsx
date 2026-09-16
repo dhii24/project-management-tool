@@ -1,7 +1,7 @@
 import { useState } from "react";
 import cardService from "../../services/cardService";
 
-function CardSearch({ onResults, onClear }) {
+function CardSearch({ onResults, onClear, onQueryChange }) {
 
     const [query, setQuery] = useState("");
 
@@ -21,7 +21,12 @@ function CardSearch({ onResults, onClear }) {
             setLoading(true);
             setError("");
 
-            const data = await cardService.searchCards(query.trim());
+            const searchQuery = query.trim();
+
+            const data = await cardService.searchCards(searchQuery);
+
+            onQueryChange(searchQuery);
+
             onResults(data);
         } 
         
@@ -43,6 +48,8 @@ function CardSearch({ onResults, onClear }) {
     const handleClear = () => {
         setQuery("");
         setError("");
+
+        onQueryChange("");
         onClear();
     };
 

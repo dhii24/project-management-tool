@@ -16,6 +16,7 @@ function WorkspaceLayout(){
                 <nav className="workspace-navigation">
                     <Link to={`/workspaces/${workspaceId}`}>Overview</Link>
                     <Link to={`/workspaces/${workspaceId}/boards`}>Boards</Link>
+                    <Link to={`/workspaces/${workspaceId}/analytics`}>Analytics</Link>
                     <Link to={`/workspaces/${workspaceId}/members`}>Members</Link>
                     <Link to={`/workspaces/${workspaceId}/settings`}>Settings</Link>
                 </nav>
