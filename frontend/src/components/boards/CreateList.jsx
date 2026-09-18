@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function CreateList({ onClose, onCreate }) {
+function CreateList({ onClose, onCreate, loading }) {
 
     const [name, setName] = useState("");
 
@@ -37,8 +37,8 @@ function CreateList({ onClose, onCreate }) {
 
 
                     <div className="modal-actions">
-                        <button type="button" className="secondary-button" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="primary-button">Create List</button>
+                        <button type="button" className="secondary-button" onClick={onClose} disabled={loading}>Cancel</button>
+                        <button type="submit" className="primary-button" disabled={loading}>{loading ? "Creating..." : "Create List"}</button>
                     </div>
                 </form>
             </div>

@@ -1,4 +1,4 @@
-function SearchResults({ results, onCardClick, onPageChange }) {
+function SearchResults({ results, onCardClick, onPageChange, loading }) {
     if (!results) {
         return null;
     }
@@ -23,7 +23,7 @@ function SearchResults({ results, onCardClick, onPageChange }) {
             <div className="search-results-header">
                 <h3>Search Results</h3>
 
-                <span>{results.pagination.totalCards} cards found</span>
+                <span>{pagination.totalCards} cards found</span>
             </div>
 
             <div className="search-results-list">
@@ -56,8 +56,8 @@ function SearchResults({ results, onCardClick, onPageChange }) {
 
             {results.pagination.totalPages > 1 && (
                 <div className="pagination-controls">
-                    <button type="button" disabled={results.pagination.currentPage === 1} onClick={() =>onPageChange(results.pagination.currentPage - 1)}>
-                        Previous
+                    <button type="button" disabled={loading || pagination.currentPage === 1} onClick={() =>onPageChange(results.pagination.currentPage - 1)}>
+                        {loading ? "Loading..." : "Previous"}
                     </button>
 
                     <span>
@@ -65,8 +65,8 @@ function SearchResults({ results, onCardClick, onPageChange }) {
                         {results.pagination.totalPages}
                     </span>
 
-                    <button type="button" disabled={results.pagination.currentPage === results.pagination.totalPages} onClick={() =>onPageChange(results.pagination.currentPage + 1)}>
-                        Next
+                    <button type="button" disabled={loading || pagination.currentPage === pagination.totalPages} onClick={() =>onPageChange(results.pagination.currentPage + 1)}>
+                        {loading ? "Loading..." : "Next"}
                     </button>
                 </div>
             )}

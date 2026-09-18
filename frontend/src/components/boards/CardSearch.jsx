@@ -1,11 +1,9 @@
 import { useState } from "react";
 import cardService from "../../services/cardService";
 
-function CardSearch({ onResults, onClear, onQueryChange }) {
+function CardSearch({ onResults, onClear, onQueryChange, loading }) {
 
     const [query, setQuery] = useState("");
-
-    const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
 
@@ -18,7 +16,6 @@ function CardSearch({ onResults, onClear, onQueryChange }) {
         }
 
         try{
-            setLoading(true);
             setError("");
 
             const searchQuery = query.trim();
@@ -39,10 +36,6 @@ function CardSearch({ onResults, onClear, onQueryChange }) {
             );
 
         } 
-        
-        finally {
-            setLoading(false);
-        }
     };
 
     const handleClear = () => {
@@ -57,12 +50,12 @@ function CardSearch({ onResults, onClear, onQueryChange }) {
         <div className="card-search">
 
             <form onSubmit={handleSearch}>
-                <input type="text" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search cards..."/>
+                <input type="text" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search cards..." disabled={loading}/>
 
                 <button type="submit" disabled={loading}>{loading ? "Searching..." : "Search"}</button>
 
                 {query && (
-                    <button type="button" onClick={handleClear}>Clear</button>
+                    <button type="button" onClick={handleClear} disabled={loading}>Clear</button>
                 )}
             </form>
 

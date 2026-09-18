@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function EditCard({card, onClose, onUpdate}){
+function EditCard({ card, onClose, onUpdate, loading }){
     const [title, setTitle] = useState(card.title || "");
 
     const [description, setDescription] = useState(card.description || "");
@@ -25,27 +25,27 @@ function EditCard({card, onClose, onUpdate}){
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay" onClick={loading ? undefined : onClose}>
             <div className="modal" onClick={(event) => event.stopPropagation()}>
                 <div className="modal-header">
                     <h2>Edit Card</h2>
-                    <button type="button" className="modal-close" onClick={onClose}>×</button>
+                    <button type="button" className="modal-close" onClick={onClose} disabled={loading}>×</button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="edit-card-title">Title</label>
-                        <input id="edit-card-title" type="text" value={title} onChange={(event) => setTitle(event.target.value)} required />
+                        <input id="edit-card-title" type="text" value={title} onChange={(event) => setTitle(event.target.value)} required disabled={loading}/>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="edit-card-description">Description</label>
-                        <textarea id="edit-card-description" value={description} onChange={(event) => setDescription(event.target.value)} rows="4" />
+                        <textarea id="edit-card-description" value={description} onChange={(event) => setDescription(event.target.value)} rows="4" disabled={loading}/>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="edit-card-priority">Priority</label>
-                        <select id="edit-card-priority" value={priority} onChange={(event) => setPriority(event.target.value)}>
+                        <select id="edit-card-priority" value={priority} onChange={(event) => setPriority(event.target.value)} disabled={loading}>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
@@ -54,12 +54,12 @@ function EditCard({card, onClose, onUpdate}){
 
                     <div className="form-group">
                         <label htmlFor="edit-card-due-date">Due Date</label>
-                        <input id="edit-card-due-date" type="date" value={dueDate} onChange={(event) =>setDueDate(event.target.value)}/>
+                        <input id="edit-card-due-date" type="date" value={dueDate} onChange={(event) =>setDueDate(event.target.value)} disabled={loading}/>
                     </div>
 
                     <div className="modal-actions">
-                        <button type="button" className="secondary-button" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="primary-button">Save Changes</button>
+                        <button type="button" className="secondary-button" onClick={onClose} disabled={loading}>Cancel</button>
+                        <button type="submit" className="primary-button" disabled={loading}>{loading ? "Saving..." : "Save Changes"}</button>
                     </div>
                 </form>
             </div>

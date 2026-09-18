@@ -1,8 +1,9 @@
 import { useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 
 import workspaceService from "../../services/workspaceService";
+
+import ErrorState from "../../components/common/ErrorState";
 
 function CreateWorkspace(){
 
@@ -58,9 +59,10 @@ function CreateWorkspace(){
                 <p className="form-description">Create a workspace to organize your projects and team</p>
 
                 {error && (
-                    <div className="error-message">
-                        {error}
-                    </div>
+                    <ErrorState
+                        title="Unable to create workspace"
+                        message={error}
+                    />
                 )}
 
                 <form onSubmit={handleSubmit}>

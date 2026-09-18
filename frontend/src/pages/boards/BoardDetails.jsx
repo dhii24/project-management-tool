@@ -23,7 +23,10 @@ import NotificationPanel from "../../components/notifications/NotificationPanel"
 
 import CardSearch from "../../components/boards/CardSearch";
 import SearchResults from "../../components/boards/SearchResults";
-import AnalyticsDashboard from "../AnalyticsDashboard";
+
+import LoadingState from "../../components/common/LoadingState";
+import ErrorState from "../../components/common/ErrorState";
+import EmptyState from "../../components/common/EmptyState";
 
 function BoardDetails(){
     
@@ -34,8 +37,12 @@ function BoardDetails(){
     const [lists, setLists] = useState([]);
 
     const [loading, setLoading] = useState(true);
-    
+    const [loadingLists, setLoadingLists] = useState(true);
     const [error, setError] = useState("");
+    const [workspaceError, setWorkspaceError] = useState("");
+    const [listsError, setListsError] = useState("");
+    const [operationError, setOperationError] = useState("");
+    const [loadingOperation, setLoadingOperation] = useState("");
     
     const [showCreateList, setShowCreateList] = useState(false);
     
@@ -68,6 +75,8 @@ function BoardDetails(){
     useEffect(() => {
         const fetchWorkspace = async () => {
             try {
+                setWorkspaceError("");
+
                 const data = await workspaceService.getWorkspaceById(workspaceId);
                 setWorkspace(data);
             } 
@@ -75,7 +84,7 @@ function BoardDetails(){
             catch (error) {
                 console.error("Failed to fetch workspace:",error);
 
-                setError(
+                setWorkspaceError(
                     error.response?.data?.message ||
                     "Failed to load workspace."
                 );
@@ -85,69 +94,86 @@ function BoardDetails(){
         fetchWorkspace();
     }, [workspaceId]);
     
-    useEffect(() => {
-        const fetchBoard = async () => {
-            try{
-                setLoading(true);
-                setError("");
-                
-                const data = await boardService.boardById(workspaceId, boardId);
-                setBoard(data);
-            }
-
-            catch(error){
-                console.error(error);
-                
-                setError(
-                    error.response?.data?.message || "Failed to load board."
-                );
-            }
-
-            finally{
-                setLoading(false);
-            }
+    const fetchBoard = async () => {
+        try{
+            setLoading(true);
+            setError("");
+            
+            const data = await boardService.boardById(workspaceId, boardId);
+            setBoard(data);
         }
-        
+
+        catch(error){
+            console.error(error);
+            
+            setError(
+                error.response?.data?.message || "Failed to load board."
+            );
+        }
+
+        finally{
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (!workspaceId || !boardId) {
+            return;
+        }
+
         fetchBoard();
     }, [workspaceId, boardId]);
 
+    const fetchLists = async () => {
+        try{
+            setLoadingLists(true);
+            setListsError("");
 
+            const lists = await listService.getListsByBoard(boardId);
+            
+            const listWithCards = await Promise.all(
+                lists.map(async (list) => {
+                    const cards = await cardService.getCardsByList(list._id);
+                    
+                    return {
+                        ...list,
+                        cards
+                    };
+                })
+            );
+
+            setLists(listWithCards);
+        }
+
+        catch(error){
+            console.error("Failed to fetch lists:", error);
+            setListsError(
+                error.response?.data?.message || "Failed to load lists."
+            );
+        }
+
+        finally {
+            setLoadingLists(false);
+        }
+    };
+    
     useEffect(() => {
-        const fetchLists = async () => {
-            try{
-                const lists = await listService.getListsByBoard(boardId);
-                
-                const listWithCards = await Promise.all(
-                    lists.map(async (list) => {
-                        const cards = await cardService.getCardsByList(list._id);
-                        
-                        return {
-                            ...list,
-                            cards
-                        };
-                    })
-                );
-
-                setLists(listWithCards);
-            }
-            catch(error){
-                console.error("Failed to fetch lists:", error);
-                setError(
-                    error.response?.data?.message || "Failed to load lists."
-                );
-            }
-        };
+        if (!boardId) {
+            return;
+        }
 
         fetchLists();
     }, [boardId]);
-    
-    
+
     const handleAddList = () => {
         setShowCreateList(true);
     };
     
     const handleCreateList = async (listData) => {
         try{
+            setLoadingOperation("create-list");
+            setOperationError("");
+
             const newList = await listService.createList(boardId, listData);
             
             setLists((previousLists) => [
@@ -161,10 +187,14 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to create list:", error);
             
-            setError(
+            setOperationError(
                 error.response?.data?.message ||
                 "Failed to create list."
             );
+        }
+
+        finally{
+            setLoadingOperation("");
         }
     };
     
@@ -175,6 +205,8 @@ function BoardDetails(){
     
     const handleUpdateList = async (listData) => {
         try{
+            setLoadingOperation("update-list");
+            setOperationError("");
             const updatedList = await listService.updateList(boardId, selectedList._id, listData);
     
             setLists((previousLists) => {
@@ -196,9 +228,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to update List:", error);
     
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to update list."
             );
+        }
+
+        finally {
+            setLoadingOperation("");
         }
     };
     
@@ -209,6 +245,9 @@ function BoardDetails(){
             return;
     
         try{
+            setLoadingOperation("delete-list");
+            setOperationError("");
+
             await listService.deleteList(boardId, list._id);
     
             setLists((previousLists) => {
@@ -221,9 +260,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to delete list:", error);
     
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to delete list."
             );
+        }
+
+        finally {
+            setLoadingOperation("");
         }
     };
     
@@ -234,6 +277,9 @@ function BoardDetails(){
     
     const handleCreateCard = async (cardData) => {
         try{
+            setLoadingOperation("create-card");
+            setOperationError("");
+
             const newCard = await cardService.createCard(selectedListId, cardData);
 
             setLists((previousLists) => {
@@ -258,9 +304,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to create card:", error);
 
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to create card."
             );
+        }
+
+        finally{
+            setLoadingOperation("");
         }
     };
 
@@ -274,6 +324,9 @@ function BoardDetails(){
 
     const handleUpateCard = async (cardData) => {
         try{
+            setLoadingOperation("update-card");
+            setOperationError("");
+
             const updatedCard = await cardService.updateCard(selectedCard.list, selectedCard._id, cardData);
 
             setLists((previousLists) => {
@@ -297,9 +350,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to update card:", error);
             
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to update card"
             );
+        }
+
+        finally{
+            setLoadingOperation("");
         }
     };
     
@@ -310,6 +367,9 @@ function BoardDetails(){
             return;
 
         try{
+            setLoadingOperation("delete-card");
+            setOperationError("");
+
             await cardService.deleteCard(card.list, card._id);
 
             setLists((previousLists) => {
@@ -327,9 +387,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to delete card:", error);
 
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to delete card."
             );
+        }
+
+        finally {
+            setLoadingOperation("");
         }
     };
 
@@ -339,6 +403,9 @@ function BoardDetails(){
 
     const handleSaveAssignedMembers = async (memberIds) => {
         try{
+            setLoadingOperation("assign-members");
+            setOperationError("");
+
             const updatedCard = await cardService.updateCard(selectedCard.list, selectedCard._id, {
                 assignedMembers: memberIds
             });
@@ -364,9 +431,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to assign members:", error);
 
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to assign members"
             );
+        }
+
+        finally {
+            setLoadingOperation("");
         }
     };
 
@@ -376,7 +447,11 @@ function BoardDetails(){
 
     const handleSaveLabels = async (labels) => {
         try{
+            setLoadingOperation("manage-labels");
+            setOperationError("");
+
             const updatedCard = await cardService.updateCard(selectedCard.list, selectedCard._id, {labels});
+
             setLists((previousLists) => {
                 return previousLists.map((list) => {
                     return {
@@ -398,14 +473,21 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to update labels:", error);
 
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to update labels."
             );
+        }
+
+        finally {
+            setLoadingOperation("");
         }
     };
     
     const handleMoveCard = async (card, targetListId) => {
         try {
+            setLoadingOperation("move-card");
+            setOperationError("");
+
             const sourceListId = card.list;
 
             // Find target list
@@ -476,9 +558,13 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to move card:", error);
 
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to move card."
             );
+        }
+
+        finally {
+            setLoadingOperation("");
         }
     };
 
@@ -561,6 +647,9 @@ function BoardDetails(){
 
 
         try{
+            setLoadingOperation("move-card");
+            setOperationError("");
+
             await cardService.moveCard(
                 sourceListId,
                 draggedCard._id,
@@ -641,13 +730,14 @@ function BoardDetails(){
         catch (error) {
             console.error("Failed to move card:", error);
 
-            setError(
+           setOperationError(
                 error.response?.data?.message ||
                 "Failed to move card."
             );
         } 
         
         finally {
+            setLoadingOperation("");
             setDraggedCard(null);
             setDragOverCardId(null);
         }
@@ -663,6 +753,9 @@ function BoardDetails(){
 
     const handleSearchPageChange = async (page) => {
         try{
+            setLoadingOperation("search-page");
+            setOperationError("");
+
             const data = await cardService.searchCards(searchQuery, page);
             setSearchResults(data);
         }
@@ -670,43 +763,63 @@ function BoardDetails(){
         catch(error){
             console.error("Failed to load search page:", error);
 
-            setError(
+            setOperationError(
                 error.response?.data?.message || "Failed to load search results."
             );
         }
+
+        finally {
+            setLoadingOperation("");
+        }
     }
 
-    if(loading){
+    if (loading) {
         return (
-            <div className="page-message">
-                Loading board...
-            </div>
+            <LoadingState message="Loading board..." />
         );
     }
 
-
-    if(error){
+    if (error) {
         return (
-            <div className="page-message">
-                <p className="error-message">
-                    {error}
-                </p>
-            </div>
+            <ErrorState
+                title="Unable to load board"
+                message={error}
+                onRetry={fetchBoard}
+            />
         );
     }
 
-
-    if(!board){
+    if (!board) {
         return (
-            <div className="page-message">
-                Board not found.
-            </div>
+            <EmptyState
+                title="Board not found"
+                message="The requested board could not be found."
+            />
         );
     }
-
 
     return (
         <div className="workspace-page">
+            {workspaceError && (
+                <div className="operation-error">
+                    <div className="operation-error-content">
+                        <span className="operation-error-icon">!</span>
+
+                        <div>
+                            <strong>Workspace information unavailable</strong>
+                            <p>{workspaceError}</p>
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        className="operation-error-dismiss"
+                        onClick={() => setWorkspaceError("")}
+                    >
+                        Dismiss
+                    </button>
+                </div>
+            )}
 
             <div className="board-header">
                 <div>
@@ -735,26 +848,64 @@ function BoardDetails(){
             <div className="board-page">
                 <BoardHeader board={board} onAddList={handleAddList} />
 
-                <CardSearch onResults={handleSearchResults} onClear={handleClearSearch} onQueryChange={setSearchQuery}/>
+                <CardSearch onResults={handleSearchResults} onClear={handleClearSearch} onQueryChange={setSearchQuery} loading={loadingOperation === "search"}/>
+
+                {operationError && (
+                    <div className="operation-error">
+                        <div className="operation-error-content">
+                            <span className="operation-error-icon">!</span>
+
+                            <div>
+                                <strong>Action failed</strong>
+                                <p>{operationError}</p>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="operation-error-dismiss"
+                            onClick={() => setOperationError("")}
+                        >
+                            Dismiss
+                        </button>
+                    </div>
+                )}
 
                 {/* If searchResults === null -- you see your normal Kanban board.*/}
                 {/* But If search results are true you see corresponding cards.  */}
                 {searchResults ? (
-                    <SearchResults results={searchResults} onCardClick={handleCardClick} onPageChange={handleSearchPageChange}/>
+                    <SearchResults results={searchResults} onCardClick={handleCardClick} onPageChange={handleSearchPageChange} loading={loadingOperation === "search-page"}/>
                 ) : (
                     <div className="board-lists">
-                        {lists.map((list) => (
-                            <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onCardDragOver={handleCardDragOver}/>
-                        ))}
+                        {loadingLists ? (
+                            <LoadingState message="Loading lists..." />
+                        ) : listsError ? (
+                                <ErrorState
+                                    title="Unable to load lists"
+                                    message={listsError}
+                                    onRetry={fetchLists}
+                                />
+                            ) : lists.length === 0 ? (
+                            <EmptyState
+                                title="No lists yet"
+                                message="Create your first list to start organizing your cards."
+                            />
+                        ) : (
+                            lists.map((list) => (
+                                <BoardList key={list._id} list={list} onAddCard={handleAddCard} onCardClick={handleCardClick} onEditList={handleEditList} onDeleteList={handleDeleteList} onDragStart={handleDragStart} onDragOver={handleDragOver} onDrop={handleDrop} onCardDragOver={handleCardDragOver} draggedCard={draggedCard}/>
+                            ))
+                        )}
 
-                        <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
+                        {!loadingLists && !listsError && (
+                            <button type="button" className="add-list-card" onClick={handleAddList}>+Add another list</button>
+                        )}
                     </div>
                 )}
             </div>
 
 
             {showCreateList && (
-                <CreateList onClose={() => setShowCreateList(false) } onCreate={handleCreateList}/>
+                <CreateList onClose={() => setShowCreateList(false) } onCreate={handleCreateList}  loading={loadingOperation === "create-list"}/>
             )}
 
             {showCreateCard && (
@@ -762,7 +913,8 @@ function BoardDetails(){
                     setShowCreateCard(false);
                     setSelectedListId(null);
                 }}
-                onCreate={handleCreateCard}/>
+                onCreate={handleCreateCard}
+                loading={loadingOperation === "create-card"}/>
             )}
 
             {selectedCard && (
@@ -770,7 +922,7 @@ function BoardDetails(){
             )}
 
             {showEditCard && selectedCard && (
-                <EditCard card={selectedCard} onClose={() => setShowEditCard(false)} onUpdate={handleUpateCard}/>
+                <EditCard card={selectedCard} onClose={() => setShowEditCard(false)} onUpdate={handleUpateCard} loading={loadingOperation === "update-card"}/>
             )}
 
             {showEditList && selectedList && (
@@ -779,15 +931,16 @@ function BoardDetails(){
                     setSelectedList(null);
                 }}
                 onUpdate={handleUpdateList}
+                loading={loadingOperation === "update-list"}
                 />
             )}
 
             {showAssignMembers && selectedCard && (
-                <AssignMembers card={selectedCard} members={workspace?.members || []} onClose={() => setShowAssignMembers(false)} onSave={handleSaveAssignedMembers}/>
+                <AssignMembers card={selectedCard} members={workspace?.members || []} onClose={() => setShowAssignMembers(false)} onSave={handleSaveAssignedMembers}  loading={loadingOperation === "assign-members"}/>
             )}
 
             {showManageLabels && selectedCard && (
-                <ManageLabels card={selectedCard} onClose={() => setShowManageLabels(false)} onSave={handleSaveLabels}/>
+                <ManageLabels card={selectedCard} onClose={() => setShowManageLabels(false)} onSave={handleSaveLabels}  loading={loadingOperation === "manage-labels"}/>
             )}
 
             <NotificationPanel />

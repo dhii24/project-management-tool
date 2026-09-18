@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
-
 import { useNavigate } from "react-router-dom";
 
 import workspaceService from "../../services/workspaceService";
-
 import { useAuth } from "../../context/AuthContext";
+
+import LoadingState from "../../components/common/LoadingState";
+import ErrorState from "../../components/common/ErrorState";
+import EmptyState from "../../components/common/EmptyState";
 
 function Dashboard(){
 
@@ -18,31 +20,29 @@ function Dashboard(){
 
     const [error, setError] = useState("");
 
+    const fetchWorkspaces = async () => {
+
+        try{
+            setLoading(true);
+            setError("");
+            const data = await workspaceService.getMyWorkspaces();
+            setWorkspaces(data);
+        }
+
+        catch (error){
+            console.error(error);
+            setError(
+                error.response?.data?.message || "Failed to load workspaces." 
+            );
+        }
+
+        finally{
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-
-        const fetchWorkspaces = async () => {
-
-            try{
-                setLoading(true);
-                setError("");
-                const data = await workspaceService.getMyWorkspaces();
-                setWorkspaces(data);
-            }
-
-            catch (error){
-                console.error(error);
-                setError(
-                    error.response?.data?.message || "Failed to load workspaces." 
-                );
-            }
-
-            finally{
-                setLoading(false);
-            }
-        };
-
         fetchWorkspaces();
-
     }, []);
 
     return (
@@ -61,17 +61,24 @@ function Dashboard(){
                     <h2>Your Workspaces</h2>
                     <button type="button" onClick={() => navigate("/workspaces/create")}>+ Create Workspace</button>
                 </div>
-
+                
                 {loading && (
-                    <p>Loading workspaces...</p>
+                    <LoadingState message="Loading your workspaces..." />
                 )}
 
                 {!loading && error && (
-                    <p className="error-message">{error}</p>
+                    <ErrorState
+                        title="Unable to load workspaces"
+                        message={error}
+                        onRetry={fetchWorkspaces}
+                    />
                 )}
 
                 {!loading && !error && workspaces.length === 0 && (
-                    <p>You don't have any workspaces yet.</p>
+                    <EmptyState
+                        title="No workspaces yet"
+                        message="Create your first workspace to get started."
+                    />
                 )}
 
                 {!loading && !error && workspaces.length > 0 && (

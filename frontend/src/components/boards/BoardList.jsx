@@ -1,7 +1,9 @@
 import { useState } from "react";
 import BoardCard from "./BoardCard";
 
-function BoardList({ list, onAddCard, onCardClick, onEditList, onDeleteList, onDragStart, onDragOver, onDrop, onCardDragOver }) {
+import EmptyState from "../common/EmptyState";
+
+function BoardList({ list, onAddCard, onCardClick, onEditList, onDeleteList, onDragStart, onDragOver, onDrop, onCardDragOver, draggedCard }) {
 
     const [showMenu, setShowMenu] = useState(false);
 
@@ -35,11 +37,15 @@ function BoardList({ list, onAddCard, onCardClick, onEditList, onDeleteList, onD
 
 
             <div className="board-list-cards" onDragOver={(event) => onDragOver(event)} onDrop={(event) => onDrop(event, list._id)}>
-                {list.cards?.length === 0 ? (
-                    <p className="empty-list-message">No cards yet.</p>
+                {!list.cards || list.cards.length === 0 ? (
+                    <EmptyState
+                        title="No cards yet"
+                        message="Add a card to start working on this list."
+                        compact
+                    />
                 ) : (
                     list.cards?.map((card) => (
-                        <BoardCard key={card._id} card={card} onClick={onCardClick} onDragStart={onDragStart} onDragOver={onCardDragOver}/>
+                        <BoardCard key={card._id} card={card} onClick={onCardClick} onDragStart={onDragStart} onDragOver={onCardDragOver}  moving={draggedCard?._id === card._id}/>
                     ))
                 )}
             </div>
