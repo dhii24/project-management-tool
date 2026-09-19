@@ -263,10 +263,27 @@ input {
 }
 
 
-/* Responsive */
+/* =========================================
+   RESPONSIVE ANALYTICS
+   ========================================= */
 
+/* Prevent analytics content from creating overflow */
+.analytics-dashboard,
+.analytics-summary,
+.analytics-grid,
+.analytics-section {
+    min-width: 0;
+}
+
+.analytics-section,
+.analytics-stat-card,
+.analytics-workload-row,
+.analytics-due-card {
+    overflow-wrap: anywhere;
+}
+
+/* Tablet */
 @media (max-width: 1000px) {
-
     .analytics-summary {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -274,29 +291,226 @@ input {
     .analytics-grid {
         grid-template-columns: 1fr;
     }
+
+    .analytics-dashboard {
+        padding: 24px;
+    }
+
+    .analytics-stat-card {
+        padding: 18px;
+    }
+
+    .analytics-stat-card h2 {
+        font-size: 24px;
+    }
 }
 
-
+/* Mobile */
 @media (max-width: 600px) {
-
     .analytics-dashboard {
         padding: 16px;
     }
 
+    .analytics-header {
+        margin-bottom: 20px;
+    }
+
+    .analytics-header h1 {
+        font-size: 24px;
+        line-height: 1.3;
+    }
+
+    .analytics-workspace-name {
+        font-size: 14px;
+    }
+
+    .analytics-header p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
     .analytics-summary {
         grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .analytics-stat-card {
+        gap: 12px;
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .analytics-stat-icon {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    .analytics-stat-card p {
+        font-size: 13px;
+    }
+
+    .analytics-stat-card h2 {
+        font-size: 22px;
+    }
+
+    .analytics-grid {
+        gap: 14px;
     }
 
     .analytics-section {
-        padding: 18px;
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .analytics-section-header {
+        margin-bottom: 18px;
+    }
+
+    .analytics-section-header h2 {
+        font-size: 17px;
+    }
+
+    .analytics-section-header p {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .analytics-row {
+        margin-bottom: 14px;
+    }
+
+    .analytics-row-header {
+        gap: 10px;
+    }
+
+    .analytics-row-header span,
+    .analytics-row-header strong {
+        font-size: 13px;
     }
 
     .analytics-workload-row {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+        margin-bottom: 16px;
     }
 
     .analytics-member-info {
         min-width: 0;
+    }
+
+    .analytics-workload {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .analytics-workload-top {
+        font-size: 12px;
+    }
+
+    .analytics-due-card {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px 0;
+    }
+
+    .analytics-due-card h3 {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .analytics-due-card span {
+        font-size: 12px;
+    }
+
+    .analytics-empty {
+        padding: 24px 12px;
+        font-size: 13px;
+    }
+
+    .analytics-page-state {
+        min-height: 300px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+    .analytics-dashboard {
+        padding: 12px;
+    }
+
+    .analytics-section {
+        padding: 14px;
+    }
+
+    .analytics-stat-card {
+        padding: 14px;
+    }
+
+    .analytics-header h1 {
+        font-size: 22px;
+    }
+}
+
+/* =========================================
+   RESPONSIVE FOUNDATION
+   ========================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-width: 320px;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+    max-width: 100%;
+}
+
+button {
+    font: inherit;
+}
+
+@media (max-width: 1024px) {
+    .workspace-page {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .workspace-page {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .workspace-page {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 }
