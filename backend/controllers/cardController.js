@@ -1,5 +1,7 @@
-const Card = require("../models/Card");
+const Workspace = require("../models/Workspace");
+const Board = require("../models/Board");
 const List = require("../models/List");
+const Card = require("../models/Card");
 const User = require("../models/User");
 const createNotification = require("../utils/createNotification");
 
@@ -385,64 +387,93 @@ const uploadAttachment = async (req, res) => {
 };
 
 const searchCards = async (req, res) => {
+    try {
+        const { query = "", page = 1, limit = 10 } = req.query;
 
-    try{
-        const { query, page = 1, limit = 10} = req.query;
+        const currentPage = Math.max(Number(page), 1);
+        const pageLimit = Math.max(Number(limit), 1);
+        const skip = (currentPage - 1) * pageLimit;
 
-        const currentPage = Math.max(1, parseInt(page) || 1);
-        const pageLimit =  Math.min(50, Math.max(1, parseInt(limit) || 10));
-
-        if (!query || !query.trim()) {
+        if (!query.trim()) {
             return res.status(400).json({
-                message: "Search query is required."
+                message: "Search query is required"
             });
         }
 
-        const searchQuery = query.trim();
+        // Find workspaces where the current user is a member
+        const workspaces = await Workspace.find({
+            members: req.user.userId
+        }).select("_id");
 
-        const skip = (currentPage -1) * pageLimit;
+        const workspaceIds = workspaces.map(
+            (workspace) => workspace._id
+        );
 
+        // Find boards belonging to those workspaces
+        const boards = await Board.find({
+            workspace: { $in: workspaceIds }
+        }).select("_id");
+
+        const boardIds = boards.map(
+            (board) => board._id
+        );
+
+        // Find lists belonging to those boards
+        const lists = await List.find({
+            board: { $in: boardIds }
+        }).select("_id");
+
+        const listIds = lists.map(
+            (list) => list._id
+        );
+
+        // Search only cards belonging to accessible lists
         const searchFilter = {
+            list: { $in: listIds },
             $or: [
                 {
-                    title:{
-                        $regex: searchQuery,
+                    title: {
+                        $regex: query.trim(),
                         $options: "i"
-                    },
+                    }
                 },
                 {
-                    labels:{
-                        $regex: searchQuery,
+                    labels: {
+                        $regex: query.trim(),
                         $options: "i"
                     }
                 }
             ]
         };
 
-        const cards = await Card.find(searchFilter).populate("assignedMembers", "name email role").sort({ createdAt: -1}).skip(skip).limit(pageLimit);
+        const [cards, totalCards] = await Promise.all([
+            Card.find(searchFilter)
+                .populate("list", "name board")
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(pageLimit),
 
-        const totalCards = await Card.countDocuments(
-            searchFilter
-        );
+            Card.countDocuments(searchFilter)
+        ]);
 
-        const totalPages = Math.max(1, Math.ceil(totalCards / pageLimit));
+        const totalPages = Math.ceil(totalCards / pageLimit);
 
-        res.status(200).json({
+        return res.status(200).json({
             cards,
-            pagination:{
-                currentPage,
-                totalPages,
+            pagination: {
                 totalCards,
+                totalPages,
+                currentPage,
                 limit: pageLimit
             }
         });
-        
+
     } catch (error) {
+        console.error("Search cards error:", error);
 
-        res.status(500).json({
-            message: error.message
-        })
-
+        return res.status(500).json({
+            message: "Server error while searching cards"
+        });
     }
 };
 

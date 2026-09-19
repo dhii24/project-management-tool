@@ -2,24 +2,36 @@ import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-
-    const [user, setUser] = useState(() => {
-
+const getStoredUser = () => {
+    try {
         const storedUser = localStorage.getItem("user");
 
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
+        if (!storedUser) {
+            return null;
+        }
 
-    const [token, setToken] = useState(() => {
-        return localStorage.getItem("token");
-    });
+        return JSON.parse(storedUser);
+    } 
+
+    catch (error) {
+        console.error("Failed to load stored user:", error);
+
+        localStorage.removeItem("user");
+        return null;
+    }
+};
+
+const getStoredToken = () => {
+    return localStorage.getItem("token");
+};
+
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(getStoredUser);
+    const [token, setToken] = useState(getStoredToken);
 
     const login = (userData, authToken) => {
-
         localStorage.setItem("token", authToken);
         localStorage.setItem("user", JSON.stringify(userData));
-
         setToken(authToken);
         setUser(userData);
     };

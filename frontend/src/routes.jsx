@@ -17,6 +17,7 @@ import Boards from "./pages/boards/Boards";
 import CreateBoard from "./pages/boards/CreateBoard";
 import BoardDetails from "./pages/boards/BoardDetails";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
+import GuestRoute from "./components/auth/GuestRoute";
 
 function AppRoutes(){
 
@@ -25,9 +26,11 @@ function AppRoutes(){
             <Routes>
                 
                 {/* Authentication Routes */}
-                <Route element={<AuthLayout />}>
-                    <Route path="/" element={<Login/>} />
-                    <Route path="/register" element={<Register/>} />
+                <Route element={<GuestRoute />}>
+                    <Route element={<AuthLayout />}>
+                        <Route path="/" element={<Login/>} />
+                        <Route path="/register" element={<Register/>} />
+                    </Route>
                 </Route>
 
                 {/* Protected Application Routes */}

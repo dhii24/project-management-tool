@@ -9,7 +9,7 @@ const { createList, getLists, updateList, deleteList, moveList } = require("../c
 
 router.post("/:boardId", authMiddleware, boardMemberMiddleware, createList);
 
-router.get("/:boardId", authMiddleware, getLists);
+router.get("/:boardId", authMiddleware, boardMemberMiddleware, getLists);
 
 router.put("/:boardId/:listId", authMiddleware, boardMemberMiddleware, updateList);
 

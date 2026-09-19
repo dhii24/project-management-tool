@@ -1,14 +1,158 @@
-* {
+/* =========================================
+   GLOBAL FOUNDATION
+========================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+
+:root {
+    /* Colors */
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+
+    --color-text: #111827;
+    --color-text-secondary: #4b5563;
+    --color-text-muted: #6b7280;
+
+    --color-border: #e5e7eb;
+    --color-border-dark: #d1d5db;
+
+    --color-background: #f5f5f5;
+    --color-surface: #ffffff;
+
+    --color-danger: #dc2626;
+    --color-danger-hover: #b91c1c;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.2s ease;
+}
+
+html {
+    width: 100%;
+    overflow-x: hidden;
+
+    font-size: 16px;
 }
 
 body {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100vh;
+
+    margin: 0;
+
+    overflow-x: hidden;
+
+    background-color: var(--color-background);
+    color: var(--color-text);
+
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f5f5f5;
+    font-size: 14px;
+    line-height: 1.5;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+/* =========================================
+   TYPOGRAPHY
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--color-text);
+    line-height: 1.3;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+p {
+    line-height: 1.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+    max-width: 100%;
+}
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* =========================================
+   FOCUS & SELECTION
+========================================= */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+::selection {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+}
+
+
+/*  */
 a {
     text-decoration: none;
     color: inherit;
@@ -59,15 +203,20 @@ input {
     display: flex;
     align-items: center;
     gap: 16px;
+
     padding: 22px;
-    border: 1px solid #e5e7eb;
+
+    border: 1px solid var(--color-border);
     border-radius: 14px;
-    background: white;
+
+    background: var(--color-surface);
 }
 
 .analytics-stat-card p {
     margin: 0 0 5px;
-    color: #666;
+
+    color: var(--color-text-muted);
+
     font-size: 14px;
 }
 
@@ -98,9 +247,9 @@ input {
 
 .analytics-section {
     padding: 24px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
     border-radius: 14px;
-    background: white;
+    background: var(--color-surface);
 }
 
 .analytics-section-header {
@@ -114,7 +263,7 @@ input {
 
 .analytics-section-header p {
     margin: 0;
-    color: #777;
+    color: var(--color-text-muted);
     font-size: 14px;
 }
 
@@ -146,15 +295,21 @@ input {
 .analytics-bar {
     width: 100%;
     height: 9px;
+
     overflow: hidden;
-    border-radius: 6px;
-    background: #e5e7eb;
+
+    border-radius: var(--radius-sm);
+
+    background: var(--color-border);
 }
 
 .analytics-bar-fill {
     height: 100%;
-    border-radius: 6px;
-    background: #2563eb;
+
+    border-radius: var(--radius-sm);
+
+    background: var(--color-primary);
+
     transition: width 0.3s ease;
 }
 
@@ -218,9 +373,11 @@ input {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 15px;
     padding: 15px 0;
-    border-bottom: 1px solid #eee;
+
+    border-bottom: 1px solid var(--color-border);
 }
 
 .analytics-due-card:last-child {
@@ -233,8 +390,8 @@ input {
 }
 
 .analytics-due-card span {
+    color: var(--color-text-muted);
     font-size: 13px;
-    color: #777;
 }
 
 
@@ -456,43 +613,8 @@ input {
 }
 
 /* =========================================
-   RESPONSIVE FOUNDATION
-   ========================================= */
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-html {
-    width: 100%;
-    overflow-x: hidden;
-}
-
-body {
-    width: 100%;
-    min-width: 320px;
-    margin: 0;
-    overflow-x: hidden;
-}
-
-img,
-video {
-    max-width: 100%;
-    height: auto;
-}
-
-button,
-input,
-textarea,
-select {
-    max-width: 100%;
-}
-
-button {
-    font: inherit;
-}
+   RESPONSIVE WORKSPACE PADDING
+========================================= */
 
 @media (max-width: 1024px) {
     .workspace-page {
@@ -513,4 +635,88 @@ button {
         padding-left: 12px;
         padding-right: 12px;
     }
+}
+
+/* =========================================
+   SCROLLBAR POLISH
+========================================= */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+/* =========================================
+   FINAL GLOBAL POLISH
+========================================= */
+
+img {
+    display: block;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    user-select: none;
+}
+
+input,
+textarea {
+    user-select: text;
+}
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================================
+   DISABLED INTERACTIONS
+========================================= */
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+    user-select: none;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
 }
