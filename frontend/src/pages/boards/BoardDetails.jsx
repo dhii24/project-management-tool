@@ -943,8 +943,6 @@ function BoardDetails(){
                 <ManageLabels card={selectedCard} onClose={() => setShowManageLabels(false)} onSave={handleSaveLabels}  loading={loadingOperation === "manage-labels"}/>
             )}
 
-            <NotificationPanel />
-
         </div>
     );
 }

@@ -1,6 +1,14 @@
-/* =========================================
-   GLOBAL FOUNDATION
-========================================= */
+/* =========================================================
+   GOOGLE FONT — Inter
+   A modern, professional SaaS typeface with a solid
+   system-font fallback stack.
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* =========================================================
+   RESET
+========================================================= */
 
 *,
 *::before,
@@ -10,44 +18,104 @@
     padding: 0;
 }
 
+/* =========================================================
+   DESIGN TOKENS
+========================================================= */
+
 :root {
-    /* Colors */
+    /* ---- Brand / primary (blue) ---- */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-500: #3b82f6;
     --color-primary: #2563eb;
     --color-primary-hover: #1d4ed8;
+    --color-primary-active: #1e40af;
+    --color-primary-contrast: #ffffff;
 
+    /* ---- Neutrals ---- */
     --color-text: #111827;
     --color-text-secondary: #4b5563;
     --color-text-muted: #6b7280;
+    --color-text-faint: #9ca3af;
 
     --color-border: #e5e7eb;
     --color-border-dark: #d1d5db;
 
-    --color-background: #f5f5f5;
+    --color-background: #f6f7f9;
     --color-surface: #ffffff;
+    --color-surface-muted: #f8fafc;
+    --color-surface-hover: #f3f4f6;
 
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+
+    /* ---- Semantic ---- */
     --color-danger: #dc2626;
     --color-danger-hover: #b91c1c;
+    --color-danger-bg: #fef2f2;
+    --color-danger-bg-strong: #fee2e2;
+    --color-danger-border: #fecaca;
+    --color-danger-text: #991b1b;
 
-    /* Radius */
+    --color-success: #16a34a;
+    --color-success-bg: #dcfce7;
+    --color-success-border: #a7f3d0;
+    --color-success-text: #047857;
+
+    --color-warning-bg: #fef3c7;
+    --color-warning-text: #92400e;
+
+    --color-info-bg: #dbeafe;
+    --color-info-text: #1d4ed8;
+
+    /* ---- Typography ---- */
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+
+    /* ---- Radius ---- */
+    --radius-xs: 4px;
     --radius-sm: 6px;
     --radius-md: 8px;
-    --radius-lg: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 999px;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
-    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+    /* ---- Shadows ---- */
+    --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 6px 16px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.14);
+    --shadow-xl: 0 20px 48px rgba(15, 23, 42, 0.18);
 
-    /* Transitions */
+    /* ---- Transitions ---- */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.2s ease;
+    --transition-slow: 0.3s ease;
+
+    /* ---- Layout ---- */
+    --navbar-height: 64px;
+    --container-max: 1120px;
 }
+
+/* =========================================================
+   BASE ELEMENTS
+========================================================= */
 
 html {
     width: 100%;
     overflow-x: hidden;
-
+    scroll-behavior: smooth;
     font-size: 16px;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -56,23 +124,23 @@ body {
     min-height: 100vh;
 
     margin: 0;
-
     overflow-x: hidden;
 
     background-color: var(--color-background);
     color: var(--color-text);
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans);
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.55;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
-/* =========================================
+/* =========================================================
    TYPOGRAPHY
-========================================= */
+========================================================= */
 
 h1,
 h2,
@@ -81,21 +149,23 @@ h4,
 h5,
 h6 {
     color: var(--color-text);
-    line-height: 1.3;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
 }
 
 h1 {
-    font-size: 30px;
+    font-size: clamp(22px, 2vw + 16px, 30px);
     font-weight: 700;
 }
 
 h2 {
-    font-size: 24px;
+    font-size: clamp(19px, 1.2vw + 15px, 24px);
     font-weight: 600;
 }
 
 h3 {
-    font-size: 20px;
+    font-size: clamp(17px, 0.8vw + 14px, 20px);
     font-weight: 600;
 }
 
@@ -105,7 +175,16 @@ h4 {
 }
 
 p {
-    line-height: 1.5;
+    line-height: 1.55;
+}
+
+small {
+    color: var(--color-text-muted);
+    font-size: 12px;
+}
+
+strong {
+    font-weight: 600;
 }
 
 a {
@@ -118,12 +197,7 @@ input,
 textarea,
 select {
     font: inherit;
-}
-
-button,
-input,
-textarea,
-select {
+    color: inherit;
     max-width: 100%;
 }
 
@@ -131,519 +205,61 @@ img,
 video {
     max-width: 100%;
     height: auto;
+    display: block;
 }
 
-/* =========================================
+hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+}
+
+/* =========================================================
    FOCUS & SELECTION
-========================================= */
+========================================================= */
 
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
-a:focus-visible {
+a:focus-visible,
+[tabindex]:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
+    border-radius: var(--radius-xs);
 }
 
 ::selection {
-    background-color: #dbeafe;
-    color: #1e3a8a;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-active);
 }
 
+/* =========================================================
+   404 / BARE PAGES
+   (NotFound renders a lone <h1> with no wrapper markup)
+========================================================= */
 
-/*  */
-a {
-    text-decoration: none;
-    color: inherit;
-}
+#root > h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-button,
-input {
-    font: inherit;
-}
-
-.analytics-dashboard {
     min-height: 100vh;
     padding: 32px;
-}
 
-.analytics-header {
-    margin-bottom: 28px;
-}
+    background-color: var(--color-background);
+    color: var(--color-text-secondary);
 
-.analytics-header h1 {
-    margin: 0 0 8px;
-    font-size: 30px;
-}
-
-.analytics-workspace-name {
-    margin: 0 0 4px !important;
-    font-size: 16px;
-    font-weight: 600;
-    color: #2563eb !important;
-}
-
-.analytics-header p {
-    margin: 0;
-    color: #666;
-}
-
-
-/* Summary */
-
-.analytics-summary {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 28px;
-}
-
-.analytics-stat-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    padding: 22px;
-
-    border: 1px solid var(--color-border);
-    border-radius: 14px;
-
-    background: var(--color-surface);
-}
-
-.analytics-stat-card p {
-    margin: 0 0 5px;
-
-    color: var(--color-text-muted);
-
-    font-size: 14px;
-}
-
-.analytics-stat-card h2 {
-    margin: 0;
-    font-size: 28px;
-}
-
-.analytics-stat-icon {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: #f1f5f9;
-    font-weight: bold;
-}
-
-
-/* Main Grid */
-
-.analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px;
-}
-
-.analytics-section {
-    padding: 24px;
-    border: 1px solid var(--color-border);
-    border-radius: 14px;
-    background: var(--color-surface);
-}
-
-.analytics-section-header {
-    margin-bottom: 22px;
-}
-
-.analytics-section-header h2 {
-    margin: 0 0 5px;
-    font-size: 19px;
-}
-
-.analytics-section-header p {
-    margin: 0;
-    color: var(--color-text-muted);
-    font-size: 14px;
-}
-
-
-/* Bars */
-
-.analytics-row {
-    margin-bottom: 18px;
-}
-
-.analytics-row:last-child {
-    margin-bottom: 0;
-}
-
-.analytics-row-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 7px;
-}
-
-.analytics-row-header span {
-    font-size: 14px;
-}
-
-.analytics-row-header strong {
-    font-size: 14px;
-}
-
-.analytics-bar {
-    width: 100%;
-    height: 9px;
-
-    overflow: hidden;
-
-    border-radius: var(--radius-sm);
-
-    background: var(--color-border);
-}
-
-.analytics-bar-fill {
-    height: 100%;
-
-    border-radius: var(--radius-sm);
-
-    background: var(--color-primary);
-
-    transition: width 0.3s ease;
-}
-
-
-/* Workload */
-
-.analytics-workload-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.analytics-workload-row:last-child {
-    margin-bottom: 0;
-}
-
-.analytics-member-info {
-    min-width: 180px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.analytics-member-info strong {
-    font-size: 14px;
-}
-
-.analytics-member-info p {
-    margin: 3px 0 0;
-    color: #777;
-    font-size: 12px;
-}
-
-.analytics-avatar {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #f1f5f9;
-    font-weight: bold;
-}
-
-.analytics-workload {
-    flex: 1;
-}
-
-.analytics-workload-top {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 5px;
-    font-size: 13px;
-}
-
-
-/* Due Cards */
-
-.analytics-due-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-    padding: 15px 0;
-
-    border-bottom: 1px solid var(--color-border);
-}
-
-.analytics-due-card:last-child {
-    border-bottom: none;
-}
-
-.analytics-due-card h3 {
-    margin: 0 0 5px;
-    font-size: 15px;
-}
-
-.analytics-due-card span {
-    color: var(--color-text-muted);
-    font-size: 13px;
-}
-
-
-/* Empty / Error / Loading */
-
-.analytics-empty {
-    padding: 30px;
-    text-align: center;
-    color: #777;
-}
-
-.analytics-page-state {
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.analytics-error {
-    flex-direction: column;
+    font-size: clamp(20px, 3vw, 28px);
     text-align: center;
 }
 
-.analytics-error h2 {
-    margin-bottom: 8px;
-}
-
-
-/* =========================================
-   RESPONSIVE ANALYTICS
-   ========================================= */
-
-/* Prevent analytics content from creating overflow */
-.analytics-dashboard,
-.analytics-summary,
-.analytics-grid,
-.analytics-section {
-    min-width: 0;
-}
-
-.analytics-section,
-.analytics-stat-card,
-.analytics-workload-row,
-.analytics-due-card {
-    overflow-wrap: anywhere;
-}
-
-/* Tablet */
-@media (max-width: 1000px) {
-    .analytics-summary {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .analytics-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .analytics-dashboard {
-        padding: 24px;
-    }
-
-    .analytics-stat-card {
-        padding: 18px;
-    }
-
-    .analytics-stat-card h2 {
-        font-size: 24px;
-    }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-    .analytics-dashboard {
-        padding: 16px;
-    }
-
-    .analytics-header {
-        margin-bottom: 20px;
-    }
-
-    .analytics-header h1 {
-        font-size: 24px;
-        line-height: 1.3;
-    }
-
-    .analytics-workspace-name {
-        font-size: 14px;
-    }
-
-    .analytics-header p {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .analytics-summary {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    .analytics-stat-card {
-        gap: 12px;
-        padding: 16px;
-        border-radius: 10px;
-    }
-
-    .analytics-stat-icon {
-        width: 40px;
-        height: 40px;
-        flex-shrink: 0;
-    }
-
-    .analytics-stat-card p {
-        font-size: 13px;
-    }
-
-    .analytics-stat-card h2 {
-        font-size: 22px;
-    }
-
-    .analytics-grid {
-        gap: 14px;
-    }
-
-    .analytics-section {
-        padding: 16px;
-        border-radius: 10px;
-    }
-
-    .analytics-section-header {
-        margin-bottom: 18px;
-    }
-
-    .analytics-section-header h2 {
-        font-size: 17px;
-    }
-
-    .analytics-section-header p {
-        font-size: 13px;
-        line-height: 1.45;
-    }
-
-    .analytics-row {
-        margin-bottom: 14px;
-    }
-
-    .analytics-row-header {
-        gap: 10px;
-    }
-
-    .analytics-row-header span,
-    .analytics-row-header strong {
-        font-size: 13px;
-    }
-
-    .analytics-workload-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        margin-bottom: 16px;
-    }
-
-    .analytics-member-info {
-        min-width: 0;
-    }
-
-    .analytics-workload {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .analytics-workload-top {
-        font-size: 12px;
-    }
-
-    .analytics-due-card {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 6px;
-        padding: 12px 0;
-    }
-
-    .analytics-due-card h3 {
-        font-size: 14px;
-        line-height: 1.4;
-    }
-
-    .analytics-due-card span {
-        font-size: 12px;
-    }
-
-    .analytics-empty {
-        padding: 24px 12px;
-        font-size: 13px;
-    }
-
-    .analytics-page-state {
-        min-height: 300px;
-    }
-}
-
-/* Very small phones */
-@media (max-width: 400px) {
-    .analytics-dashboard {
-        padding: 12px;
-    }
-
-    .analytics-section {
-        padding: 14px;
-    }
-
-    .analytics-stat-card {
-        padding: 14px;
-    }
-
-    .analytics-header h1 {
-        font-size: 22px;
-    }
-}
-
-/* =========================================
-   RESPONSIVE WORKSPACE PADDING
-========================================= */
-
-@media (max-width: 1024px) {
-    .workspace-page {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .workspace-page {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .workspace-page {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-}
-
-/* =========================================
+/* =========================================================
    SCROLLBAR POLISH
-========================================= */
+========================================================= */
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+    scrollbar-color: var(--gray-300) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -656,21 +272,17 @@ input {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
+    background-color: var(--gray-300);
     border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background-color: #94a3b8;
+    background-color: var(--gray-400);
 }
 
-/* =========================================
-   FINAL GLOBAL POLISH
-========================================= */
-
-img {
-    display: block;
-}
+/* =========================================================
+   INTERACTION POLISH
+========================================================= */
 
 button,
 a {
@@ -686,11 +298,21 @@ textarea {
     user-select: text;
 }
 
-/* =========================================
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+    user-select: none;
+}
+
+/* =========================================================
    REDUCED MOTION
-========================================= */
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 
     *,
     *::before,
@@ -702,21 +324,12 @@ textarea {
     }
 }
 
-/* =========================================
-   DISABLED INTERACTIONS
-========================================= */
+/* =========================================================
+   RESPONSIVE TYPE (small mobile safety net)
+========================================================= */
 
-button:disabled,
-input:disabled,
-textarea:disabled,
-select:disabled {
-    user-select: none;
-}
-
-html {
-    overflow-x: hidden;
-}
-
-body {
-    overflow-x: hidden;
+@media (max-width: 380px) {
+    body {
+        font-size: 13.5px;
+    }
 }
