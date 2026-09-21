@@ -16,7 +16,14 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 
 app.use(cors());
+
 app.use(express.json());
+
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok"
+    });
+});
 
 app.use("/uploads", express.static("uploads"));
 
