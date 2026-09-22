@@ -20,9 +20,15 @@ api.interceptors.request.use((config) => {
     (error) => Promise.reject(error)
 );
 
-api.interceptors.response.use((response) => response,
+api.interceptors.response.use(
+    (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        const requestUrl = error.config?.url || "";
+
+        if (
+            error.response?.status === 401 &&
+            !requestUrl.includes("/users/login")
+        ) {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
 
