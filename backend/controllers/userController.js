@@ -46,6 +46,8 @@ const loginUser = async (req, res) => {
         const {email, password} = req.body;
 
         const user = await User.findOne({email}).select("+password");
+        console.log("Login attempt:", email);
+        console.log("User found:", !!user);
 
         if(!user){
             return res.status(401).json({
