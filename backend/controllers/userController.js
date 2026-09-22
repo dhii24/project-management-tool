@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
@@ -47,10 +45,7 @@ const loginUser = async (req, res) => {
     try{
         const {email, password} = req.body;
 
-        console.log("MongoDB database:", mongoose.connection.name);
-        console.log("Login attempt:", email);
         const user = await User.findOne({email}).select("+password");
-        console.log("User found:", !!user);
 
         if(!user){
             return res.status(401).json({
@@ -59,7 +54,6 @@ const loginUser = async (req, res) => {
         }
 
         const isPasswordMatched = await bcrypt.compare(password, user.password);
-        console.log("Password matched:", isPasswordMatched);
         
         if(!isPasswordMatched){
             return res.status(401).json({
