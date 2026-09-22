@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
@@ -45,8 +47,9 @@ const loginUser = async (req, res) => {
     try{
         const {email, password} = req.body;
 
-        const user = await User.findOne({email}).select("+password");
+        console.log("MongoDB database:", mongoose.connection.name);
         console.log("Login attempt:", email);
+        const user = await User.findOne({email}).select("+password");
         console.log("User found:", !!user);
 
         if(!user){
