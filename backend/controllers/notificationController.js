@@ -16,6 +16,15 @@ const getNotifications = async(req,res)=>{
         .skip(skip)
         .limit(limit);
 
+        console.log(
+            "NOTIFICATIONS:",
+            notifications.map(notification => ({
+                id: notification._id,
+                isRead: notification.isRead,
+                message: notification.message
+            }))
+        );
+
         const totalNotifications = await Notification.countDocuments({
             recipient: req.user.userId
         });
@@ -88,6 +97,9 @@ const getUnreadCount = async (req, res) => {
             recipient: req.user.userId,
             isRead: false
         });
+
+        console.log("UNREAD COUNT:", count);
+        console.log("USER ID:", req.user.userId);
 
         res.status(200).json({
             count
