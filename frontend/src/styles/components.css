@@ -2893,6 +2893,12 @@ a.danger-button {
    NOTIFICATIONS
 ========================================================= */
 
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
 .notification-wrapper {
     position: relative;
     display: inline-block;

@@ -18,12 +18,11 @@ function Navbar(){
     return (
 
         <nav className="navbar">
-            
-            <div className="navbar-logo">
-                <Link to="/dashboard">Project Manager</Link>
-            </div>
-
-            <div className="navbar-actions">
+        
+            <div className="navbar-brand">
+                <div className="navbar-logo">
+                    <Link to="/dashboard">Project Manager</Link>
+                </div>
                 <NotificationBell />
             </div>
 

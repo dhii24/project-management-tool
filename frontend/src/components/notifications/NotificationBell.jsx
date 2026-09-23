@@ -5,7 +5,6 @@ import NotificationPanel from "./NotificationPanel";
 function NotificationBell() {
 
     const [unreadCount, setUnreadCount] = useState(0);
-    console.log("BELL RENDER COUNT:", unreadCount);
     const [showPanel, setShowPanel] = useState(false);
 
     const notificationRef = useRef(null);
@@ -40,7 +39,6 @@ function NotificationBell() {
     const loadUnreadCount = async () => {
         try{
             const count = await notificationService.getUnreadCount();
-            console.log("BELL API COUNT:", count);
             setUnreadCount(count);
         }
 
@@ -54,7 +52,6 @@ function NotificationBell() {
     };
 
     const handleUnreadCountChange = (count) => {
-        console.log("BELL UPDATED FROM PANEL:", count);
         setUnreadCount(count);
     };
 
