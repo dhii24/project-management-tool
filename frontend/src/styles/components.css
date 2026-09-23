@@ -2956,9 +2956,9 @@ a.danger-button {
 }
 
 .notification-dropdown {
-    position: fixed;
-    top: 72px;
-    right: 24px;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
     z-index: 1000;
 }
 
