@@ -2962,25 +2962,19 @@ a.danger-button {
 }
 
 .notification-dropdown {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
+    position: fixed;
     z-index: 1000;
 }
 
 .notification-panel {
-    width: 400px;
+    width: min(400px, calc(100vw - 24px));
     max-height: 600px;
-
     overflow-y: auto;
     padding: 20px;
-
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-
     box-shadow: var(--shadow-xl);
-
     animation: notification-in 0.15s ease;
 }
 
@@ -3145,10 +3139,9 @@ a.danger-button {
 @media (max-width: 480px) {
     .notification-dropdown {
         position: fixed;
-        top: 58px;
+        top: 58px !important;
+        left: 12px !important;
         right: 12px;
-        left: 12px;
-        z-index: 1000;
     }
 
     .notification-panel {
@@ -3156,7 +3149,7 @@ a.danger-button {
         max-width: none;
         max-height: calc(100vh - 80px);
         padding: 14px;
-        border-radius: var(--radius-md);
+        border-radius: 8px;
     }
 
     .notification-header {

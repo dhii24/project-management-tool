@@ -6,6 +6,7 @@ function NotificationBell() {
 
     const [unreadCount, setUnreadCount] = useState(0);
     const [showPanel, setShowPanel] = useState(false);
+    const [dropdownStyle, setDropdownStyle] = useState({});
 
     const notificationRef = useRef(null);
 
@@ -48,6 +49,26 @@ function NotificationBell() {
     };
 
     const handleTogglePanel = () => {
+
+        if(!showPanel && notificationRef.current){
+
+            const bellRect = notificationRef.current.getBoundingClientRect();
+
+            const panelWidth = 400;
+            const margin = 12;
+
+            let left = bellRect.right - panelWidth;
+
+            if(left < margin){
+                left = margin;
+            }
+
+            setDropdownStyle({
+                top: `${bellRect.bottom + 10}px`,
+                left: `${left}px`
+            });
+        }
+
         setShowPanel(previousState => !previousState);
     };
 
@@ -75,7 +96,7 @@ function NotificationBell() {
             </button>
 
             {showPanel && (
-                <div className="notification-dropdown">
+                <div className="notification-dropdown" style={dropdownStyle}>
                     <NotificationPanel
                         onUnreadCountChange={handleUnreadCountChange}
                     />
