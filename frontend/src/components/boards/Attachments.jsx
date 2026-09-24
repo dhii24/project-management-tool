@@ -33,13 +33,7 @@ function Attachments({ cardId }){
     }, [cardId]);
 
     const openAttachment = (attachment) => {
-        console.log("Attachment:", attachment);
-        console.log("File path:", attachment.filePath);
-
-        const fileUrl = `http://localhost:5000/uploads/cards/${encodeURIComponent(attachment.fileName)}`;
-        console.log("File URL:", fileUrl);
-
-        window.open(fileUrl, "_blank");
+        window.open(attachment.filePath, "_blank");
     };
 
     const handleFileChange = (event) => {

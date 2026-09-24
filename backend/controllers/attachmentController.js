@@ -1,12 +1,10 @@
 const Attachment = require("../models/Attachment");
 const createActivity = require("../utils/createActivity");
 const User = require("../models/User");
+const cloudinary = require("../config/cloudinary");
 
 const uploadAttachment = async (req, res) => {
     try {
-
-        // console.log(req.file);
-
         if (!req.file) {
             return res.status(400).json({
                 message: "No file uploaded"
@@ -15,31 +13,49 @@ const uploadAttachment = async (req, res) => {
 
         const { cardId } = req.params;
 
+        const uploadResult = await new Promise((resolve, reject) => {
+
+            const uploadStream = cloudinary.uploader.upload_stream(
+                {
+                    folder: "project-management/attachments",
+                    resource_type: "auto"
+                },
+                (error, result) => {
+
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+
+                }
+            );
+
+            uploadStream.end(req.file.buffer);
+
+        });
+
         const attachment = await Attachment.create({
             card: cardId,
             uploadedBy: req.user.userId,
             originalName: req.file.originalname,
-            fileName: req.file.filename,
-            filePath: req.file.path.replace(/\\/g, "/"),
+            fileName: uploadResult.public_id,
+            filePath: uploadResult.secure_url,
             mimeType: req.file.mimetype,
             size: req.file.size
         });
 
         await attachment.populate("uploadedBy", "name email");
-        
+
         const user = await User.findById(
             req.user.userId
         );
-
-        // console.log("Decoded JWT:", req.user);
-        // console.log("Fetched User:", user);
 
         await createActivity({
             card: cardId,
             user: user._id,
             action: "FILE_UPLOADED",
             description: `${user.name} uploaded ${req.file.originalname}`
-
         });
 
         res.status(201).json({
@@ -47,13 +63,14 @@ const uploadAttachment = async (req, res) => {
             attachment
         });
 
-    } catch (error) {
-
+    } 
+    
+    catch (error) {
         res.status(500).json({
             message: error.message
         });
-
     }
+
 };
 
 const getAttachments = async (req, res) => {

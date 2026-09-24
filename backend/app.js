@@ -25,8 +25,6 @@ app.get("/health", (req, res) => {
     });
 });
 
-app.use("/uploads", express.static("uploads"));
-
 app.use("/", homeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/workspaces", workspaceRoutes);
