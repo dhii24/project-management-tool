@@ -15,7 +15,11 @@ const activityRoutes = require("./routes/activityRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 
-app.use(cors());
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL
+    })
+);
 
 app.use(express.json());
 
