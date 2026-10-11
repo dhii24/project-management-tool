@@ -1,190 +1,146 @@
-# 🚀 Project Management SaaS Backend
+# 🚀 Project Management Tool
 
-A production-inspired **Project Management SaaS backend** built using **Node.js, Express.js, MongoDB, and Mongoose ODM**.
+A full-stack SaaS project management application inspired by tools like Trello and Jira, built for workspace-based team collaboration.
 
-This project is being developed step-by-step to simulate how real SaaS products like **Trello, Jira, and Asana** are built.
+The application provides a Kanban-style interface for managing workspaces, boards, lists, cards, team members, notifications, file attachments, comments, activity history, and project analytics.
 
-The goal is to build a scalable backend architecture while learning industry-standard concepts like authentication, authorization, database relationships, middleware design, and resource-level permissions.
-
----
-
-# Tech Stack
-
-## Backend
-
-* Node.js
-* Express.js
-
-## Database
-
-* MongoDB
-* Mongoose ODM
-
-## Authentication
-
-* JWT Authentication
-* Password Hashing using bcrypt
-
-## Authorization
-
-* Role-Based Access Control (RBAC)
-* Resource-Level Authorization
-* Workspace Ownership Authorization
-* Workspace Membership Authorization
+The project is built with a React frontend and a Node.js/Express backend, with MongoDB Atlas for production data storage and Cloudinary for persistent file storage.
 
 ---
 
-# Features Completed
+## 🌐 Live Demo
 
-# 1. User Authentication Module
-
-## Authentication Features
-
-* User Registration
-* User Login
-* Password Hashing using bcrypt
-* JWT Access Token Generation
-* Protected Routes
-* Authentication Middleware
-* Current User Retrieval
-
-## Security Implemented
-
-* Passwords are never stored in plain text
-* JWT-based authentication flow
-* Protected API endpoints
+| Service | Link |
+| --- | --- |
+| **Frontend** | https://project-management-tool-kappa-eight.vercel.app/ |
+| **Backend API** | https://project-management-backend-fvnt.onrender.com/ |
+| **API Health Check** | https://project-management-backend-fvnt.onrender.com/health |
 
 ---
 
-# 2. Authorization System
+## 🛠️ Tech Stack
 
-## Role-Based Access Control (RBAC)
+### Frontend
 
-Implemented:
+- React
+- JavaScript
+- Vite
+- React Router
+- Axios
+- Context API
+- CSS
 
-* Role-based permissions
-* Admin authorization
-* Protected admin routes
+### Backend
 
-Example:
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose ODM
 
-```
-Admin
- |
-Can manage system resources
-```
+### Authentication & Security
+
+- JWT Authentication
+- bcrypt Password Hashing
+- Role-Based Access Control (RBAC)
+- Resource-Level Authorization
+- Workspace Ownership Authorization
+- Workspace Membership Authorization
+- Nested Resource Authorization
+- Protected API Routes
+- Protected Frontend Routes
+- Production CORS Restrictions
+
+### Deployment & Infrastructure
+
+- **Vercel** — Frontend
+- **Render** — Backend API
+- **MongoDB Atlas** — Production Database
+- **Cloudinary** — File Storage
 
 ---
 
-## Resource-Level Authorization
+## ✨ Key Features
 
-Implemented:
+### 🔐 Authentication
 
-* Workspace ownership validation
-* Workspace member validation
-* Board access validation
+- User registration
+- User login
+- Password hashing using bcrypt
+- JWT access token generation
+- Protected frontend routes
+- Protected backend API routes
+- Current user retrieval
+- Automatic JWT authorization using Axios interceptors
+- Automatic handling of unauthorized API responses
 
-Examples:
+---
 
-```
+### 🛡️ Authorization
+
+The application implements multiple levels of authorization.
+
+#### Role-Based Access Control
+
+- Role-based permissions
+- Admin authorization
+- Protected admin routes
+
+#### Resource-Level Authorization
+
+- Workspace ownership validation
+- Workspace membership validation
+- Board membership validation
+- List membership validation
+- Card-level authorization
+- Nested resource authorization
+
+Access is validated through the resource hierarchy:
+
+```text
 User
- |
-Authenticated?
-
-YES
-
- |
-Allowed to access this workspace?
-```
-
----
-
-# 3. Workspace Module
-
-## Workspace Features
-
-Completed:
-
-* Create Workspace
-* Get All Workspaces
-* Get User Workspaces
-* Update Workspace
-* Delete Workspace
-* Workspace Ownership
-* Workspace Members
-* Add Members
-* Prevent Duplicate Members
-
----
-
-## Workspace Authorization
-
-Implemented:
-
-* Workspace owner middleware
-* Workspace member middleware
-* Admin override permissions
-
----
-
-# 4. MongoDB & Mongoose Concepts Covered
-
-Implemented:
-
-* Schema Design
-* Models
-* ObjectId References
-* Model Relationships
-* Mongoose populate()
-* Array References
-* Embedded References
-* Query Operators
-* Document Updates
-* Document Deletion
-* Validation
-
----
-
-# 5. Board Module
-
-## Board Features
-
-Completed:
-
-* Create Board
-* Get Boards inside Workspace
-* Update Board
-* Delete Board
-
----
-
-## Board Relationship
-
-Implemented:
-
-```
+  ↓
 Workspace
-
-    |
-    |
-    ↓
-
-Boards
-
-    |
-    |
-    ↓
-
-Lists
+  ↓
+Board
+  ↓
+List
+  ↓
+Card
 ```
 
-A workspace can contain multiple boards.
+---
 
-Example:
+### 🏢 Workspace Management
 
-```
+- Create workspace
+- View workspaces
+- View user's workspaces
+- Update workspace
+- Delete workspace
+- Workspace ownership
+- Workspace members
+- Add workspace members
+- Prevent duplicate members
+- Workspace owner authorization
+- Workspace member authorization
+- Admin override permissions
+
+---
+
+### 📋 Board Management
+
+- Create boards
+- View workspace boards
+- Update boards
+- Delete boards
+- Workspace-based board access
+- Board membership validation
+
+Example structure:
+
+```text
 Project Management Workspace
-
+│
 ├── Development Board
 ├── Marketing Board
 └── Design Board
@@ -192,960 +148,845 @@ Project Management Workspace
 
 ---
 
-## Board Authorization
+### 📝 List Management
 
-Implemented:
-
-* Board membership validation
-* Workspace-based access control
-* Secure board queries
-
----
-
-# 6. List Module
-
-## List Features
-
-Completed:
-
-* Create List
-* Get Lists
-* Update List
-* Delete List
-* Move Lists
-* Drag-and-drop ordering support
-
----
-
-## Kanban Ordering System
-
-Implemented position-based ordering:
+- Create lists
+- View lists
+- Update lists
+- Delete lists
+- Move lists
+- Drag-and-drop ordering
+- Position-based ordering
 
 Example:
 
+```text
+Todo          position: 0
+In Progress   position: 1
+Done          position: 2
 ```
-Todo
-
-position: 0
-
-
-In Progress
-
-position: 1
-
-
-Done
-
-position: 2
-```
-
-Lists can be reordered while maintaining their position.
 
 ---
 
-# 7. Card Module
+### 🃏 Card Management
 
-## Card Features
+- Create cards
+- View cards
+- Update cards
+- Delete cards
+- Move cards between lists
+- Reorder cards
+- Due dates
+- Card descriptions
+- Priority
+- Labels
+- Member assignment
 
-Completed:
-
-* Create Card
-* Get Cards
-* Update Card
-* Delete Card
-* Move Cards Between Lists
-* Card Reordering
-* Due Dates
-* Card Descriptions
+Cards can be reordered within a list and moved between lists while maintaining their position.
 
 ---
 
-## Card Relationship
+### 👥 Card Collaboration
 
-Implemented:
+#### Member Assignment
 
-```
-Workspace
+- Assign one or multiple users to a card
+- Store user references using MongoDB ObjectIds
+- Populate assigned member details
 
-    │
+#### Labels
 
-    ▼
-
-Board
-
-    │
-
-    ▼
-
-List
-
-    │
-
-    ▼
-
-Card
-```
-
-Each List can contain multiple Cards.
+Cards can contain multiple labels.
 
 Example:
 
-```
-Todo
-
-├── Fix Login API
-├── Create JWT Middleware
-└── Add Email Verification
-```
-
----
-
-## Card Ordering
-
-Implemented position-based ordering.
-
-Example:
-
-```
-Todo
-
-Fix Login API
-position: 0
-
-JWT Middleware
-position: 1
-
-Email Verification
-position: 2
-```
-
-Cards can be reordered within a list and moved between lists while preserving order.
-
----
-
-## Card Authorization
-
-Implemented:
-
-* List membership validation
-* Nested resource authorization
-* Secure card queries
-* Workspace → Board → List → Card access validation
-
----
-
-# 8. Card Collaboration Module
-
-## Collaboration Features
-
-Completed:
-
-* Card Labels
-* Card Assignment
-* Comments
-* Comment History
-* Populate User Details in Comments
-
----
-
-## Labels
-
-Cards can now contain multiple labels.
-
-Example:
-
-```
+```text
 Fix Login Bug
 
-Labels
-
+Labels:
 • Bug
 • Backend
 • High Priority
 ```
 
----
+#### Comments
 
-## Card Assignment
-
-Implemented:
-
-* Assign one or multiple users to a card
-* User references stored using ObjectId
-* Mongoose populate() for assigned members
-
-Example:
-
-```
-Fix Authentication
-
-Assigned Members
-
-• Dhiraj
-• Rahul
-```
+- Add comments
+- Retrieve comments
+- Associate comments with users
+- Automatic timestamps
+- Populate comment authors
+- Comment history
 
 ---
 
-## Comments
+### 📎 File Attachments
 
-Implemented:
+Users can upload attachments directly to cards.
 
-* Add Comments
-* Retrieve Comments
-* User Association
-* Automatic Timestamping
-* Populate Comment Author
+**Supported file types:**
 
-Example:
+- PNG
+- JPEG
+- PDF
 
-```
-Fix Login API
+**Maximum upload size:** 5 MB
 
-Dhiraj:
-JWT expires after 15 minutes.
+#### Production File Architecture
 
-Rahul:
-Working on the fix.
-```
-
----
-
-# 9. Middleware Architecture
-
-## Implemented reusable middleware:
+Files are stored using Cloudinary while MongoDB stores attachment metadata.
 
 ```text
-middleware/
-
-├── authMiddleware.js
-├── authorizeRoles.js
-├── workspaceOwnerMiddleware.js
-├── workspaceMemberMiddleware.js
-├── boardMemberMiddleware.js
-└── listMemberMiddleware.js
+React Frontend
+      ↓
+Express API
+      ↓
+Cloudinary
+      │
+      └── Actual File
 ```
 
----
-
-## Middleware Responsibilities
-
-### Authentication Middleware
-
-Responsible for:
-
-* JWT verification
-* Identifying logged-in users
-* Attaching authenticated user to `req.user`
-
----
-
-### Workspace Owner Middleware
-
-Responsible for:
-
-* Checking workspace ownership
-* Allowing only owners/admins to perform sensitive actions
-
----
-
-### Workspace Member Middleware
-
-Responsible for:
-
-* Checking workspace membership
-* Protecting workspace resources
-
----
-
-### Board Member Middleware
-
-Responsible for:
-
-* Validating board existence
-* Ensuring board belongs to an accessible workspace
-* Attaching board to `req.board`
-
----
-
-### List Member Middleware
-
-Responsible for:
-
-* Validating list existence
-* Finding parent board
-* Finding parent workspace
-* Checking workspace membership
-* Attaching list, board, and workspace to the request
-
----
-
-# 10. File Upload Module
-
-## Attachment Features
-
-Completed:
-
-* Multer Configuration
-* Disk Storage Engine
-* File Upload Middleware
-* File Type Validation
-* File Size Validation
-* Attachment Metadata Storage
-
----
-
-# 11. Activity History (Audit Log)
-
-## Activity Features
-
-Completed:
-
-* Activity Logging
-* Audit Trail
-* Automatic Activity Recording
-* Card Activity Timeline
-* User Activity Tracking
-* Activity Retrieval API
-* Activity Sorting
-* Reusable Activity Utility
-
----
-
-## Activity Architecture
-
-Every important action performed on a card is recorded as an activity.
-
-Examples:
-
-```
-Dhiraj created a card
-
-Rahul uploaded login.png
-
-Akash commented on Payment API
-
-Riya moved card to Done
+```text
+Express API
+      ↓
+MongoDB Atlas
+      │
+      └── Attachment Metadata
 ```
 
-Each activity stores:
-
-* User
-* Card
-* Action
-* Description
-* Timestamp
-
-Activities are stored in a separate collection to keep Card documents lightweight and scalable.
+This allows uploaded files to persist independently of the backend server's filesystem.
 
 ---
 
-# 12. Notification System
+### 🔔 Notification System
 
-## Notification Features
+The application provides user-specific notifications.
 
-Completed:
+#### Features
 
-* User Notifications
-* Notification Utility
-* Assignment Notifications
-* Fetch Notifications
-* Mark Notification as Read
-* Unread Notification Count
-
----
-
-## Notification Architecture
-
-Notifications are user-specific and generated whenever important actions occur.
+- User notifications
+- Assignment notifications
+- Fetch notifications
+- Unread notification count
+- Mark notification as read
+- Notification ownership validation
 
 Example:
 
-```
+```text
 Dhiraj assigned you to "Fix Login Bug"
 
 Rahul commented on "JWT Authentication"
 ```
 
-Each notification stores:
+Activities and notifications are handled as separate concepts:
 
-* Sender
-* Recipient
-* Related Card
-* Notification Type
-* Message
-* Read Status
-
-Notifications are designed independently from activities.
-
-Activities answer:
-
-"What happened?"
-
-Notifications answer:
-
-"What do I need to know?"
+- **Activity:** "What happened?"
+- **Notification:** "What do I need to know?"
 
 ---
 
-# 13. Pagination
+### 📜 Activity & Audit History
 
-## Pagination Features
+Important card actions are recorded in an activity timeline.
 
-Completed:
+#### Features
 
-* Pagination Utility
-* Page-based Pagination
-* Limit & Skip Queries
-* Total Document Count
-* Total Pages Calculation
-* Pagination Metadata
+- Activity logging
+- Audit trail
+- Automatic activity recording
+- Card activity timeline
+- User activity tracking
+- Activity retrieval
+- Activity sorting
+
+Example:
+
+```text
+Dhiraj created a card
+Rahul uploaded login.png
+Akash commented on Payment API
+Riya moved card to Done
+```
+
+Each activity contains:
+
+- User
+- Card
+- Action
+- Description
+- Timestamp
+
+Activities are stored separately from Card documents to keep card documents lightweight and scalable.
 
 ---
 
-## Pagination Architecture
+### 🔎 Search
 
-Implemented reusable pagination across multiple resources.
+The application supports card search.
 
-Supported modules:
+#### Features
 
-* Cards
-* Activities
-* Notifications
+- Search cards by title
+- Search cards by label
+- Case-insensitive search
+- Combined title and label search
+- Pagination support
+- MongoDB indexes
+- Regex-based search
 
-Example Request
-
-```
-GET /api/cards/:listId?page=2&limit=10
-```
-
-Example Response
-
-```
-currentPage
-
-totalPages
-
-totalCards
-
-limit
-```
-
-Pagination improves API performance and prepares the application for large datasets.
-
----
-
-# 14. Search System
-
-## Search Features
-
-Completed:
-
-* Search Cards by Title
-* Search Cards by Label
-* Case-Insensitive Search
-* Combined Title & Label Search
-* Pagination Support for Search
-* MongoDB Text Indexes
-* Regex-Based Search
-
----
-
-## Search Architecture
-
-Implemented efficient card searching using MongoDB query operators.
-
-Supported searches:
-
-* Card Title
-* Card Labels
-
-Example Request
+Example:
 
 ```http
 GET /api/cards/search?query=jwt&page=1&limit=10
 ```
 
-Example
+MongoDB concepts used include:
 
-Search:
-
-```
-jwt
-```
-
-Returns:
-
-```
-JWT Authentication
-
-JWT Refresh Token
-```
-
-Implemented MongoDB concepts:
-
-* `$regex`
-* `$options: "i"`
-* `$or`
-* Text Indexes
-* Pagination with Search
+- `$regex`
+- `$options`
+- `$or`
+- Text indexes
 
 ---
 
-# 15. Aggregation Analytics
+### 📄 Pagination
 
-## Analytics Features
+Reusable pagination is implemented across multiple resources.
 
-Completed:
+#### Features
 
-* Cards by Status
-* Cards by Label
-* Member Workload
-* Due This Week
-* Workspace Statistics
+- Page-based pagination
+- Limit and skip queries
+- Total document count
+- Total pages calculation
+- Pagination metadata
+- Pagination limits
+
+Pagination is currently used for resources such as:
+
+- Cards
+- Activities
+- Notifications
+- Card search
+
+Example:
+
+```http
+GET /api/cards/:listId?page=2&limit=10
+```
 
 ---
 
-## Aggregation Pipeline Concepts
+### 📊 Analytics Dashboard
 
-Implemented:
+The backend provides aggregation-based analytics for workspaces.
 
-* `$group`
-* `$sum`
-* `$sort`
-* `$unwind`
-* Aggregation Pipelines
+#### Analytics
 
-Example Analytics
+- Cards by status
+- Cards by label
+- Member workload
+- Cards due this week
+- Workspace statistics
 
-```
+Example — Cards by Status:
+
+```text
 Todo          15
-
-Done          34
-
 In Progress    7
+Done          34
 ```
 
-Member Workload
+#### MongoDB Aggregation Concepts
 
+- `$group`
+- `$sum`
+- `$sort`
+- `$unwind`
+- `$lookup`
+- `$project`
+- Aggregation pipelines
+
+---
+
+### 🎨 Frontend Features
+
+The React frontend provides a responsive Kanban-style interface.
+
+#### UI Features
+
+- Workspace dashboard
+- Kanban boards
+- Drag-and-drop card movement
+- Card details
+- Member assignment
+- Labels
+- Priority
+- Due dates
+- Comments
+- Attachments
+- Activity history
+- Notifications
+- Search
+- Pagination
+- Analytics
+- Loading states
+- Error states
+- Retry states
+- Empty states
+- Responsive design
+
+---
+
+## 🏗️ Application Architecture
+
+```text
+                         User
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │ React Frontend  │
+                  │     Vercel      │
+                  └────────┬────────┘
+                           │
+                           │ HTTPS / REST API
+                           ▼
+                  ┌─────────────────┐
+                  │ Node.js +       │
+                  │ Express Backend │
+                  │     Render      │
+                  └───────┬─┬───────┘
+                          │ │
+             ┌────────────┘ └─────────────┐
+             ▼                            ▼
+    ┌─────────────────┐          ┌─────────────────┐
+    │ MongoDB Atlas   │          │   Cloudinary    │
+    │ Application Data│          │  File Storage   │
+    └─────────────────┘          └─────────────────┘
 ```
-Dhiraj    18 Cards
 
-Rahul     11 Cards
+---
 
-Akash      8 Cards
+## 🧱 Frontend Architecture
+
+```text
+React UI
+   ↓
+Pages / Components
+   ↓
+Context / Hooks
+   ↓
+Service Layer
+   ↓
+Axios Instance
+   ↓
+Express REST API
 ```
 
-Aggregation APIs prepare the backend for dashboard analytics similar to Jira and Trello.
+### Frontend Engineering Practices
 
-## Supported File Types
-
-Implemented support for:
-
-* PNG Images
-* JPEG Images
-* PDF Documents
-
-Maximum upload size:
-
-```
-5 MB
-```
+- Component-based architecture
+- Reusable components
+- Context-based global state
+- Reusable API service layer
+- Centralized Axios configuration
+- Protected routes
+- REST API integration
+- Client-side validation
+- Pagination and search
+- Asynchronous loading and error handling
+- Retryable API failure states
+- Reusable loading, error, and empty-state components
+- Responsive UI design
 
 ---
 
-## Upload Architecture
+## 🧩 Backend Architecture
 
-```
-Client
+The backend follows a modular Express architecture.
 
-↓
-
-multipart/form-data
-
-↓
-
-Authentication Middleware
-
-↓
-
-Multer Middleware
-
-↓
-
-Attachment Controller
-
-↓
-
-MongoDB (Metadata)
-
-↓
-
-uploads/cards/
+```text
+Request
+   ↓
+Route
+   ↓
+Authentication / Authorization Middleware
+   ↓
+Controller
+   ↓
+Mongoose Model
+   ↓
+MongoDB Atlas
+   ↓
+Response
 ```
 
-Files are stored on disk while MongoDB stores attachment metadata.
+### Backend Concepts
+
+- REST API design
+- MVC architecture
+- Express routing
+- Middleware
+- JWT authentication
+- RBAC
+- Resource-level authorization
+- Nested authorization
+- MongoDB relationships
+- Mongoose ODM
+- ObjectId references
+- `populate()`
+- CRUD operations
+- Query operators
+- Position-based ordering
+- Reusable middleware
+- Pagination
+- Search
+- Aggregation
+- Notifications
+- Activity history
 
 ---
 
-# API Endpoints
+## 🔐 Middleware Architecture
 
-# Authentication
+Reusable authorization middleware is used throughout the backend.
 
-| Method | Endpoint            | Description        |
-| ------ | ------------------- | ------------------ |
-| POST   | /api/users/register | Register User      |
-| POST   | /api/users/login    | Login User         |
-| GET    | /api/users/profile  | Get Logged-in User |
-
----
-
-# Workspace
-
-| Method | Endpoint                             | Description          |
-| ------ | ------------------------------------ | -------------------- |
-| POST   | /api/workspaces                      | Create Workspace     |
-| GET    | /api/workspaces                      | Get All Workspaces   |
-| GET    | /api/workspaces/my                   | Get User Workspaces  |
-| PUT    | /api/workspaces/:workspaceId         | Update Workspace     |
-| DELETE | /api/workspaces/:workspaceId         | Delete Workspace     |
-| POST   | /api/workspaces/:workspaceId/members | Add Workspace Member |
-
----
-
-# Board
-
-| Method | Endpoint                          | Description          |
-| ------ | --------------------------------- | -------------------- |
-| POST   | /api/boards/:workspaceId          | Create Board         |
-| GET    | /api/boards/:workspaceId          | Get Workspace Boards |
-| PUT    | /api/boards/:workspaceId/:boardId | Update Board         |
-| DELETE | /api/boards/:workspaceId/:boardId | Delete Board         |
-
----
-
-# List
-
-| Method | Endpoint                         | Description       |
-| ------ | -------------------------------- | ----------------- |
-| POST   | /api/lists/:boardId              | Create List       |
-| GET    | /api/lists/:boardId              | Get Board Lists   |
-| PUT    | /api/lists/:boardId/:listId      | Update List       |
-| DELETE | /api/lists/:boardId/:listId      | Delete List       |
-| PATCH  | /api/lists/:boardId/:listId/move | Move/Reorder List |
-
----
-
-# Card
-
-| Method  | Endpoint                          | Description               |
-| ------- | --------------------------------- | ------------------------- |
-| POST    | /api/cards/:listId                | Create Card               |
-| GET     | /api/cards/:listId                | Get List Cards            |
-| PUT     | /api/cards/:listId/:cardId        | Update Card               |
-| DELETE  | /api/cards/:listId/:cardId        | Delete Card               |
-| PATCH   | /api/cards/:listId/:cardId/move   | Move Card Between Lists   |
-
----
-
-# Comment
-
-| Method  | Endpoint              | Description       |
-|---------|-----------------------|-------------------|
-| POST    | /api/comments/:cardId | Add Comment       |
-| GET     | /api/comments/:cardId | Get Card Comments |
-
----
-
-# Attachment
-
-| Method  | Endpoint                        | Description       |
-|---------|---------------------------------|-------------------|
-| POST    | /api/attachments/:cardId/upload | Upload Attachment |
-
----
-
-# Activity
-
-| Method | Endpoint                 |Description           |
-| -------|--------------------------|----------------------|
-| GET    | /api/activities/:cardId  | Get Card Activities  |
-
----
-
-# Notification
-
-| Method  | Endpoint                                | Description                   |
-|---------|-----------------------------------------|-------------------------------|
-| GET     | /api/notifications                      | Get User Notifications        |
-| GET     | /api/notifications/unread-count         | Get Unread Notification Count |
-| PATCH   | /api/notifications/:notificationId/read | Mark Notification as Read     |
-
----
-
-# Search
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | /api/cards/search | Search Cards by Title or Label |
-
----
-
-# Analytics
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | /api/analytics/status | Cards by Status |
-| GET | /api/analytics/labels | Cards by Label |
-| GET | /api/analytics/workload | Member Workload |
-| GET | /api/analytics/due-this-week | Cards Due This Week |
-| GET | /api/analytics/workspace | Workspace Statistics |
-
----
-
-# Database Relationships
-
-Current architecture:
-
+```text
+middleware/
+│
+├── authMiddleware.js
+├── authorizeRoles.js
+├── workspaceOwnerMiddleware.js
+├── workspaceMemberMiddleware.js
+├── boardMemberMiddleware.js
+├── listMemberMiddleware.js
+└── cardMemberMiddleware.js
 ```
+
+### Responsibilities
+
+#### Authentication Middleware
+
+- Verify JWT
+- Identify authenticated users
+- Attach authenticated user to `req.user`
+
+#### Workspace Owner Middleware
+
+- Validate workspace ownership
+- Allow owners/admins to perform sensitive operations
+
+#### Workspace Member Middleware
+
+- Validate workspace membership
+- Protect workspace resources
+
+#### Board Member Middleware
+
+- Validate board existence
+- Validate workspace access
+- Attach board information to the request
+
+#### List Member Middleware
+
+- Validate list existence
+- Find parent board
+- Find parent workspace
+- Validate workspace membership
+- Attach related resources to the request
+
+#### Card Member Middleware
+
+- Validate card existence
+- Find parent list
+- Find parent board
+- Find parent workspace
+- Validate workspace membership
+- Attach related resources to the request
+
+---
+
+## 🗄️ Database Relationships
+
+```text
 User
-
  │
-
  ▼
-
 Workspace
-
  │
-
  ▼
-
 Board
-
  │
-
  ▼
-
 List
-
  │
-
  ▼
-
 Card
-
  ├── Labels
-
  ├── Assigned Members
-
  ├── Comments
-
  ├── Attachments
-
  └── Activities
 
 User
-
  └── Notifications
 ```
 
-Relationship Summary
+### Relationship Summary
 
-* One User can belong to multiple Workspaces.
-* One Workspace can contain multiple Boards.
-* One Board can contain multiple Lists.
-* One List can contain multiple Cards.
-* Cards store references to Lists.
-* Lists store references to Boards.
-* Boards store references to Workspaces.
-* One Card can have multiple Labels.
-* One Card can be assigned to multiple Users.
-* One Card can contain multiple Comments.
-* One Card can contain multiple Attachments.
-* One Card can contain multiple Activities.
-* One User can receive multiple Notifications.
+- One User can belong to multiple Workspaces
+- One Workspace can contain multiple Boards
+- One Board can contain multiple Lists
+- One List can contain multiple Cards
+- Cards reference Lists
+- Lists reference Boards
+- Boards reference Workspaces
+- One Card can have multiple Labels
+- One Card can be assigned to multiple Users
+- One Card can contain multiple Comments
+- One Card can contain multiple Attachments
+- One Card can contain multiple Activities
+- One User can receive multiple Notifications
 
 ---
 
-# Current Folder Structure
+## ⚡ Performance Optimizations
+
+Implemented optimizations include:
+
+- MongoDB text indexes
+- Index on `dueDate`
+- Index on `list`
+- Index on `assignedMembers`
+- Pagination using `skip()` and `limit()`
+- `countDocuments()`
+- Aggregation pipelines
+- Efficient `$lookup` operations
+- Reusable pagination utilities
+- Workspace-aware search
+
+These optimizations help prepare the application for larger datasets.
+
+---
+
+## 🛡️ Security Features
+
+The application implements multiple security measures:
+
+- Password hashing using bcrypt
+- JWT authentication
+- Protected frontend routes
+- Protected backend routes
+- Role-Based Access Control
+- Workspace ownership validation
+- Workspace membership validation
+- Board membership validation
+- List membership validation
+- Card membership validation
+- Nested resource authorization
+- Resource-level access validation
+- Duplicate member prevention
+- Authenticated file uploads
+- File type validation
+- File size restrictions
+- Secure comment access
+- Activity access validation
+- Notification ownership validation
+- Pagination limits
+- Workspace-aware search
+- Indexed MongoDB queries
+- Production CORS restrictions
+- Restricted MongoDB Atlas network access
+- Dedicated least-privilege production database user
+
+---
+
+## 🔌 API Overview
+
+### Authentication
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/users/register` | Register user |
+| POST | `/api/users/login` | Login user |
+| GET | `/api/users/profile` | Get logged-in user |
+
+### Workspaces
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/workspaces` | Create workspace |
+| GET | `/api/workspaces` | Get workspaces |
+| GET | `/api/workspaces/my` | Get user's workspaces |
+| PUT | `/api/workspaces/:workspaceId` | Update workspace |
+| DELETE | `/api/workspaces/:workspaceId` | Delete workspace |
+| POST | `/api/workspaces/:workspaceId/members` | Add workspace member |
+
+### Boards
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/boards/:workspaceId` | Create board |
+| GET | `/api/boards/:workspaceId` | Get workspace boards |
+| PUT | `/api/boards/:workspaceId/:boardId` | Update board |
+| DELETE | `/api/boards/:workspaceId/:boardId` | Delete board |
+
+### Lists
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/lists/:boardId` | Create list |
+| GET | `/api/lists/:boardId` | Get board lists |
+| PUT | `/api/lists/:boardId/:listId` | Update list |
+| DELETE | `/api/lists/:boardId/:listId` | Delete list |
+| PATCH | `/api/lists/:boardId/:listId/move` | Move/reorder list |
+
+### Cards
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/cards/:listId` | Create card |
+| GET | `/api/cards/:listId` | Get list cards |
+| PUT | `/api/cards/:listId/:cardId` | Update card |
+| DELETE | `/api/cards/:listId/:cardId` | Delete card |
+| PATCH | `/api/cards/:listId/:cardId/move` | Move/reorder card |
+
+### Comments
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/comments/:cardId` | Add comment |
+| GET | `/api/comments/:cardId` | Get card comments |
+
+### Attachments
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/attachments/:cardId/upload` | Upload attachment |
+
+### Activities
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/api/activities/:cardId` | Get card activities |
+
+### Notifications
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/api/notifications` | Get user notifications |
+| GET | `/api/notifications/unread-count` | Get unread notification count |
+| PATCH | `/api/notifications/:notificationId/read` | Mark notification as read |
+
+### Search
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/api/cards/search` | Search cards by title or label |
+
+### Analytics
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `/api/analytics/status` | Cards by status |
+| GET | `/api/analytics/labels` | Cards by label |
+| GET | `/api/analytics/workload` | Member workload |
+| GET | `/api/analytics/due-this-week` | Cards due this week |
+| GET | `/api/analytics/workspace` | Workspace statistics |
+
+---
+
+## 📂 Project Structure
 
 ```text
-server/
-
+project-management-tool/
 │
-├── config/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── auth/
+│   │   │   ├── boards/
+│   │   │   ├── common/
+│   │   │   └── notifications/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   │   ├── auth/
+│   │   │   ├── boards/
+│   │   │   ├── common/
+│   │   │   ├── dashboard/
+│   │   │   └── workspaces/
+│   │   ├── services/
+│   │   ├── styles/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── routes.jsx
+│   └── package.json
 │
-├── controllers/
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── app.js
+│   ├── server.js
+│   └── package.json
 │
-├── middleware/
-│
-├── models/
-│
-├── routes/
-│
-├── uploads/
-│
-├── app.js
-│
-├── server.js
-│
-├── package.json
-│
-└── .env
+└── README.md
 ```
 
 ---
 
-# Security Features
+## 🚀 Production Deployment
 
-Implemented:
+The application is deployed using the following architecture:
 
-* Password hashing using bcrypt
-* JWT Authentication
-* Protected Routes
-* Role-Based Access Control (RBAC)
-* Workspace ownership validation
-* Workspace membership validation
-* Board membership validation
-* List membership validation
-* Nested resource authorization
-* Secure MongoDB queries using `findOne()`
-* Duplicate member prevention
-* Resource-level access validation
-* File type validation using Multer
-* File size restrictions
-* Authenticated file uploads
-* Secure comment ownership through JWT
-* Secure Activity History
-* Authenticated Notification Retrieval
-* Notification Ownership Validation
-* Pagination Limits
-* Workspace-aware Search
-* Indexed MongoDB Queries
-* Efficient Aggregation Pipelines
-
----
-
-# Performance Optimizations
-
-Implemented:
-
-* MongoDB Text Indexes
-* Index on `dueDate`
-* Index on `list`
-* Index on `assignedMembers`
-* Pagination using `skip()` and `limit()`
-* Aggregation Pipelines
-* Efficient `$lookup` for Member Workload
-* Reusable Pagination Utility
-
-These optimizations improve query performance and prepare the backend for handling larger datasets.
-
----
-
-# Backend Concepts Covered
-
-* REST API Design
-* MVC Architecture
-* Express Routing
-* Middleware
-* JWT Authentication
-* Authentication Middleware
-* Role-Based Authorization (RBAC)
-* Resource-Level Authorization
-* Nested Authorization
-* MongoDB Relationships
-* Mongoose ODM
-* ObjectId References
-* populate()
-* CRUD Operations
-* Query Operators
-* Array Operations
-* Position-Based Ordering
-* Drag-and-Drop Backend Logic
-* Reusable Middleware Design
-* Multer
-* multipart/form-data
-* File Upload Middleware
-* Disk Storage Engine
-* MIME Type Validation
-* File Metadata Storage
-* Comment System Design
-* One-to-Many Relationships
-* Many-to-Many Relationships
-* Audit Log Design
-* Activity Timeline
-* Notification System
-* Event-Driven Backend Design
-* Pagination
-* skip()
-* limit()
-* countDocuments()
-* Query Parameters
-* Reusable Utility Functions
-* MongoDB Indexes
-* Text Indexes
-* Regular Expressions (`$regex`)
-* `$or`
-* Aggregation Framework
-* Aggregation Pipelines
-* `$group`
-* `$sum`
-* `$lookup`
-* `$project`
-* `$unwind`
-* Dashboard Analytics
-* Search Optimization
-
----
-
-# Upcoming Features
-
-## Collaboration
-
-* Real-time Notifications (Socket.IO)
-
----
-
-## Authentication
-
-* Email Verification
-* Forgot Password
-* Refresh Tokens
-
----
-
-## Advanced Backend
-
-* MongoDB Transactions
-* Redis Caching
-* Dashboard Charts
-
----
-
-# Learning Goals
-
-This project is built to understand how production-grade SaaS backend systems are designed using:
-
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* Authentication systems
-* Authorization architecture
-* Scalable backend patterns
-
-The objective is to build a real-world backend project suitable for internship and entry-level backend developer roles.
-
----
-
-# Author
-
-Dhiraj Acharya
-
-GitHub:
-
-https://github.com/dhii24
-
+```text
+Frontend  →  Vercel
+Backend   →  Render
+Database  →  MongoDB Atlas
+Files     →  Cloudinary
 ```
+
+### Production Infrastructure
+
+- React frontend deployed on Vercel
+- Node.js/Express API deployed on Render
+- MongoDB hosted on MongoDB Atlas
+- Card attachments stored on Cloudinary
+- Production CORS restricted to the frontend domain
+- MongoDB Atlas network access restricted
+- Production database uses a dedicated least-privilege user
+- Environment secrets stored outside source control
+
+---
+
+## ⚙️ Local Development
+
+### Clone the repository
+
+```bash
+git clone https://github.com/dhii24/project-management-tool.git
+cd project-management-tool
 ```
+
+### Backend
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+The backend runs on: `http://localhost:5000`
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs on: `http://localhost:5173`
+
+> Environment variables should be configured locally using `.env` files.
+
+---
+
+## 🔮 Future Improvements
+
+Possible future enhancements include:
+
+- Real-time updates using WebSockets / Socket.IO
+- Email verification
+- Forgot password functionality
+- Refresh token authentication
+- MongoDB transactions for complex multi-document operations
+- Redis caching
+- Advanced filtering and sorting
+- Enhanced dashboard charts
+- Email notifications
+
+---
+
+## 📌 Project Status
+
+**Completed and deployed to production.**
+
+The application includes a complete full-stack workflow covering:
+
+```text
+Authentication
+      ↓
+Authorization
+      ↓
+Workspaces
+      ↓
+Boards
+      ↓
+Lists
+      ↓
+Cards
+      ↓
+Collaboration
+      ↓
+Notifications
+      ↓
+Activity History
+      ↓
+Search + Pagination
+      ↓
+Analytics
+      ↓
+Production Deployment
+```
+
+---
+
+## 🎯 Engineering Highlights
+
+This project demonstrates practical experience with:
+
+- Full-stack React development
+- REST API design
+- Node.js and Express.js
+- MongoDB and Mongoose
+- JWT authentication
+- RBAC
+- Resource-level authorization
+- Nested resource authorization
+- Middleware architecture
+- React Context API
+- Axios interceptors
+- CRUD operations
+- MongoDB relationships
+- `populate()`
+- Position-based ordering
+- Drag-and-drop Kanban logic
+- File uploads
+- Cloudinary integration
+- Comments and collaboration
+- Notification systems
+- Audit logging
+- Pagination
+- Search
+- MongoDB indexes
+- Aggregation pipelines
+- Dashboard analytics
+- Loading and error handling
+- Responsive UI
+- Production deployment
+- Cloud infrastructure
+- Production security practices
+
+---
+
+## 👨‍💻 Author
+
+**Dhiraj Acharya**
+
+GitHub: [https://github.com/dhii24](https://github.com/dhii24)
