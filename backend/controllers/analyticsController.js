@@ -3,6 +3,8 @@ const Workspace = require("../models/Workspace");
 const Board = require("../models/Board");
 const List = require("../models/List");
 
+const { getCache, setCache } = require("../utils/cache");
+
 const getWorkspaceListIds = async (workspaceId) => {
     const boards = await Board.find({workspace: workspaceId}).select("_id").lean();
 
@@ -20,6 +22,17 @@ const getWorkspaceListIds = async (workspaceId) => {
 const getCardsByStatus = async (req, res) => {
 
     try {
+        const workspaceId = req.workspace._id.toString();
+        const cacheKey = `analytics:${workspaceId}:status`;
+
+        // 1. Try Redis first
+        const cachedData = await getCache(cacheKey);
+
+        if (cachedData !== null) {
+            return res.status(200).json(cachedData);
+        }
+
+        // 2. Cache miss: query MongoDB
         const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const result = await Card.aggregate([
@@ -67,17 +80,19 @@ const getCardsByStatus = async (req, res) => {
 
         ]);
 
-        res.status(200).json(result);
+        // 3. Cache the result for 60 seconds
+        await setCache(cacheKey, result, 60);
 
-    } catch (error) {
+        // 4. Return the original response format
+        return res.status(200).json(result);
 
+    } 
+    
+    catch (error) {
         res.status(500).json({
             message: error.message
-
         });
-
     }
-
 };
 
 const getCardsByLabel = async (req, res) => {
@@ -111,15 +126,13 @@ const getCardsByLabel = async (req, res) => {
 
         res.status(200).json(result);
 
-    } catch (error) {
-
+    } 
+    
+    catch (error) {
         res.status(500).json({
             message: error.message
-
         });
-
     }
-
 };
 
 const getMemberWorkload = async (req,res) => {
