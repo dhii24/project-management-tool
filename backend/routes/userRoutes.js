@@ -5,10 +5,11 @@ const router = express.Router();
 const { registerUser, loginUser, getProfile, adminDashboard} = require("../controllers/userController")
 const authMiddleware = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authorizeRoles");
+const rateLimitMiddleware = require("../middleware/rateLimitMiddleware");
 
-router.post("/register", registerUser);
+router.post("/register", rateLimitMiddleware({ prefix: "register", limit: 5 }), registerUser);
 
-router.post("/login", loginUser);
+router.post("/login", rateLimitMiddleware({ prefix: "login", limit: 5 }), loginUser);
 
 router.get("/profile", authMiddleware, getProfile);
 
