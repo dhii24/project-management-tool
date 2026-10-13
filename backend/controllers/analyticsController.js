@@ -95,9 +95,20 @@ const getCardsByStatus = async (req, res) => {
     }
 };
 
-const getCardsByLabel = async (req, res) => {
 
+const getCardsByLabel = async (req, res) => {
     try {
+        const workspaceId = req.workspace._id.toString();
+        const cacheKey = `analytics:${workspaceId}:labels`;
+
+        // 1. Check Redis first
+        const cachedData = await getCache(cacheKey);
+
+        if (cachedData !== null) {
+            return res.status(200).json(cachedData);
+        }
+
+        // 2. Cache miss: query MongoDB
         const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const result = await Card.aggregate([
@@ -124,23 +135,37 @@ const getCardsByLabel = async (req, res) => {
             }
         ]);
 
-        res.status(200).json(result);
+        // 3. Cache the result for 60 seconds
+        await setCache(cacheKey, result, 60);
 
-    } 
-    
-    catch (error) {
+        // 4. Return the original response format
+        return res.status(200).json(result);
+
+    } catch (error) {
         res.status(500).json({
             message: error.message
         });
     }
 };
 
-const getMemberWorkload = async (req,res) => {
 
-    try{
+
+const getMemberWorkload = async (req, res) => {
+    try {
+        const workspaceId = req.workspace._id.toString();
+        const cacheKey = `analytics:${workspaceId}:workload`;
+
+        // 1. Check Redis first
+        const cachedData = await getCache(cacheKey);
+
+        if (cachedData !== null) {
+            return res.status(200).json(cachedData);
+        }
+
+        // 2. Cache miss: query MongoDB
         const listIds = await getWorkspaceListIds(req.workspace._id);
 
-        const result= await Card.aggregate([
+        const result = await Card.aggregate([
             {
                 $match: {
                     list: { $in: listIds }
@@ -149,16 +174,14 @@ const getMemberWorkload = async (req,res) => {
             {
                 $unwind: "$assignedMembers"
             },
-
             {
-                $group:{
+                $group: {
                     _id: "$assignedMembers",
-                    totalCards:{
-                        $sum:1
+                    totalCards: {
+                        $sum: 1
                     }
                 }
             },
-
             {
                 $lookup: {
                     from: "users",
@@ -167,11 +190,9 @@ const getMemberWorkload = async (req,res) => {
                     as: "user"
                 }
             },
-
             {
                 $unwind: "$user"
             },
-
             {
                 $project: {
                     _id: 0,
@@ -181,69 +202,92 @@ const getMemberWorkload = async (req,res) => {
                     totalCards: 1
                 }
             },
-
             {
-                $sort:{
+                $sort: {
                     totalCards: -1
                 }
             }
         ]);
 
-        res.status(200).json(result);
+        // 3. Cache the result for 60 seconds
+        await setCache(cacheKey, result, 60);
+
+        // 4. Return the original response format
+        return res.status(200).json(result);
 
     } catch (error) {
-
         res.status(500).json({
-            message:error.message
+            message: error.message
         });
-
     }
-
 };
 
-const getUpcomingDueCards = async( req,res) => {
 
-    try{
+
+const getUpcomingDueCards = async (req, res) => {
+    try {
+        const workspaceId = req.workspace._id.toString();
+        const cacheKey = `analytics:${workspaceId}:due-this-week`;
+
+        // 1. Check Redis first
+        const cachedData = await getCache(cacheKey);
+
+        if (cachedData !== null) {
+            return res.status(200).json(cachedData);
+        }
+
+        // 2. Cache miss: query MongoDB
         const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const today = new Date();
 
         const nextWeek = new Date();
-        nextWeek.setDate(today.getDate()+7);
+        nextWeek.setDate(today.getDate() + 7);
 
         const result = await Card.find({
             list: { $in: listIds },
-            dueDate:{
+            dueDate: {
                 $gte: today,
                 $lte: nextWeek
             }
         })
-        .sort({
-            dueDate: 1
-        });
-        
-        res.status(200).json(result);
+            .sort({
+                dueDate: 1
+            });
+
+        // 3. Cache the result for 60 seconds
+        await setCache(cacheKey, result, 60);
+
+        // 4. Return the original response format
+        return res.status(200).json(result);
 
     } catch (error) {
-
         res.status(500).json({
-            message:error.message
+            message: error.message
         });
-
     }
-
 };
 
-const getWorkspaceStats = async (req,res) => {
 
-    try{
-        const workspaceId = req.workspace._id;
-        
+
+const getWorkspaceStats = async (req, res) => {
+    try {
+        const workspaceId = req.workspace._id.toString();
+        const cacheKey = `analytics:${workspaceId}:workspace`;
+
+        // 1. Check Redis first
+        const cachedData = await getCache(cacheKey);
+
+        if (cachedData !== null) {
+            return res.status(200).json(cachedData);
+        }
+
+        // 2. Cache miss: query MongoDB
         const totalBoards = await Board.countDocuments({
-            workspace: workspaceId
+            workspace: req.workspace._id
         });
 
-        const listIds = await getWorkspaceListIds(workspaceId);
+        const listIds = await getWorkspaceListIds(req.workspace._id);
 
         const totalCards = await Card.countDocuments({
             list: { $in: listIds }
@@ -252,6 +296,7 @@ const getWorkspaceStats = async (req,res) => {
         const totalMembers = req.workspace.members.length;
 
         const now = new Date();
+
         const overdueCards = await Card.countDocuments({
             list: { $in: listIds },
             dueDate: {
@@ -259,22 +304,26 @@ const getWorkspaceStats = async (req,res) => {
             }
         });
 
-        res.status(200).json({
+        const result = {
             workspaceName: req.workspace.name,
             totalBoards,
             totalCards,
             totalMembers,
             overdueCards
-        });
+        };
+
+        // 3. Cache the result for 60 seconds
+        await setCache(cacheKey, result, 60);
+
+        // 4. Return the original response format
+        return res.status(200).json(result);
 
     } catch (error) {
-
         res.status(500).json({
-            message:error.message
+            message: error.message
         });
-
     }
-
 };
+
 
 module.exports = { getCardsByStatus, getCardsByLabel, getMemberWorkload, getUpcomingDueCards, getWorkspaceStats };

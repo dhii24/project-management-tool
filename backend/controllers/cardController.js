@@ -4,6 +4,8 @@ const List = require("../models/List");
 const Card = require("../models/Card");
 const User = require("../models/User");
 const createNotification = require("../utils/createNotification");
+const invalidateWorkspaceAnalytics = require("../utils/invalidateWorkspaceAnalytics");
+const invalidateAnalyticsForList = require("../utils/invalidateAnalyticsForList");
 
 const createCard = async (req, res) => {
 
@@ -29,6 +31,9 @@ const createCard = async (req, res) => {
         });
 
         await card.populate("assignedMembers", "name email role");
+
+        // Invalidate analytics for the card's workspace
+        await invalidateAnalyticsForList(listId);
 
         res.status(201).json({
             message:"Card created successfully",
@@ -156,6 +161,9 @@ const updateCard = async (req,res) => {
 
         await card.populate("assignedMembers", "name email role");
 
+        // Invalidate analytics for the card's workspace
+        await invalidateAnalyticsForList(card.list);
+
         res.status(200).json({
             message: "Card updated successfully",
             card
@@ -191,18 +199,20 @@ const deleteCard = async (req, res) => {
             list: req.list._id
         });
 
+        // Invalidate analytics for the card's workspace
+        await invalidateAnalyticsForList(card.list);
+
         res.status(200).json({
             message: "Card deleted successfully"
         });
 
-
-    } catch (error) {
-
+    } 
+    
+    catch (error) {
         res.status(500).json({
             message: error.message
         });
     }
-
 };
 
 
@@ -330,8 +340,11 @@ const moveCard = async (req, res) => {
                 await targetCards[i].save();
             }
         }
-        
-        res.status(200).json({
+
+        // Invalidate analytics for the card's workspace
+        await invalidateAnalyticsForList(req.list._id);
+
+        return res.status(200).json({
             message: "Card moved successfully"
         });
 
