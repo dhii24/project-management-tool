@@ -36,6 +36,8 @@ The project is built with a React frontend and a Node.js/Express backend, with M
 - Express.js
 - MongoDB
 - Mongoose ODM
+- Redis
+- Valkey (Redis-compatible cache)
 
 ### Authentication & Security
 
@@ -49,6 +51,9 @@ The project is built with a React frontend and a Node.js/Express backend, with M
 - Protected API Routes
 - Protected Frontend Routes
 - Production CORS Restrictions
+- Redis-backed rate limiting for login and registration
+- Limit of 5 requests per IP per endpoint per 15-minute window
+- HTTP 429 response when the limit is exceeded
 
 ### Deployment & Infrastructure
 
@@ -408,6 +413,15 @@ Done          34
 - `$project`
 - Aggregation pipelines
 
+#### Redis Analytics Caching
+
+- Redis-compatible Valkey hosted on Render
+- Caches all five workspace analytics endpoints
+- 60-second cache TTL
+- Workspace-specific cache keys
+- Cache invalidation after card creation, updates, deletion, and movement
+- MongoDB fallback when Redis is unavailable
+
 ---
 
 ### 🎨 Frontend Features
@@ -665,8 +679,22 @@ Implemented optimizations include:
 - Efficient `$lookup` operations
 - Reusable pagination utilities
 - Workspace-aware search
+- Redis caching for workspace analytics
+- TTL-based cache expiration
+- Cache invalidation after card mutations
+- Redis-backed login and registration rate limiting
 
 These optimizations help prepare the application for larger datasets.
+
+#### Sample Performance Measurement
+
+| Metric | Duration |
+| --- | ---: |
+| Cache miss | 492.90 ms |
+| Cache hit | 215.86 ms |
+| Observed reduction | 56.2% |
+
+Note: These are single-request measurements, not a formal benchmark.
 
 ---
 
@@ -861,6 +889,7 @@ Files     →  Cloudinary
 - MongoDB Atlas network access restricted
 - Production database uses a dedicated least-privilege user
 - Environment secrets stored outside source control
+- Redis-compatible Valkey
 
 ---
 
@@ -906,7 +935,6 @@ Possible future enhancements include:
 - Forgot password functionality
 - Refresh token authentication
 - MongoDB transactions for complex multi-document operations
-- Redis caching
 - Advanced filtering and sorting
 - Enhanced dashboard charts
 - Email notifications
