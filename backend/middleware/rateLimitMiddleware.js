@@ -6,9 +6,19 @@ const rateLimitMiddleware = ({
     windowSeconds = 15 * 60
 }) => {
     return async (req, res, next) => {
-        if (!redisClient.isReady) {
-            console.warn("Redis unavailable. Rate limiting skipped.");
+        // Local development: Redis is intentionally not configured.
+        if (!process.env.REDIS_URL) {
             return next();
+        }
+
+        // Production: Redis is configured but unavailable.
+        if (!redisClient.isReady) {
+            console.error("Redis unavailable. Blocking authentication request.");
+
+            return res.status(503).json({
+                message:
+                    "Authentication service temporarily unavailable. Please try again later."
+            });
         }
 
         try {
@@ -27,12 +37,15 @@ const rateLimitMiddleware = ({
                 });
             }
 
-            next();
-        } catch (error) {
+            return next();
+        } 
+        
+        catch (error) {
             console.error("Rate limiter error:", error.message);
 
             return res.status(503).json({
-                message: "Authentication service temporarily unavailable. Please try again."
+                message:
+                    "Authentication service temporarily unavailable. Please try again later."
             });
         }
     };
