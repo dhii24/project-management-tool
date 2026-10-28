@@ -17,7 +17,11 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL
+        origin: [
+            "http://localhost:5173",
+            "http://localhost:8081",
+            process.env.FRONTEND_URL
+        ].filter(Boolean)
     })
 );
 

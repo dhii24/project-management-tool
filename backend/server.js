@@ -1,5 +1,17 @@
 require("dotenv").config();
 
+const fs = require("fs");
+
+// Load Docker secrets when available
+const loadSecret = (envName, secretPath) => {
+    if (fs.existsSync(secretPath)) {
+        process.env[envName] = fs.readFileSync(secretPath, "utf8").trim();
+    }
+};
+
+loadSecret("MONGO_URI", "/run/secrets/mongo_uri");
+loadSecret("JWT_SECRET", "/run/secrets/jwt_secret");
+
 const app = require("./app");
 const connectDB = require("./config/db");
 const { connectRedis } = require("./config/redis");

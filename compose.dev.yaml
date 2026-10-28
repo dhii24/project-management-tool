@@ -1,0 +1,15 @@
+services:
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: project-management-backend:dev
+    container_name: project-management-api-dev
+    ports:
+      - "5001:5000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npx nodemon --legacy-watch server.js

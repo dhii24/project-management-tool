@@ -1,0 +1,35 @@
+services:
+  frontend:
+    image: project-management-frontend:latest
+    container_name: project-management-web
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: project-management-backend:latest
+    container_name: project-management-api
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    secrets:
+      - mongo_uri
+      - jwt_secret
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+secrets:
+  mongo_uri:
+    file: ./secrets/mongo_uri.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
