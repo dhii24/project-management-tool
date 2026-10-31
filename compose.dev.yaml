@@ -1,5 +1,7 @@
 services:
   backend-dev:
+    profiles:
+      - dev
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
@@ -9,6 +11,8 @@ services:
       - "5001:5000"
     env_file:
       - ./backend/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/project_management
     volumes:
       - ./backend:/app
       - /app/node_modules
