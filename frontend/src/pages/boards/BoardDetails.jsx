@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import workspaceService from "../../services/workspaceService";
@@ -19,7 +19,6 @@ import BoardList from "../../components/boards/BoardList";
 
 import AssignMembers from "../../components/boards/AssignMembers";
 import ManageLabels from "../../components/boards/ManageLabels";
-import NotificationPanel from "../../components/notifications/NotificationPanel";
 
 import CardSearch from "../../components/boards/CardSearch";
 import SearchResults from "../../components/boards/SearchResults";
@@ -72,69 +71,109 @@ function BoardDetails(){
 
     const [searchQuery, setSearchQuery] = useState("");
 
+    // Workspace loading useEffect
     useEffect(() => {
-        const fetchWorkspace = async () => {
-            try {
-                setWorkspaceError("");
+        if (!workspaceId) return;
 
-                const data = await workspaceService.getWorkspaceById(workspaceId);
-                setWorkspace(data);
-            } 
-            
-            catch (error) {
-                console.error("Failed to fetch workspace:",error);
+        let isMounted = true;
 
-                setWorkspaceError(
-                    error.response?.data?.message ||
-                    "Failed to load workspace."
-                );
-            }
+        workspaceService.getWorkspaceById(workspaceId)
+            .then((data) => {
+                if (isMounted) {
+                    setWorkspace(data);
+                }
+            })
+            .catch((error) => {
+                console.error("Failed to fetch workspace:", error);
+
+                if (isMounted) {
+                    setError(
+                        error.response?.data?.message ||
+                        "Failed to load workspace."
+                    );
+                }
+            });
+
+        return () => {
+            isMounted = false;
         };
-
-        fetchWorkspace();
     }, [workspaceId]);
-    
+
     const fetchBoard = async () => {
-        try{
+        try {
             setLoading(true);
             setError("");
-            
-            const data = await boardService.boardById(workspaceId, boardId);
-            setBoard(data);
-        }
 
-        catch(error){
-            console.error(error);
-            
-            setError(
-                error.response?.data?.message || "Failed to load board."
+            const data = await boardService.boardById(
+                workspaceId,
+                boardId
             );
-        }
 
-        finally{
+            setBoard(data);
+        } catch (error) {
+            console.error("Failed to load board:", error);
+
+            setError(
+                error.response?.data?.message ||
+                "Failed to load board."
+            );
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
+    // board-loading useEffect
     useEffect(() => {
-        if (!workspaceId || !boardId) {
-            return;
-        }
+        if (!workspaceId || !boardId) return;
 
-        fetchBoard();
+        let isMounted = true;
+
+        const timer = setTimeout(async () => {
+            try {
+                setLoading(true);
+                setError("");
+
+                const data = await boardService.boardById(
+                    workspaceId,
+                    boardId
+                );
+
+                if (isMounted) {
+                    setBoard(data);
+                }
+            } catch (error) {
+                console.error(error);
+
+                if (isMounted) {
+                    setError(
+                        error.response?.data?.message ||
+                        "Failed to load board."
+                    );
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        }, 0);
+
+        return () => {
+            isMounted = false;
+            clearTimeout(timer);
+        };
     }, [workspaceId, boardId]);
 
-    const fetchLists = async () => {
-        try{
+    const fetchLists = useCallback(async () => {
+        try {
             setLoadingLists(true);
             setListsError("");
 
             const lists = await listService.getListsByBoard(boardId);
-            
+
             const listWithCards = await Promise.all(
                 lists.map(async (list) => {
                     const cards = await cardService.getCardsByList(list._id);
-                    
+
                     return {
                         ...list,
                         cards
@@ -143,27 +182,30 @@ function BoardDetails(){
             );
 
             setLists(listWithCards);
-        }
 
-        catch(error){
+        } catch (error) {
             console.error("Failed to fetch lists:", error);
-            setListsError(
-                error.response?.data?.message || "Failed to load lists."
-            );
-        }
 
-        finally {
+            setListsError(
+                error.response?.data?.message ||
+                "Failed to load lists."
+            );
+
+        } finally {
             setLoadingLists(false);
         }
-    };
-    
-    useEffect(() => {
-        if (!boardId) {
-            return;
-        }
-
-        fetchLists();
     }, [boardId]);
+
+    // Lists-loading useEffect
+    useEffect(() => {
+        if (!boardId) return;
+
+        const timer = setTimeout(() => {
+            fetchLists();
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [boardId, fetchLists]);
 
     const handleAddList = () => {
         setShowCreateList(true);
@@ -475,91 +517,6 @@ function BoardDetails(){
 
             setOperationError(
                 error.response?.data?.message || "Failed to update labels."
-            );
-        }
-
-        finally {
-            setLoadingOperation("");
-        }
-    };
-    
-    const handleMoveCard = async (card, targetListId) => {
-        try {
-            setLoadingOperation("move-card");
-            setOperationError("");
-
-            const sourceListId = card.list;
-
-            // Find target list
-            const targetList = lists.find(list => list._id === targetListId);
-
-            if(!targetList){
-                return;
-            }
-
-            // For Step 29, move to the end of target list
-            const newPosition = targetList.cards?.length || 0;
-
-            await cardService.moveCard(
-                sourceListId,
-                card._id,
-                targetListId,
-                newPosition
-            );
-
-            // Update frontend state
-            setLists(previousLists => {
-                const movedCard = {
-                    ...card,
-                    list: targetListId,
-                    position: newPosition
-                };
-
-                return previousLists.map(list => {
-                    // Remove card from source list
-                    if(list._id === sourceListId){
-                        return {
-                            ...list,
-                            cards: (list.cards || []).filter(existingCard => existingCard._id !== card._id)
-                        };
-                    }
-
-                    // Add card to target list
-                    if(list._id === targetListId){
-                        return {
-                            ...list,
-                            cards: [
-                                ...(list.cards || []),
-                                movedCard
-                            ]
-                        };
-                    }
-                    return list;
-                });
-            });
-
-            setSelectedCard(previousCard => {
-                if(!previousCard){
-                    return previousCard;
-                }
-
-                if(previousCard._id !== card._id){
-                    return previousCard;
-                }
-
-                return{
-                    ...previousCard,
-                    list: targetListId,
-                    position: newPosition
-                };
-            });
-        } 
-        
-        catch(error){
-            console.error("Failed to move card:", error);
-
-            setOperationError(
-                error.response?.data?.message || "Failed to move card."
             );
         }
 

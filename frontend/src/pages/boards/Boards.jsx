@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import boardService from "../../services/boardService";
 
-import LoadingState from "../../components/common/LoadingState";
 import ErrorState from "../../components/common/ErrorState";
 import EmptyState from "../../components/common/EmptyState";
 
@@ -12,13 +11,10 @@ function Boards(){
 
     const [boards, setBoards] = useState([]);
 
-    const [loading, setLoading] = useState(true);
-
     const [error, setError] = useState("");
 
-    const fetchBoards = async () => {
-        try{
-            setLoading(true);
+    const fetchBoards = useCallback(async () => {
+        try {
             setError("");
 
             const data = await boardService.getBoardsByWorkspace(workspaceId);
@@ -27,30 +23,25 @@ function Boards(){
 
         catch(error){
             console.error(error);
-            
+
             setError(
                 error.response?.data?.message || "Failed to load boards."
             );
         }
 
-        finally{
-            setLoading(false);
-        }
-    };
+    }, [workspaceId]);
 
     useEffect(() => {
         if (!workspaceId) {
             return;
         }
 
-        fetchBoards();
-    }, [workspaceId]);
+        const timer = setTimeout(() => {
+            fetchBoards();
+        }, 0);
 
-    if(loading){
-        return (
-            <LoadingState message="Loading boards..." />
-        );
-    }
+        return () => clearTimeout(timer);
+    }, [workspaceId, fetchBoards]);
 
     if (error) {
         return (

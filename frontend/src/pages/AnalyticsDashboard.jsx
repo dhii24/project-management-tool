@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import analyticsService from "../services/analyticsService";
@@ -20,12 +20,8 @@ function AnalyticsDashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-  
-    const fetchAnalytics = async () => {
+    const fetchAnalytics = useCallback(async () => {
         try {
-            setLoading(true);
-            setError("");
-
             const [
                 workspaceData,
                 statusData,
@@ -46,6 +42,8 @@ function AnalyticsDashboard() {
             setMemberWorkload(workloadData);
             setUpcomingDueCards(dueData);
 
+            setError("");
+
         } catch (error) {
             console.error("Failed to load analytics:", error);
 
@@ -56,18 +54,23 @@ function AnalyticsDashboard() {
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        if(!workspaceId){
-            setError("Workspace ID is missing.");
-            setLoading(false);
-            return;
-        }
-
-        fetchAnalytics();
     }, [workspaceId]);
 
+    useEffect(() => {
+        if (!workspaceId) return;
+
+        const timer = setTimeout(() => {
+            fetchAnalytics();
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [workspaceId, fetchAnalytics]);
+
+    const handleRetry = () => {
+        setLoading(true);
+        setError("");
+        fetchAnalytics();
+    };
 
     const getMaxValue = (items) => {
         if (items.length === 0) {
@@ -110,7 +113,7 @@ function AnalyticsDashboard() {
                 <ErrorState
                     title="Unable to load analytics"
                     message={error}
-                    onRetry={fetchAnalytics}
+                    onRetry={handleRetry}
                 />
             </div>
         );

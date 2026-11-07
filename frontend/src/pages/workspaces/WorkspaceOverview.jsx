@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import workspaceService from "../../services/workspaceService";
@@ -17,35 +17,32 @@ function WorkspaceOverview(){
 
     const [error, setError] = useState("");
 
-    const fetchWorkspace = async () => {
-        try{
+    const fetchWorkspace = useCallback(async () => {
+        try {
             setLoading(true);
             setError("");
 
             const data = await workspaceService.getWorkspaceById(workspaceId);
             setWorkspace(data);
-        }
-
-        catch(error){
+        } catch (error) {
             console.error(error);
-
             setError(
-                error.response?.data?.message || 'Failed to load workspace'
+                error.response?.data?.message || "Failed to load workspace."
             );
-        }
-
-        finally{
+        } finally {
             setLoading(false);
         }
-    }
+    }, [workspaceId]);
 
     useEffect(() => {
-        if(!workspaceId){
-            return;
-        }
+        if (!workspaceId) return;
 
-        fetchWorkspace();
-    }, [workspaceId]);
+        const timer = setTimeout(() => {
+            fetchWorkspace();
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [workspaceId, fetchWorkspace]);
     
     if (loading) {
         return (

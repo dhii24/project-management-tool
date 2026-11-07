@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import AppRoutes from "./routes";
 
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 import "./styles/globals.css";
 import "./styles/auth.css";

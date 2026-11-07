@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import workspaceService from "../../services/workspaceService";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 import LoadingState from "../../components/common/LoadingState";
 import ErrorState from "../../components/common/ErrorState";
@@ -20,30 +20,30 @@ function Dashboard(){
 
     const [error, setError] = useState("");
 
-    const fetchWorkspaces = async () => {
-
-        try{
+    const fetchWorkspaces = useCallback(async () => {
+        try {
             setLoading(true);
             setError("");
+
             const data = await workspaceService.getMyWorkspaces();
             setWorkspaces(data);
-        }
-
-        catch (error){
+        } catch (error) {
             console.error(error);
             setError(
-                error.response?.data?.message || "Failed to load workspaces." 
+                error.response?.data?.message || "Failed to load workspaces."
             );
-        }
-
-        finally{
+        } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        fetchWorkspaces();
-    }, []);
+        const timer = setTimeout(() => {
+            fetchWorkspaces();
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [fetchWorkspaces]);
 
     return (
 

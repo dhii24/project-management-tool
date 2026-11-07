@@ -11,20 +11,35 @@ function NotificationBell() {
     const notificationRef = useRef(null);
 
     useEffect(() => {
-        loadUnreadCount();
+        let isMounted = true;
+
+        const fetchUnreadCount = async () => {
+            try {
+                const count = await notificationService.getUnreadCount();
+
+                if (isMounted) {
+                    setUnreadCount(count);
+                }
+            } catch (error) {
+                console.error("Failed to load unread notification count:", error);
+            }
+        };
+
+        fetchUnreadCount();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     useEffect(() => {
-
         const handleClickOutside = (event) => {
-
             if(
                 notificationRef.current &&
                 !notificationRef.current.contains(event.target)
             ){
                 setShowPanel(false);
             }
-
         };
 
         if(showPanel){
@@ -37,23 +52,9 @@ function NotificationBell() {
 
     }, [showPanel]);
 
-    const loadUnreadCount = async () => {
-        try{
-            const count = await notificationService.getUnreadCount();
-            setUnreadCount(count);
-        }
-
-        catch(error){
-            console.error("Failed to load unread notification count:", error);
-        }
-    };
-
     const handleTogglePanel = () => {
-
         if(!showPanel && notificationRef.current){
-
             const bellRect = notificationRef.current.getBoundingClientRect();
-
             const panelWidth = 400;
             const margin = 12;
 
@@ -68,7 +69,6 @@ function NotificationBell() {
                 left: `${left}px`
             });
         }
-
         setShowPanel(previousState => !previousState);
     };
 

@@ -47,6 +47,11 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({email}).select("+password");
 
+        console.log("Login email:", email);
+        console.log("User found:", !!user);
+        console.log("Stored password exists:", !!user?.password);
+        console.log("Stored password length:", user?.password?.length);
+
         if(!user){
             return res.status(401).json({
                 message: "Invalid email or password"
@@ -54,6 +59,7 @@ const loginUser = async (req, res) => {
         }
 
         const isPasswordMatched = await bcrypt.compare(password, user.password);
+        console.log("Password matched:", isPasswordMatched);
         
         if(!isPasswordMatched){
             return res.status(401).json({

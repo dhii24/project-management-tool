@@ -10,37 +10,45 @@ function NotificationPanel({ onUnreadCountChange }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        loadNotifications();
-    }, []);
+        let isMounted = true;
 
-    const loadNotifications = async () => {
-        try{
-            setLoading(true);
-            setError("");
+        const fetchNotifications = async () => {
+            try {
+                setLoading(true);
+                setError("");
 
-            const [notificationData, unreadCount] = await Promise.all([
-                notificationService.getNotifications(),
-                notificationService.getUnreadCount()
-            ]);
+                const [notificationData, unreadCount] = await Promise.all([
+                    notificationService.getNotifications(),
+                    notificationService.getUnreadCount()
+                ]);
 
-            const loadedNotifications = notificationData.notifications || [];
+                if (!isMounted) return;
 
-            setNotifications(loadedNotifications);
-            setUnreadCount(unreadCount);
-            onUnreadCountChange(unreadCount);
-        }
+                const loadedNotifications = notificationData.notifications || [];
 
-        catch(error){
-            setError(
-                error.response?.data?.message ||
-                "Failed to load notifications"
-            );
-        }
+                setNotifications(loadedNotifications);
+                setUnreadCount(unreadCount);
+                onUnreadCountChange(unreadCount);
+            } catch (error) {
+                if (isMounted) {
+                    setError(
+                        error.response?.data?.message ||
+                        "Failed to load notifications"
+                    );
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
 
-        finally{
-            setLoading(false);
-        }
-    };
+        fetchNotifications();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [onUnreadCountChange]);
 
     const handleMarkAsRead = async (notificationId) => {
         try{
