@@ -58,3 +58,26 @@ jobs:
 
       - name: Build React application
         run: npm run build
+
+  docker-build:
+    name: Docker Image Build
+    runs-on: ubuntu-latest
+
+    needs: [backend, frontend]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t project-management-backend:ci ./backend
+
+      - name: Build frontend Docker image
+        run: |
+          docker build \
+            -t project-management-frontend:ci \
+            --build-arg VITE_API_URL=/api \
+            ./frontend
+
+      - name: Verify Docker images
+        run: docker image ls
