@@ -89,6 +89,8 @@ jobs:
         with:
           context: ./backend
           push: true
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/project-management-backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/project-management-backend:sha-${{ github.sha }}
@@ -101,6 +103,8 @@ jobs:
           push: true
           build-args: |
             VITE_API_URL=/api
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/project-management-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/project-management-frontend:sha-${{ github.sha }}
