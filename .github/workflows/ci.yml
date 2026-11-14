@@ -74,6 +74,10 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
+      - name: Check for outdated frontend dependencies (non-blocking)
+        run: npm outdated
+        continue-on-error: true
+
       - name: Run ESLint
         run: npm run lint
 
