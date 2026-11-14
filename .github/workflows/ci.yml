@@ -44,6 +44,14 @@ jobs:
       - name: Check JavaScript syntax
         run: node --check server.js
 
+      - name: Backend failure diagnostic
+        if: failure()
+        run: |
+          echo "Backend CI failed."
+          echo "Node.js version: ${{ matrix.node-version }}"
+          node --version
+          npm --version
+
   frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
