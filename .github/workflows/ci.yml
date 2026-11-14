@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# Prevent unnecessary workflow executions
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backend:
     name: Backend CI (Node.js ${{ matrix.node-version }})
