@@ -1,4 +1,4 @@
-# 🚀 Project Management Tool
+# 🚀 Project Management TooL
 
 A full-stack SaaS project management application inspired by tools like Trello and Jira, built for workspace-based team collaboration.
 
