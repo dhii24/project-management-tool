@@ -4,7 +4,7 @@ A full-stack SaaS project management application inspired by tools like Trello a
 
 The application provides a Kanban-style interface for managing workspaces, boards, lists, cards, team members, notifications, file attachments, comments, activity history, and project analytics.
 
-The project is built with a React frontend and a Node.js/Express backend, with MongoDB Atlas for production data storage and Cloudinary for persistent file storage.
+The project is built with a React frontend and a Node.js/Express backend, with MongoDB Atlas for production data storage and Cloudinary for persistent file storage..
 
 ---
 
