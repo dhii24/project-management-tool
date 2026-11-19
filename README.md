@@ -1,27 +1,29 @@
-# 🚀 Project Management Tool
+# Project Management Tool
 
-A full-stack SaaS project management application inspired by tools like Trello and Jira, built for workspace-based team collaboration.
+A full-stack SaaS-style project management application inspired by Trello and Jira.
+It provides workspace-based team collaboration through Kanban boards, lists, cards,
+member assignments, comments, file attachments, notifications, activity history,
+search, pagination, and workspace analytics.
 
-The application provides a Kanban-style interface for managing workspaces, boards, lists, cards, team members, notifications, file attachments, comments, activity history, and project analytics.
-
-The project is built with a React frontend and a Node.js/Express backend, with MongoDB Atlas for production data storage and Cloudinary for persistent file storage..
-
----
-
-## 🌐 Live Demo
-
-| Service | Link |
-| --- | --- |
-| **Frontend** | https://project-management-tool-kappa-eight.vercel.app/ |
-| **Backend API** | https://project-management-backend-fvnt.onrender.com/ |
-| **API Health Check** | https://project-management-backend-fvnt.onrender.com/health |
+The project is built with React, Node.js, Express, MongoDB, Redis-compatible caching,
+Docker, Nginx, and GitHub Actions CI/CD.
 
 ---
 
-## 🛠️ Tech Stack
+## Live Demo
+
+| Service | URL |
+|---|---|
+| Frontend | https://project-management-tool-kappa-eight.vercel.app/ |
+| Backend API | https://project-management-backend-fvnt.onrender.com/ |
+| API health check | https://project-management-backend-fvnt.onrender.com/health |
+| GitHub repository | https://github.com/dhii24/project-management-tool |
+
+---
+
+## Technology Stack
 
 ### Frontend
-
 - React
 - JavaScript
 - Vite
@@ -31,314 +33,184 @@ The project is built with a React frontend and a Node.js/Express backend, with M
 - CSS
 
 ### Backend
-
 - Node.js
 - Express.js
-- MongoDB
-- Mongoose ODM
-- Redis
-- Valkey (Redis-compatible cache)
+- MongoDB Atlas
+- Mongoose
+- Redis-compatible cache (Valkey)
+- REST APIs
 
-### Authentication & Security
-
-- JWT Authentication
-- bcrypt Password Hashing
+### Authentication and Security
+- JWT authentication
+- bcrypt password hashing
 - Role-Based Access Control (RBAC)
-- Resource-Level Authorization
-- Workspace Ownership Authorization
-- Workspace Membership Authorization
-- Nested Resource Authorization
-- Protected API Routes
-- Protected Frontend Routes
-- Production CORS Restrictions
-- Redis-backed rate limiting for login and registration
-- Limit of 5 requests per IP per endpoint per 15-minute window
-- HTTP 429 response when the limit is exceeded
+- Resource-level and nested-resource authorization
+- Workspace ownership and membership validation
+- Protected frontend routes and backend APIs
+- Production CORS restrictions
+- Redis-backed login and registration rate limiting
 
-### Deployment & Infrastructure
+### Storage and External Services
+- MongoDB Atlas — production application data
+- Cloudinary — persistent file storage
+- Valkey — Redis-compatible caching and rate-limiting support
 
-- **Vercel** — Frontend
-- **Render** — Backend API
-- **MongoDB Atlas** — Production Database
-- **Cloudinary** — File Storage
+### Containerization and Infrastructure
+- Docker
+- Docker Compose
+- Docker Compose networks and services
+- Nginx reverse proxy
+- Non-root container execution and reduced Linux capabilities
+- Docker image security scanning
+
+### CI/CD and Deployment
+- GitHub Actions
+- Docker Hub
+- Vercel — frontend hosting
+- Render — backend hosting
+- CI-gated automatic deployments
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🔐 Authentication
-
-- User registration
-- User login
-- Password hashing using bcrypt
-- JWT access token generation
+### Authentication
+- User registration and login
+- Password hashing with bcrypt
+- JWT access-token generation and verification
 - Protected frontend routes
 - Protected backend API routes
-- Current user retrieval
-- Automatic JWT authorization using Axios interceptors
-- Automatic handling of unauthorized API responses
+- Current-user/profile retrieval
+- Centralized Axios configuration and authorization interceptors
+- Handling of unauthorized API responses
 
----
-
-### 🛡️ Authorization
-
-The application implements multiple levels of authorization.
-
-#### Role-Based Access Control
+### Authorization
+The backend applies authorization at multiple levels:
 
 - Role-based permissions
 - Admin authorization
-- Protected admin routes
-
-#### Resource-Level Authorization
-
 - Workspace ownership validation
 - Workspace membership validation
-- Board membership validation
-- List membership validation
-- Card-level authorization
-- Nested resource authorization
+- Board, list, and card access validation
+- Nested-resource authorization
+- Protected administrative and application routes
 
-Access is validated through the resource hierarchy:
+Resource access follows the application hierarchy:
 
 ```text
 User
-  ↓
+  |
+  v
 Workspace
-  ↓
+  |
+  v
 Board
-  ↓
+  |
+  v
 List
-  ↓
+  |
+  v
 Card
 ```
 
----
-
-### 🏢 Workspace Management
-
-- Create workspace
-- View workspaces
-- View user's workspaces
-- Update workspace
-- Delete workspace
+### Workspace Management
+- Create, view, update, and delete workspaces
+- Retrieve workspaces belonging to the authenticated user
 - Workspace ownership
-- Workspace members
 - Add workspace members
-- Prevent duplicate members
-- Workspace owner authorization
-- Workspace member authorization
+- Prevent duplicate member entries
+- Owner and member authorization
 - Admin override permissions
 
----
-
-### 📋 Board Management
-
-- Create boards
-- View workspace boards
-- Update boards
-- Delete boards
+### Board Management
+- Create, view, update, and delete boards
+- Retrieve boards belonging to a workspace
 - Workspace-based board access
-- Board membership validation
 
-Example structure:
-
-```text
-Project Management Workspace
-│
-├── Development Board
-├── Marketing Board
-└── Design Board
-```
-
----
-
-### 📝 List Management
-
-- Create lists
-- View lists
-- Update lists
-- Delete lists
-- Move lists
+### List Management
+- Create, view, update, and delete lists
+- Move and reorder lists
 - Drag-and-drop ordering
 - Position-based ordering
 
-Example:
-
-```text
-Todo          position: 0
-In Progress   position: 1
-Done          position: 2
-```
-
----
-
-### 🃏 Card Management
-
-- Create cards
-- View cards
-- Update cards
-- Delete cards
+### Card Management
+- Create, view, update, and delete cards
 - Move cards between lists
 - Reorder cards
-- Due dates
-- Card descriptions
-- Priority
-- Labels
-- Member assignment
+- Card descriptions and due dates
+- Priority and labels
+- Assign one or more workspace members
 
-Cards can be reordered within a list and moved between lists while maintaining their position.
-
----
-
-### 👥 Card Collaboration
-
-#### Member Assignment
-
-- Assign one or multiple users to a card
+### Card Collaboration
+- Assign multiple users to cards
 - Store user references using MongoDB ObjectIds
-- Populate assigned member details
+- Populate assigned-member details
+- Add and retrieve comments
+- Associate comments with their authors
+- Maintain comment timestamps
 
-#### Labels
+### File Attachments
+Users can upload attachments to cards.
 
-Cards can contain multiple labels.
-
-Example:
-
-```text
-Fix Login Bug
-
-Labels:
-• Bug
-• Backend
-• High Priority
-```
-
-#### Comments
-
-- Add comments
-- Retrieve comments
-- Associate comments with users
-- Automatic timestamps
-- Populate comment authors
-- Comment history
-
----
-
-### 📎 File Attachments
-
-Users can upload attachments directly to cards.
-
-**Supported file types:**
-
+Supported file types:
 - PNG
 - JPEG
 - PDF
 
-**Maximum upload size:** 5 MB
+Maximum upload size: 5 MB.
 
-#### Production File Architecture
-
-Files are stored using Cloudinary while MongoDB stores attachment metadata.
+File storage architecture:
 
 ```text
 React Frontend
-      ↓
+      |
+      v
 Express API
-      ↓
+      |
+      v
 Cloudinary
-      │
-      └── Actual File
-```
+      |
+      +-- Actual file
 
-```text
 Express API
-      ↓
+      |
+      v
 MongoDB Atlas
-      │
-      └── Attachment Metadata
+      |
+      +-- Attachment metadata
 ```
 
-This allows uploaded files to persist independently of the backend server's filesystem.
+Cloudinary stores the actual files, while MongoDB stores attachment metadata. This avoids relying on the backend container's local filesystem for persistent uploads.
 
----
-
-### 🔔 Notification System
-
-The application provides user-specific notifications.
-
-#### Features
-
-- User notifications
+### Notifications
+- User-specific notifications
 - Assignment notifications
 - Fetch notifications
 - Unread notification count
-- Mark notification as read
+- Mark notifications as read
 - Notification ownership validation
 
-Example:
+Activities and notifications are separate concepts:
 
-```text
-Dhiraj assigned you to "Fix Login Bug"
+- Activity: records what happened.
+- Notification: informs a user about something relevant to them.
 
-Rahul commented on "JWT Authentication"
-```
+### Activity and Audit History
+- Record important card actions
+- Maintain a card activity timeline
+- Track the user responsible for an action
+- Retrieve and sort activity records
+- Store activities separately from Card documents
 
-Activities and notifications are handled as separate concepts:
+An activity record includes the user, card, action, description, and timestamp.
 
-- **Activity:** "What happened?"
-- **Notification:** "What do I need to know?"
-
----
-
-### 📜 Activity & Audit History
-
-Important card actions are recorded in an activity timeline.
-
-#### Features
-
-- Activity logging
-- Audit trail
-- Automatic activity recording
-- Card activity timeline
-- User activity tracking
-- Activity retrieval
-- Activity sorting
-
-Example:
-
-```text
-Dhiraj created a card
-Rahul uploaded login.png
-Akash commented on Payment API
-Riya moved card to Done
-```
-
-Each activity contains:
-
-- User
-- Card
-- Action
-- Description
-- Timestamp
-
-Activities are stored separately from Card documents to keep card documents lightweight and scalable.
-
----
-
-### 🔎 Search
-
-The application supports card search.
-
-#### Features
-
+### Search
 - Search cards by title
 - Search cards by label
-- Case-insensitive search
+- Case-insensitive matching
 - Combined title and label search
 - Pagination support
 - MongoDB indexes
-- Regex-based search
 
 Example:
 
@@ -346,34 +218,14 @@ Example:
 GET /api/cards/search?query=jwt&page=1&limit=10
 ```
 
-MongoDB concepts used include:
-
-- `$regex`
-- `$options`
-- `$or`
-- Text indexes
-
----
-
-### 📄 Pagination
-
-Reusable pagination is implemented across multiple resources.
-
-#### Features
-
-- Page-based pagination
-- Limit and skip queries
-- Total document count
-- Total pages calculation
-- Pagination metadata
-- Pagination limits
-
-Pagination is currently used for resources such as:
-
+### Pagination
+Reusable pagination is implemented for resources including:
 - Cards
 - Activities
 - Notifications
 - Card search
+
+Pagination includes page and limit parameters, total document count, total pages, and pagination metadata.
 
 Example:
 
@@ -381,13 +233,8 @@ Example:
 GET /api/cards/:listId?page=2&limit=10
 ```
 
----
-
-### 📊 Analytics Dashboard
-
-The backend provides aggregation-based analytics for workspaces.
-
-#### Analytics
+### Workspace Analytics
+The backend provides aggregation-based analytics:
 
 - Cards by status
 - Cards by label
@@ -395,111 +242,130 @@ The backend provides aggregation-based analytics for workspaces.
 - Cards due this week
 - Workspace statistics
 
-Example — Cards by Status:
-
-```text
-Todo          15
-In Progress    7
-Done          34
-```
-
-#### MongoDB Aggregation Concepts
-
+MongoDB aggregation features used include:
 - `$group`
 - `$sum`
 - `$sort`
 - `$unwind`
 - `$lookup`
 - `$project`
-- Aggregation pipelines
 
-#### Redis Analytics Caching
-
-- Redis-compatible Valkey hosted on Render
-- Caches all five workspace analytics endpoints
-- 60-second cache TTL
+#### Redis-Compatible Analytics Caching
+- Valkey-backed caching for five workspace analytics endpoints
 - Workspace-specific cache keys
-- Cache invalidation after card creation, updates, deletion, and movement
-- MongoDB fallback when Redis is unavailable
+- 60-second cache TTL
+- Cache invalidation after relevant card mutations
+- MongoDB fallback when the cache service is unavailable
+
+Sample single-request measurement:
+
+| Measurement | Duration |
+|---|---:|
+| Cache miss | 492.90 ms |
+| Cache hit | 215.86 ms |
+| Observed reduction | 56.2% |
+
+These are sample measurements, not results from a formal load test.
 
 ---
 
-### 🎨 Frontend Features
+## Application Architecture
 
-The React frontend provides a responsive Kanban-style interface.
-
-#### UI Features
-
-- Workspace dashboard
-- Kanban boards
-- Drag-and-drop card movement
-- Card details
-- Member assignment
-- Labels
-- Priority
-- Due dates
-- Comments
-- Attachments
-- Activity history
-- Notifications
-- Search
-- Pagination
-- Analytics
-- Loading states
-- Error states
-- Retry states
-- Empty states
-- Responsive design
-
----
-
-## 🏗️ Application Architecture
+### Production Architecture
 
 ```text
-                         User
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │ React Frontend  │
-                  │     Vercel      │
-                  └────────┬────────┘
-                           │
-                           │ HTTPS / REST API
-                           ▼
-                  ┌─────────────────┐
-                  │ Node.js +       │
-                  │ Express Backend │
-                  │     Render      │
-                  └───────┬─┬───────┘
-                          │ │
-             ┌────────────┘ └─────────────┐
-             ▼                            ▼
-    ┌─────────────────┐          ┌─────────────────┐
-    │ MongoDB Atlas   │          │   Cloudinary    │
-    │ Application Data│          │  File Storage   │
-    └─────────────────┘          └─────────────────┘
+                         Users
+                           |
+                           v
+                 +-------------------+
+                 | React Frontend    |
+                 | Vercel            |
+                 +---------+---------+
+                           |
+                           | HTTPS / REST API
+                           v
+                 +-------------------+
+                 | Node.js + Express |
+                 | Render            |
+                 +----+----------+---+
+                      |          |
+             +--------+          +---------+
+             |                             |
+             v                             v
+     +----------------+           +----------------+
+     | MongoDB Atlas  |           | Cloudinary     |
+     | Application   |           | File storage   |
+     | data           |           |                |
+     +----------------+           +----------------+
+
+                 Redis-compatible cache
+                         |
+                         v
+                       Valkey
 ```
+
+The production frontend and backend are deployed separately. Vercel serves the React application, while Render hosts the Express API. The backend connects to MongoDB Atlas, Cloudinary, and the configured Redis-compatible cache service.
+
+### Local Docker Architecture
+
+The project also supports containerized local development using Docker Compose.
+
+```text
+                  Browser
+                     |
+                     v
+              +-------------+
+              | Nginx        |
+              | Frontend     |
+              +------+------+
+                     |
+              /api requests
+                     |
+                     v
+              +-------------+
+              | Backend     |
+              | Express     |
+              +------+------+
+                     |
+           Docker Compose network
+                     |
+          +----------+----------+
+          |                     |
+          v                     v
+     +----------+          +----------+
+     | MongoDB  |          | Redis /  |
+     | service  |          | cache    |
+     +----------+          +----------+
+```
+
+Nginx acts as a reverse proxy in the containerized setup and routes API requests to the backend service. Docker Compose provides service discovery and networking between containers.
+
+Note: this local Docker/Nginx architecture is distinct from the current Vercel + Render production hosting path.
 
 ---
 
-## 🧱 Frontend Architecture
+## Frontend Architecture
 
 ```text
 React UI
-   ↓
-Pages / Components
-   ↓
-Context / Hooks
-   ↓
+   |
+   v
+Pages and Components
+   |
+   v
+Context and Hooks
+   |
+   v
 Service Layer
-   ↓
+   |
+   v
 Axios Instance
-   ↓
+   |
+   v
 Express REST API
 ```
 
-### Frontend Engineering Practices
-
+Frontend engineering practices:
 - Component-based architecture
 - Reusable components
 - Context-based global state
@@ -511,231 +377,165 @@ Express REST API
 - Pagination and search
 - Asynchronous loading and error handling
 - Retryable API failure states
-- Reusable loading, error, and empty-state components
+- Reusable loading, error, and empty states
 - Responsive UI design
 
 ---
 
-## 🧩 Backend Architecture
+## Backend Architecture
 
 The backend follows a modular Express architecture.
 
 ```text
-Request
-   ↓
-Route
-   ↓
+Incoming Request
+       |
+       v
+     Route
+       |
+       v
 Authentication / Authorization Middleware
-   ↓
-Controller
-   ↓
-Mongoose Model
-   ↓
-MongoDB Atlas
-   ↓
-Response
+       |
+       v
+   Controller
+       |
+       v
+    Model
+       |
+       v
+    MongoDB
+       |
+       v
+    Response
 ```
 
-### Backend Concepts
-
+Backend concepts and practices:
 - REST API design
-- MVC architecture
-- Express routing
-- Middleware
+- Express routing and middleware
+- MVC-style separation
 - JWT authentication
-- RBAC
-- Resource-level authorization
-- Nested authorization
-- MongoDB relationships
-- Mongoose ODM
-- ObjectId references
-- `populate()`
+- RBAC and resource-level authorization
+- Nested-resource authorization
+- MongoDB relationships and ObjectId references
+- Mongoose models and `populate()`
 - CRUD operations
 - Query operators
 - Position-based ordering
 - Reusable middleware
-- Pagination
-- Search
-- Aggregation
-- Notifications
-- Activity history
+- Pagination and search
+- Aggregation pipelines
+- Notifications and activity history
 
----
+### Authorization Middleware
 
-## 🔐 Middleware Architecture
-
-Reusable authorization middleware is used throughout the backend.
+Reusable middleware includes:
 
 ```text
 middleware/
-│
-├── authMiddleware.js
-├── authorizeRoles.js
-├── workspaceOwnerMiddleware.js
-├── workspaceMemberMiddleware.js
-├── boardMemberMiddleware.js
-├── listMemberMiddleware.js
-└── cardMemberMiddleware.js
+|
+|-- authMiddleware.js
+|-- authorizeRoles.js
+|-- workspaceOwnerMiddleware.js
+|-- workspaceMemberMiddleware.js
+|-- boardMemberMiddleware.js
+|-- listMemberMiddleware.js
+|-- cardMemberMiddleware.js
 ```
 
-### Responsibilities
-
-#### Authentication Middleware
-
-- Verify JWT
-- Identify authenticated users
-- Attach authenticated user to `req.user`
-
-#### Workspace Owner Middleware
-
-- Validate workspace ownership
-- Allow owners/admins to perform sensitive operations
-
-#### Workspace Member Middleware
-
-- Validate workspace membership
-- Protect workspace resources
-
-#### Board Member Middleware
-
-- Validate board existence
-- Validate workspace access
-- Attach board information to the request
-
-#### List Member Middleware
-
-- Validate list existence
-- Find parent board
-- Find parent workspace
-- Validate workspace membership
-- Attach related resources to the request
-
-#### Card Member Middleware
-
-- Validate card existence
-- Find parent list
-- Find parent board
-- Find parent workspace
-- Validate workspace membership
-- Attach related resources to the request
+Responsibilities include JWT verification, role checks, resource existence checks, workspace membership and ownership checks, and validation of access through nested resources.
 
 ---
 
-## 🗄️ Database Relationships
+## Database Relationships
 
 ```text
 User
- │
- ▼
+ |
+ v
 Workspace
- │
- ▼
+ |
+ v
 Board
- │
- ▼
+ |
+ v
 List
- │
- ▼
+ |
+ v
 Card
- ├── Labels
- ├── Assigned Members
- ├── Comments
- ├── Attachments
- └── Activities
+ |-- Labels
+ |-- Assigned Members
+ |-- Comments
+ |-- Attachments
+ +-- Activities
 
 User
- └── Notifications
+ +-- Notifications
 ```
 
-### Relationship Summary
-
-- One User can belong to multiple Workspaces
-- One Workspace can contain multiple Boards
-- One Board can contain multiple Lists
-- One List can contain multiple Cards
-- Cards reference Lists
-- Lists reference Boards
-- Boards reference Workspaces
-- One Card can have multiple Labels
-- One Card can be assigned to multiple Users
-- One Card can contain multiple Comments
-- One Card can contain multiple Attachments
-- One Card can contain multiple Activities
-- One User can receive multiple Notifications
+Relationship summary:
+- A user can belong to multiple workspaces.
+- A workspace can contain multiple boards.
+- A board can contain multiple lists.
+- A list can contain multiple cards.
+- Cards reference lists.
+- Lists reference boards.
+- Boards reference workspaces.
+- Cards can reference multiple labels and assigned users.
+- Cards can have comments, attachments, and activity records.
+- A user can receive multiple notifications.
 
 ---
 
-## ⚡ Performance Optimizations
+## Performance Optimizations
 
-Implemented optimizations include:
-
-- MongoDB text indexes
-- Index on `dueDate`
-- Index on `list`
-- Index on `assignedMembers`
+- MongoDB indexes for frequently queried fields
+- Indexes on due dates, list references, and assigned members
 - Pagination using `skip()` and `limit()`
-- `countDocuments()`
-- Aggregation pipelines
-- Efficient `$lookup` operations
+- Document counts using `countDocuments()`
+- Aggregation pipelines for analytics
+- `$lookup` for related data
 - Reusable pagination utilities
 - Workspace-aware search
-- Redis caching for workspace analytics
-- TTL-based cache expiration
+- Redis-compatible caching for analytics
+- 60-second cache TTL
 - Cache invalidation after card mutations
 - Redis-backed login and registration rate limiting
 
-These optimizations help prepare the application for larger datasets.
-
-#### Sample Performance Measurement
-
-| Metric | Duration |
-| --- | ---: |
-| Cache miss | 492.90 ms |
-| Cache hit | 215.86 ms |
-| Observed reduction | 56.2% |
-
-Note: These are single-request measurements, not a formal benchmark.
+The observed analytics cache measurement showed a reduction from 492.90 ms to 215.86 ms for the measured request. This is a sample measurement and should not be interpreted as a formal benchmark.
 
 ---
 
-## 🛡️ Security Features
+## Security
 
-The application implements multiple security measures:
-
-- Password hashing using bcrypt
+Implemented security measures include:
+- bcrypt password hashing
 - JWT authentication
-- Protected frontend routes
-- Protected backend routes
+- Protected frontend and backend routes
 - Role-Based Access Control
-- Workspace ownership validation
-- Workspace membership validation
-- Board membership validation
-- List membership validation
-- Card membership validation
-- Nested resource authorization
+- Workspace ownership and membership validation
+- Nested-resource authorization
 - Resource-level access validation
-- Duplicate member prevention
+- Duplicate-member prevention
 - Authenticated file uploads
-- File type validation
-- File size restrictions
-- Secure comment access
-- Activity access validation
-- Notification ownership validation
+- File type and size restrictions
+- Comment, activity, and notification access validation
 - Pagination limits
 - Workspace-aware search
-- Indexed MongoDB queries
 - Production CORS restrictions
 - Restricted MongoDB Atlas network access
 - Dedicated least-privilege production database user
+- Environment secrets kept outside source control
+- Redis-backed login and registration rate limiting
+
+The login and registration rate limiter is configured for five requests per IP, per endpoint, within a 15-minute window. Requests exceeding the limit receive HTTP 429.
 
 ---
 
-## 🔌 API Overview
+## API Overview
 
 ### Authentication
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/users/register` | Register user |
 | POST | `/api/users/login` | Login user |
 | GET | `/api/users/profile` | Get logged-in user |
@@ -743,7 +543,7 @@ The application implements multiple security measures:
 ### Workspaces
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/workspaces` | Create workspace |
 | GET | `/api/workspaces` | Get workspaces |
 | GET | `/api/workspaces/my` | Get user's workspaces |
@@ -754,7 +554,7 @@ The application implements multiple security measures:
 ### Boards
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/boards/:workspaceId` | Create board |
 | GET | `/api/boards/:workspaceId` | Get workspace boards |
 | PUT | `/api/boards/:workspaceId/:boardId` | Update board |
@@ -763,46 +563,46 @@ The application implements multiple security measures:
 ### Lists
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/lists/:boardId` | Create list |
 | GET | `/api/lists/:boardId` | Get board lists |
 | PUT | `/api/lists/:boardId/:listId` | Update list |
 | DELETE | `/api/lists/:boardId/:listId` | Delete list |
-| PATCH | `/api/lists/:boardId/:listId/move` | Move/reorder list |
+| PATCH | `/api/lists/:boardId/:listId/move` | Move or reorder list |
 
 ### Cards
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/cards/:listId` | Create card |
 | GET | `/api/cards/:listId` | Get list cards |
 | PUT | `/api/cards/:listId/:cardId` | Update card |
 | DELETE | `/api/cards/:listId/:cardId` | Delete card |
-| PATCH | `/api/cards/:listId/:cardId/move` | Move/reorder card |
+| PATCH | `/api/cards/:listId/:cardId/move` | Move or reorder card |
 
 ### Comments
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/comments/:cardId` | Add comment |
 | GET | `/api/comments/:cardId` | Get card comments |
 
 ### Attachments
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | POST | `/api/attachments/:cardId/upload` | Upload attachment |
 
 ### Activities
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | GET | `/api/activities/:cardId` | Get card activities |
 
 ### Notifications
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | GET | `/api/notifications` | Get user notifications |
 | GET | `/api/notifications/unread-count` | Get unread notification count |
 | PATCH | `/api/notifications/:notificationId/read` | Mark notification as read |
@@ -810,13 +610,13 @@ The application implements multiple security measures:
 ### Search
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | GET | `/api/cards/search` | Search cards by title or label |
 
 ### Analytics
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
+|---|---|---|
 | GET | `/api/analytics/status` | Cards by status |
 | GET | `/api/analytics/labels` | Cards by label |
 | GET | `/api/analytics/workload` | Member workload |
@@ -825,75 +625,84 @@ The application implements multiple security measures:
 
 ---
 
-## 📂 Project Structure
+## Docker and Containerization
 
-```text
-project-management-tool/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── auth/
-│   │   │   ├── boards/
-│   │   │   ├── common/
-│   │   │   └── notifications/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   │   ├── auth/
-│   │   │   ├── boards/
-│   │   │   ├── common/
-│   │   │   ├── dashboard/
-│   │   │   └── workspaces/
-│   │   ├── services/
-│   │   ├── styles/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── routes.jsx
-│   └── package.json
-│
-├── backend/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── app.js
-│   ├── server.js
-│   └── package.json
-│
-└── README.md
-```
+The project includes Dockerfiles and Docker Compose configuration for containerized development and deployment workflows.
+
+Implemented containerization practices:
+- Separate frontend and backend containers
+- Docker Compose services and networking
+- Service-to-service communication through the Compose network
+- Nginx reverse proxy for frontend/API routing
+- Development and production Compose configurations
+- Compose profiles
+- Bind mounts and backend hot reload in development
+- Non-root container execution
+- Removal of unnecessary Linux capabilities
+- Docker image vulnerability scanning
+
+The backend Docker image was reduced from approximately 1.71 GB to 313 MB, an observed reduction of about 82%.
+
+Docker Hub images are built and published by the GitHub Actions workflow with `latest` and commit-SHA tags.
+
+The currently configured Render production deployment uses its GitHub-connected source deployment. Publishing Docker images to Docker Hub is a separate CI workflow and does not mean Render is currently deploying those images.
 
 ---
 
-## 🚀 Production Deployment
+## CI/CD Pipeline
 
-The application is deployed using the following architecture:
+GitHub Actions automates code validation and Docker image publishing.
+
+### Pipeline capabilities
+- Backend CI using a Node.js version matrix (Node.js 24 and 26)
+- Frontend linting and production build
+- Dependency installation using `npm ci`
+- npm dependency caching
+- Docker Buildx
+- Docker layer caching using GitHub Actions cache
+- Docker Hub authentication using GitHub Actions secrets
+- Backend and frontend image publishing
+- `latest` and commit-SHA image tags
+- Workflow concurrency to cancel superseded runs
+- Conditional failure diagnostics
+- Optional non-blocking dependency checks
+- Read-only repository contents permission
+
+### Deployment flow
 
 ```text
-Frontend  →  Vercel
-Backend   →  Render
-Database  →  MongoDB Atlas
-Files     →  Cloudinary
+Developer pushes code to GitHub
+              |
+              v
+       GitHub Actions CI
+              |
+       +------+------+
+       |             |
+       v             v
+   Backend CI    Frontend CI
+       |             |
+       +------+------+
+              |
+              v
+       Docker Build & Push
+              |
+              v
+          Docker Hub
+
+After required CI checks pass:
+              |
+       +------+------+
+       |             |
+       v             v
+     Vercel        Render
+    Frontend      Backend
 ```
 
-### Production Infrastructure
-
-- React frontend deployed on Vercel
-- Node.js/Express API deployed on Render
-- MongoDB hosted on MongoDB Atlas
-- Card attachments stored on Cloudinary
-- Production CORS restricted to the frontend domain
-- MongoDB Atlas network access restricted
-- Production database uses a dedicated least-privilege user
-- Environment secrets stored outside source control
-- Redis-compatible Valkey
+Vercel and Render use their GitHub integrations and are configured to wait for the required checks before production deployment. The hosting platforms perform their deployments; the workflow does not directly invoke their deployment APIs.
 
 ---
 
-## ⚙️ Local Development
+## Local Development
 
 ### Clone the repository
 
@@ -902,7 +711,7 @@ git clone https://github.com/dhii24/project-management-tool.git
 cd project-management-tool
 ```
 
-### Backend
+### Run the backend locally
 
 ```bash
 cd backend
@@ -910,9 +719,15 @@ npm install
 npm start
 ```
 
-The backend runs on: `http://localhost:5000`
+The backend's local port is configured for:
 
-### Frontend
+```text
+http://localhost:5000
+```
+
+### Run the frontend locally
+
+Open another terminal:
 
 ```bash
 cd frontend
@@ -920,101 +735,82 @@ npm install
 npm run dev
 ```
 
-The frontend runs on: `http://localhost:5173`
-
-> Environment variables should be configured locally using `.env` files.
-
----
-
-## 🔮 Future Improvements
-
-Possible future enhancements include:
-
-- Real-time updates using WebSockets / Socket.IO
-- Email verification
-- Forgot password functionality
-- Refresh token authentication
-- MongoDB transactions for complex multi-document operations
-- Advanced filtering and sorting
-- Enhanced dashboard charts
-- Email notifications
-
----
-
-## 📌 Project Status
-
-**Completed and deployed to production.**
-
-The application includes a complete full-stack workflow covering:
+Vite's development server is available at:
 
 ```text
-Authentication
-      ↓
-Authorization
-      ↓
-Workspaces
-      ↓
-Boards
-      ↓
-Lists
-      ↓
-Cards
-      ↓
-Collaboration
-      ↓
-Notifications
-      ↓
-Activity History
-      ↓
-Search + Pagination
-      ↓
-Analytics
-      ↓
-Production Deployment
+http://localhost:5173
 ```
 
----
+### Run with Docker Compose
 
-## 🎯 Engineering Highlights
+From the repository root, use the Compose configuration appropriate to the desired environment. For example, the development configuration can be started with:
 
-This project demonstrates practical experience with:
+```bash
+docker compose -f compose.yaml -f compose.dev.yaml --profile dev up -d
+```
 
-- Full-stack React development
-- REST API design
-- Node.js and Express.js
-- MongoDB and Mongoose
-- JWT authentication
-- RBAC
-- Resource-level authorization
-- Nested resource authorization
-- Middleware architecture
-- React Context API
-- Axios interceptors
-- CRUD operations
-- MongoDB relationships
-- `populate()`
-- Position-based ordering
-- Drag-and-drop Kanban logic
-- File uploads
-- Cloudinary integration
-- Comments and collaboration
-- Notification systems
-- Audit logging
-- Pagination
-- Search
-- MongoDB indexes
-- Aggregation pipelines
-- Dashboard analytics
-- Loading and error handling
-- Responsive UI
-- Production deployment
-- Cloud infrastructure
-- Production security practices
+Environment variables must be configured locally. Do not commit real `.env` files, API keys, database credentials, or tokens.
 
 ---
 
-## 👨‍💻 Author
+## Future Improvements
+
+Potential future enhancements include:
+- Automated unit, integration, and end-to-end tests
+- Post-deployment smoke tests
+- Structured logging and centralized log analysis
+- Prometheus metrics and Grafana dashboards
+- Application health, readiness, and liveness checks
+- More comprehensive security testing and container scanning
+- Background jobs using BullMQ
+- Real-time collaboration using Socket.IO
+- Email verification and password reset
+- Refresh-token authentication
+- MongoDB transactions for operations that require multi-document consistency
+- Advanced filtering and sorting
+- Staging environment
+- Infrastructure as Code using Terraform
+- Container orchestration with Kubernetes
+
+These are planned improvements, not currently implemented features.
+
+---
+
+## Project Status
+
+The application is deployed and its core functionality and infrastructure have been developed.
+
+The project demonstrates a full-stack application with workspace-based collaboration, nested authorization, analytics, caching, persistent file storage, Docker-based local infrastructure, and a CI-gated deployment workflow.
+
+Further work will focus on automated testing, production verification, observability, and reliability improvements.
+
+---
+
+## Engineering Highlights
+
+- Full-stack React and Node.js application development
+- REST API design and modular Express architecture
+- MongoDB data modeling and Mongoose
+- JWT authentication and bcrypt password hashing
+- RBAC and nested resource-level authorization
+- Workspace-based multi-user collaboration
+- Redis-compatible caching and cache invalidation
+- Redis-backed API rate limiting
+- MongoDB indexes, pagination, search, and aggregation
+- File uploads with Cloudinary
+- Notifications and activity history
+- Docker and Docker Compose
+- Nginx reverse proxy
+- Container security hardening and image optimization
+- GitHub Actions CI/CD
+- Docker Hub image publishing
+- CI-gated Vercel and Render deployments
+
+---
+
+## Author
 
 **Dhiraj Acharya**
 
-GitHub: [https://github.com/dhii24](https://github.com/dhii24)
+- GitHub: https://github.com/dhii24
+- Live application: https://project-management-tool-kappa-eight.vercel.app/
